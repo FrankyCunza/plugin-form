@@ -12,5 +12,90 @@
      <div id="values"></div>
      <script src="https://cdn.tailwindcss.com/3.0.0"></script>
      <script src="form.js"></script>
+     <script>
+          let form = new Form('form', { sections: 3 })
+          let data = [
+               {
+                    label: "Name",
+                    name: "name",
+                    type: "text",
+                    value: "Frank",
+                    position: 1
+               },
+               {
+                    label: "Color",
+                    name: "color",
+                    type: "color",
+                    value: "Frank",
+                    position: 1
+               },
+               {
+                    label: "Name",
+                    name: "name",
+                    type: "textarea",
+                    value: "Frank",
+                    position: 1
+               },
+               {
+                    label: "Name",
+                    name: "name",
+                    type: "h1",
+                    value: "Frank",
+                    position: 1
+               },
+               {
+                    label: "Name",
+                    name: "name",
+                    type: "image",
+                    value: "https://concepto.de/wp-content/uploads/2015/03/paisaje-800x409.jpg",
+                    position: 1
+               },
+               {
+                    label: "Are your married?",
+                    name: "are_married",
+                    type: "checkbox",
+                    position: 1
+               },
+               {
+                    label: "Radio",
+                    name: "radio",
+                    type: "radio",
+                    position: 1
+               },
+               {
+                    label: "Are your +18?",
+                    name: "are_married_eighteen",
+                    type: "checkbox",
+                    position: 1,
+                    options: [
+                         {
+                              title: "Yes",
+                              value: "yes"
+                         }
+                    ]
+               }
+          ]
+
+          let values = {
+               name: "Frank",
+               are_married: true,
+               are_married_eighteen: {
+                    Yes: true
+               }
+          }
+
+          document.getElementById("values").innerHTML = constructFormValues({ builder: data, values: values })
+
+          Forms({ form_builder: data, selector: "construct", key_parent: "", columns: 3 })
+
+          document.getElementById("construct").addEventListener("submit", e => {
+               e.preventDefault();
+               validateForm({ selector: "construct", form_builder: data, name: "" }).then(res => {
+                    console.log(res[1])
+               }).catch(err => {
+                    console.log(err)
+               })
+          })
+     </script>
 </body>
 </html>

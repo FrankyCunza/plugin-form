@@ -1162,7 +1162,6 @@ function Forms({ form_builder, selector, key_parent, columns }) {
                     case "month":
                     case "number":
                     case "password":
-                    case "radio":
                     case "range":
                     case "reset":
                     case "search":
@@ -1184,15 +1183,17 @@ function Forms({ form_builder, selector, key_parent, columns }) {
                     case "color":
                          html += `
                       <div class="relative grid col-span-${el.columns ? el.columns : '3'}">
-                        ${label(`<label class="font-semibold mb-0 text-sm block text-gray-600">${el.label} ${el.required == "true" ? '*' : ''}</label>`, el.info ? info(el.info) : '')}                            
+                        ${label(`<label class="font-semibold mb-0 text-sm block text-gray-600">${el.label} ${el.required == "true" ? '*' : ''}</label>`, el.info ? info(el.info) : '')}     
+                        ${warning}
                         <input value="${el.value}" type="color" name="${el.name}" class="w-full h-8">
+                        ${checked}
                       </div>
                       `
                          break;
                     case "image":
                          html += `
                               <div class="relative grid col-span-${el.columns ? el.columns : '3'}">
-                                   ${label(`<label class="font-semibold mb-0 text-sm block text-gray-600">${el.label} ${el.required == "true" ? '*' : ''}</label>`, el.info ? info(el.info) : '')}                            
+                                   ${label(`<label class="font-semibold mb-0 text-sm block text-gray-600">${el.label} ${el.required == "true" ? '*' : ''}</label>`, el.info ? info(el.info) : '')}     
                                    <input src="${el.value}" type="image" name="${el.name}" class="w-full">
                               </div>
                          `
@@ -1232,13 +1233,13 @@ function Forms({ form_builder, selector, key_parent, columns }) {
                               <div class="flex">
                                    <div>
                                         <label class="flex border border-gray-200 px-3 py-2 rounded-xl w-max items-center">
-                                             <input type="radio" name="${el.name}" ${htmlDataAttributes} data-alternatename="${el.alternate_name || el.alternateName || ""}" />
+                                             <input type="radio" name="${el.name}" data-value="true" ${htmlDataAttributes} data-alternatename="${el.alternate_name || el.alternateName || ""}" />
                                              <span class="ml-2">Yes</span>
                                         </label>
                                    </div>
                                    <div class="ml-2">
                                         <label class="flex border border-gray-200 px-3 py-2 rounded-xl w-max items-center">
-                                             <input type="radio" name="${el.name}" ${htmlDataAttributes} data-alternatename="${el.alternate_name || el.alternateName || ""}" />
+                                             <input type="radio" name="${el.name}" data-value="false" ${htmlDataAttributes} data-alternatename="${el.alternate_name || el.alternateName || ""}" />
                                              <span class="ml-2">No</span>
                                         </label>
                                    </div>
@@ -1449,7 +1450,6 @@ async function validateForm({ selector, form_builder, name }) {
      let promise = new Promise((resolve, reject) => {
           let checked = []
           for (let i = 0; i < forms.length; i++) {
-               console.log(forms[i].type)
                switch (forms[i].type) {
                     case "field_text":
                     case "field_date":
@@ -1462,12 +1462,12 @@ async function validateForm({ selector, form_builder, name }) {
                     case "date":
                     case "datetime-local":
                     case "email":
+                    case "color":
                     case "file":
                     case "hidden":
                     case "month":
                     case "number":
                     case "password":
-                    case "radio":
                     case "range":
                     case "reset":
                     case "search":
@@ -1495,6 +1495,18 @@ async function validateForm({ selector, form_builder, name }) {
                          } else {
                               success(forms[i])
                          }
+                         break;
+                    case "radio":
+                         const radioButtons = document.querySelectorAll(`input[name="${forms[i].name}"]`);
+                         let selected;
+                         for (const radioButton of radioButtons) {
+                              if (radioButton.checked) {
+                                   selected = radioButton.getAttribute("data-value");
+                                   break;
+                              }
+                         }
+                         form[forms[i].getAttribute("name")] = selected == "true" ? true : false  
+                         fd.append(forms[i].getAttribute("name"), selected == "true" ? true : false)
                          break;
                     case "field_checkboxes":
                     case "field_checkbox":
@@ -1539,85 +1551,3 @@ async function validateForm({ selector, form_builder, name }) {
      })
      return await promise
 }
-
-let form = new Form('form', { sections: 3 })
-
-
-let data = [
-     {
-          label: "Name",
-          name: "name",
-          type: "text",
-          value: "Frank",
-          position: 1
-     },
-     {
-          label: "Name",
-          name: "name",
-          type: "color",
-          value: "Frank",
-          position: 1
-     },
-     {
-          label: "Name",
-          name: "name",
-          type: "textarea",
-          value: "Frank",
-          position: 1
-     },
-     {
-          label: "Name",
-          name: "name",
-          type: "h1",
-          value: "Frank",
-          position: 1
-     },
-     {
-          label: "Name",
-          name: "name",
-          type: "image",
-          value: "https://concepto.de/wp-content/uploads/2015/03/paisaje-800x409.jpg",
-          position: 1
-     },
-     {
-          label: "Are your married?",
-          name: "are_married",
-          type: "checkbox",
-          position: 1
-     },
-     {
-          label: "Are your +18?",
-          name: "are_married_eighteen",
-          type: "checkbox",
-          position: 1,
-          options: [
-               {
-                    title: "Yes",
-                    value: "yes"
-               }
-          ]
-     }
-]
-
-let values = {
-     name: "Frank",
-     are_married: true,
-     are_married_eighteen: {
-          Yes: true
-     }
-}
-
-document.getElementById("values").innerHTML = constructFormValues({ builder: data, values: values })
-
-Forms({ form_builder: data, selector: "construct", key_parent: "", columns: 3 })
-
-document.getElementById("construct").addEventListener("submit", e => {
-     e.preventDefault();
-     validateForm({ selector: "construct", form_builder: data, name: "" }).then(res => {
-          console.log("Nice")
-          console.log(res[1])
-     }).catch(err => {
-          console.log("Error")
-          console.log(err)
-     })
-})

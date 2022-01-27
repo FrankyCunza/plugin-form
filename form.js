@@ -114,6 +114,10 @@ const types = [
      {
           title: "H6",
           name: "H6"
+     },
+     {
+          title: "Paragraph",
+          name: "p"
      }
 ]
 
@@ -507,10 +511,10 @@ class Form {
                <label class="text-gray-800 font-medium">Columns</label>
                <select class="border border-gray-300 rounded-xl h-12 px-4 w-full" id="${this.idFields.columns}">
                  <option value="1">1</option>
-              <option value="2">2</option>
-              <option value="3">3</option>
-              <option value="4">4</option>
-            </select>
+                    <option value="2">2</option>
+                    <option value="3">3</option>
+                    <option value="4" hidden>4</option>
+               </select>
           </div>
           <div>
                <label class="text-gray-800 font-medium">Expresión regular</label>
@@ -520,9 +524,8 @@ class Form {
           <div>
                <label class="text-gray-800 font-medium">Tipo</label>
                <select class="border border-gray-300 rounded-xl h-12 px-4 w-full" data-action="fieldtype" id="${this.idFields.type}">
-              <option hidden>Select</option>
-              ${htmlTypes}
-            </select>
+                    ${htmlTypes}
+               </select>
           </div>
           <div>
                <label class="text-gray-800 font-medium">Requerido</label>
@@ -653,26 +656,29 @@ class Form {
                     case "h1":
                          htmlField += `<${el.type} class="${this.titles[el.type].class}">${el.label || el.title}</${el.type}>`
                          break;
+                    case "p":
+                         htmlField += `<p class="text-base">${el.label || el.title}</p>`
+                         break;
                     default:
                          break;
                }
           }
           return `
-     <button data-action="${column}" data-index="${index}" class="px-2 py-6 hover:bg-gray-50 cursor-pointer flex h-22 justify-between items-center border-b border-gray-300 w-full ring-inset focus:outline-none focus:ring-2 focus:ring-blue-200 relative text-left">
-            <div class="flex flex-col w-full ${column !== "field" ? "pointer-events-none" : ""}">
-           <div class="pointer-events-none">
-          ${el.label || el.title} ${el.required == true ? "*" : ""}
-        </div>
-        ${htmlField}
-      </div>
-      <div class="flex gap-1.5 absolute top-1 right-1.5">
-        <div data-action="edit${column}" data-index="${index}" class="text-xs font-medium text-blue-600">Edit</div>
-        <div data-action="delete${column}" data-index="${index}" class="text-xs font-medium text-red-600">Delete</div>
-        <div data-action="moveup${column}" data-index="${index}" class="text-xs font-medium text-yellow-600">Up</div>
-        <div data-action="movedown${column}" data-index="${index}" class="text-xs font-medium text-yellow-600">Down</div>
-      </div>
-    </button>
-`
+               <button data-action="${column}" data-index="${index}" class="px-2 py-6 hover:bg-gray-50 cursor-pointer flex h-22 justify-between items-center border-b border-gray-300 w-full ring-inset focus:outline-none focus:ring-2 focus:ring-blue-200 relative text-left">
+                    <div class="flex flex-col w-full ${column !== "field" ? "pointer-events-none" : ""}">
+                    <div class="pointer-events-none">
+                         ${el.label || el.title} ${el.required == true ? "*" : ""}
+                    </div>
+               ${htmlField}
+               </div>
+               <div class="flex gap-1.5 absolute top-1 right-1.5">
+                    <div data-action="edit${column}" data-index="${index}" class="text-xs font-medium text-blue-600">Edit</div>
+                    <div data-action="delete${column}" data-index="${index}" class="text-xs font-medium text-red-600">Delete</div>
+                    <div data-action="moveup${column}" data-index="${index}" class="text-xs font-medium text-yellow-600">Up</div>
+                    <div data-action="movedown${column}" data-index="${index}" class="text-xs font-medium text-yellow-600">Down</div>
+               </div>
+          </button>
+          `
      }
 
      printSections() {

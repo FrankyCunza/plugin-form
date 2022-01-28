@@ -1469,7 +1469,6 @@ async function validateForm({ selector, form_builder, name }) {
                     case "datetime-local":
                     case "email":
                     case "color":
-                    case "file":
                     case "hidden":
                     case "month":
                     case "number":

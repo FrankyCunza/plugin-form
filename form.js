@@ -454,128 +454,128 @@ class Form {
      constructModals() {
           let html = ""
           let htmlModalSection = `
-       <div class="fixed w-screen h-screen top-0 left-0 flex items-center justify-center z-20 hidden" id="${this.modalSectionId}">
-         <div class="bg-black bg-opacity-20 absolute top-0 left-0 w-full h-full" data-action="modalForm" data-modaltarget="${this.modalSectionId}"></div>
-      <div class="bg-white p-5 rounded-xl relative max-w-3xl w-full">
-           <h2 class="font-bold text-xl text-gray-800 mb-3">Agregar sección</h2>
-        <input type="text" id="${this.modalSectionInput}" 
-        class="${this.inputClass}" />
-        <button type="button" data-action="savesection" class="mt-3 bg-blue-600 px-4 py-3 rounded-xl text-white">Guardar</button>
-      </div>
-    </div>
-  `
+               <div class="fixed w-screen h-screen top-0 left-0 flex items-center justify-center z-20 hidden" id="${this.modalSectionId}">
+               <div class="bg-black bg-opacity-20 absolute top-0 left-0 w-full h-full" data-action="modalForm" data-modaltarget="${this.modalSectionId}"></div>
+               <div class="bg-white p-5 rounded-xl relative max-w-3xl w-full">
+                    <h2 class="font-bold text-xl text-gray-800 mb-3">Agregar sección</h2>
+               <input type="text" id="${this.modalSectionInput}" 
+               class="${this.inputClass}" />
+               <button type="button" data-action="savesection" class="mt-3 bg-blue-600 px-4 py-3 rounded-xl text-white">Save</button>
+               </div>
+          </div>
+          `
           let htmlModalBlock = `
-       <div class="fixed w-screen h-screen top-0 left-0 flex items-center justify-center z-20 hidden" id="${this.modalBlockId}">
-         <div class="bg-black bg-opacity-20 absolute top-0 left-0 w-full h-full" data-action="modalForm" data-modaltarget="${this.modalBlockId}"></div>
-      <div class="bg-white p-5 rounded-xl relative max-w-3xl w-full">
-           <h2 class="font-bold text-xl text-gray-800 mb-3">Agregar bloque</h2>
-        <input type="text" id="${this.modalBlockInput}" 
-        class="${this.inputClass}" />
-        <button type="button" data-action="saveblock" class="mt-3 bg-blue-600 px-4 py-3 rounded-xl text-white">Guardar</button>
-      </div>
-    </div>
-  `
+               <div class="fixed w-screen h-screen top-0 left-0 flex items-center justify-center z-20 hidden" id="${this.modalBlockId}">
+               <div class="bg-black bg-opacity-20 absolute top-0 left-0 w-full h-full" data-action="modalForm" data-modaltarget="${this.modalBlockId}"></div>
+               <div class="bg-white p-5 rounded-xl relative max-w-3xl w-full">
+                    <h2 class="font-bold text-xl text-gray-800 mb-3">Agregar bloque</h2>
+               <input type="text" id="${this.modalBlockInput}" 
+               class="${this.inputClass}" />
+               <button type="button" data-action="saveblock" class="mt-3 bg-blue-600 px-4 py-3 rounded-xl text-white">Save</button>
+               </div>
+          </div>
+          `
           let htmlTypes = ""
           this.types.forEach(el => {
                htmlTypes += `
-         <option value="${el.name}">${el.title}</option>
-    `
+                    <option value="${el.name}">${el.title}</option>
+               `
           })
           let htmlModalField = `
-       <div class="fixed w-screen h-screen top-0 left-0 py-10 flex items-center justify-center z-20 hidden" id="${this.modalFieldId}">
-         <div class="bg-black bg-opacity-20 absolute top-0 left-0 w-full h-screen" data-action="modalForm" data-modaltarget="${this.modalFieldId}"></div>
-      <div class="bg-white p-5 rounded-xl relative max-w-3xl w-full h-full overflow-y-auto">
-           <h2 class="font-bold text-xl text-gray-800 mb-3">Agregar campo</h2>
-        <div class="grid grid-cols-1 gap-2 md:grid-cols-3">
-             <div>
-               <label class="text-gray-800 font-medium">Nombre</label>
-               <input type="text" id="${this.idFields.name}" 
-        class="${this.inputClass}" />
-          </div>
-          <div>
-               <label class="text-gray-800 font-medium">Info</label>
-               <input type="text" id="fieldInfo" 
-        class="${this.inputClass}" />
-          </div>
-          <div>
-               <label class="text-gray-800 font-medium">Nombre alternativo</label>
-               <input type="text" id="${this.idFields.alternateName}" 
-              class="${this.inputClass}" />
-          </div>
-          <div>
-               <label class="text-gray-800 font-medium">Value</label>
-               <input type="text" id="${this.idFields.value}" 
-              class="${this.inputClass}" />
-          </div>
-          <div>
-               <label class="text-gray-800 font-medium">Columns</label>
-               <select class="border border-gray-300 rounded-xl h-12 px-4 w-full" id="${this.idFields.columns}">
-                 <option value="1">1</option>
-                    <option value="2">2</option>
-                    <option value="3">3</option>
-                    <option value="4" hidden>4</option>
-               </select>
-          </div>
-          <div>
-               <label class="text-gray-800 font-medium">Expresión regular</label>
-               <input type="text" id="${this.idFields.pattern}" 
-        class="${this.inputClass}" />
-          </div>
-          <div>
-               <label class="text-gray-800 font-medium">Tipo</label>
-               <select class="border border-gray-300 rounded-xl h-12 px-4 w-full" data-action="fieldtype" id="${this.idFields.type}">
-                    ${htmlTypes}
-               </select>
-          </div>
-          <div>
-               <label class="text-gray-800 font-medium">Requerido</label>
-               <select class="border border-gray-300 rounded-xl h-12 px-4 w-full" id="${this.idFields.required}">
-                 <option value="true">Si</option>
-              <option value="false">No</option>
-            </select>
-          </div>
-        </div>
-        <div class="flex flex-col mt-4 border border-gray-300 rounded-xl p-3 hidden" id="${this.idCustomFields.options}">
-             <div class="flex items-center gap-2 mb-2">
-               <label class="text-gray-800 font-medium">Options</label>
-            <button class="bg-blue-50 tetx-xs text-blue-600 px-2 py-2 rounded-md font-medium" data-action="addOption">Agregar</button>
-          </div>
-          <div class="border border-gray-200 rounded-xl overflow-hidden">
-               <table class="w-full">
-              <thead class="bg-gray-50 h-12">
-                <tr>
-                  <th class="font-medium text-left px-3">Nombre</th>
-                  <th class="font-medium text-left px-3">Valor</th>
-                </tr>
-              </thead>
-              <tbody id="${this.idCustomFields.optionsBody}"></tbody>
-            </table>
-          </div>
-        </div>
-        <button type="button" data-action="savefield" class="mt-3 bg-blue-600 px-4 py-3 rounded-xl text-white">Guardar</button>
-      </div>
-    </div>
-  `
+               <div class="fixed w-screen h-screen top-0 left-0 py-10 flex items-center justify-center z-20 hidden" id="${this.modalFieldId}">
+               <div class="bg-black bg-opacity-20 absolute top-0 left-0 w-full h-screen" data-action="modalForm" data-modaltarget="${this.modalFieldId}"></div>
+                    <div class="bg-white p-5 rounded-xl relative max-w-3xl w-full h-full overflow-y-auto">
+                         <h2 class="font-bold text-xl text-gray-800 mb-3">Agregar campo</h2>
+                         <div class="grid grid-cols-1 gap-2 md:grid-cols-3">
+                              <div>
+                                   <label class="text-gray-800 font-medium">Nombre</label>
+                                   <input type="text" id="${this.idFields.name}" 
+                                   class="${this.inputClass}" />
+                              </div>
+                              <div>
+                                   <label class="text-gray-800 font-medium">Info</label>
+                                   <input type="text" id="fieldInfo" 
+                                   class="${this.inputClass}" />
+                              </div>
+                              <div>
+                                   <label class="text-gray-800 font-medium">Nombre alternativo</label>
+                                   <input type="text" id="${this.idFields.alternateName}" 
+                              class="${this.inputClass}" />
+                              </div>
+                              <div>
+                                   <label class="text-gray-800 font-medium">Value</label>
+                                   <input type="text" id="${this.idFields.value}" 
+                              class="${this.inputClass}" />
+                              </div>
+                              <div>
+                                   <label class="text-gray-800 font-medium">Columns</label>
+                                   <select class="border border-gray-300 rounded-xl h-12 px-4 w-full" id="${this.idFields.columns}">
+                                   <option value="1">1</option>
+                                        <option value="2">2</option>
+                                        <option value="3">3</option>
+                                        <option value="4" hidden>4</option>
+                                   </select>
+                              </div>
+                              <div>
+                                   <label class="text-gray-800 font-medium">Expresión regular</label>
+                                   <input type="text" id="${this.idFields.pattern}" 
+                                   class="${this.inputClass}" />
+                              </div>
+                              <div>
+                                   <label class="text-gray-800 font-medium">Tipo</label>
+                                   <select class="border border-gray-300 rounded-xl h-12 px-4 w-full" data-action="fieldtype" id="${this.idFields.type}">
+                                        ${htmlTypes}
+                                   </select>
+                              </div>
+                              <div>
+                                   <label class="text-gray-800 font-medium">Requerido</label>
+                                   <select class="border border-gray-300 rounded-xl h-12 px-4 w-full" id="${this.idFields.required}">
+                                        <option value="true">Si</option>
+                                        <option value="false">No</option>
+                                   </select>
+                              </div>
+                         </div>
+                         <div class="flex flex-col mt-4 border border-gray-300 rounded-xl p-3 hidden" id="${this.idCustomFields.options}">
+                              <div class="flex items-center gap-2 mb-2">
+                                   <label class="text-gray-800 font-medium">Options</label>
+                              <button class="bg-blue-50 tetx-xs text-blue-600 px-2 py-2 rounded-md font-medium" data-action="addOption">Agregar</button>
+                              </div>
+                              <div class="border border-gray-200 rounded-xl overflow-hidden">
+                                   <table class="w-full">
+                                        <thead class="bg-gray-50 h-12">
+                                             <tr>
+                                             <th class="font-medium text-left px-3">Nombre</th>
+                                             <th class="font-medium text-left px-3">Valor</th>
+                                             </tr>
+                                        </thead>
+                                        <tbody id="${this.idCustomFields.optionsBody}"></tbody>
+                                   </table>
+                              </div>
+                         </div>
+                         <button type="button" data-action="savefield" class="mt-3 bg-blue-600 px-4 py-3 rounded-xl text-white">Save</button>
+                    </div>
+               </div>
+          `
           html += htmlModalSection + htmlModalBlock + htmlModalField
           return html
      }
 
      constructBody() {
           let htmlSection = `
-     <div class="w-full bg-white" data-section="section" id="${this.colSectionId}">
+               <div class="w-full bg-white" data-section="section" id="${this.colSectionId}">
 
-    </div>
-  `
+          </div>
+          `
           let htmlBlock = `
-       <div class="w-full bg-white" data-section="block" id="${this.colBlockId}">
+               <div class="w-full bg-white" data-section="block" id="${this.colBlockId}">
 
-    </div>
-  `
+          </div>
+          `
           let htmlField = `
-       <div class="w-full bg-white" data-section="field" id="${this.colFieldId}">
+               <div class="w-full bg-white" data-section="field" id="${this.colFieldId}">
 
-    </div>
-  `
+          </div>
+          `
           let html = ""
           html += `<div class="grid grid-cols-${this.sections}">`
           switch (this.sections) {
@@ -642,8 +642,8 @@ class Form {
                               htmlField += `<select class="${this.inputClass}">`
                               el?.options.forEach(el => {
                                    htmlField += `
-            <option>${el.title}</option>
-          `
+                                        <option>${el.title}</option>
+                                   `
                               })
                               htmlField += `</select>`
                          }
@@ -779,7 +779,7 @@ class Form {
           const columns = this.selectorsFields.columns.value
           const pattern = String.raw`${this.selectorsFields.pattern.value}`
           const type = this.selectorsFields.type.value
-          const required = Boolean(this.selectorsFields.required.value)
+          const required = this.selectorsFields.required.value == "true" ? true :  false
           const value = this.selectorsFields.value.value
           const options = this.options
           if (label) {
@@ -851,6 +851,7 @@ class Form {
 
      editField() {
           let field = this.forms[this.indexSection]['blocks'][this.indexBlock]['fields'][this.indexField]
+          console.log(field.required)
           this.selectorsFields.name.value = field.label || ""
           this.selectorsFields.info.value = field.info || ""
           this.selectorsFields.alternateName.value = field.alternateName || ""
@@ -858,7 +859,7 @@ class Form {
           this.selectorsFields.columns.value = field.columns || ""
           this.selectorsFields.pattern.value = field.pattern || ""
           this.selectorsFields.type.value = field.type || ""
-          this.selectorsFields.required.value = field.required || ""
+          this.selectorsFields.required.value = field.required+"" || ""
           this.customFields(field.type)
           document.getElementById(this.modalFieldId).classList.toggle("hidden")
           this.addOption(field?.options)
@@ -982,15 +983,16 @@ class Form {
 
      optionHTML(option) {
           return `
-     <tr class="h-12 border-t border-gray-300">
-       <td class="p-3">
-         <input type="text" value="${option?.title || ""}" placeholder="Name" class="${this.inputClass}" />
-    </td>
-    <td class="p-3">
-         <input type="text" value="${option?.value || ""}" placeholder="Value" class="${this.inputClass}" />
-    </td>
-  </tr>
-`
+          <tr class="h-12 border-t border-gray-300">
+               <td class="p-3">
+                    <input type="text" value="${option?.title || ""}" placeholder="Name" class="${this.inputClass}" />
+               </td>
+               <td class="p-3 relative">
+                    <input type="text" value="${option?.value || ""}" placeholder="Value" class="${this.inputClass}" />
+                    <button data-action="deleteoption" class="w-8 h-8 bg-red-200 text-red-800 rounded flex items-center justify-center absolute top-5 right-5"><i class="fas fa-trash pointer-events-none"></i></button>
+               </td>
+          </tr>
+          `
      }
 
      addOption(array = []) {
@@ -1005,6 +1007,10 @@ class Form {
           } else {
                insert()
           }
+     }
+
+     deleteOption(e) {
+          e.target.parentElement.parentElement.remove()
      }
 
      constructForm() {
@@ -1095,6 +1101,9 @@ class Form {
                          break;
                     case "addOption":
                          this.addOption();
+                         break;
+                    case "deleteoption":
+                         this.deleteOption(e)
                          break;
                     default:
                          break;

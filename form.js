@@ -485,10 +485,10 @@ class Form {
                <div class="fixed w-screen h-screen top-0 left-0 py-10 flex items-center justify-center z-20 hidden" id="${this.modalFieldId}">
                <div class="bg-black bg-opacity-20 absolute top-0 left-0 w-full h-screen" data-action="modalForm" data-modaltarget="${this.modalFieldId}"></div>
                     <div class="bg-white p-5 rounded-xl relative max-w-3xl w-full h-full overflow-y-auto">
-                         <h2 class="font-bold text-xl text-gray-800 mb-3">Agregar campo</h2>
+                         <h2 class="font-bold text-xl text-gray-800 mb-3">Add field</h2>
                          <div class="grid grid-cols-1 gap-2 md:grid-cols-3">
                               <div>
-                                   <label class="text-gray-800 font-medium">Nombre</label>
+                                   <label class="text-gray-800 font-medium">Name</label>
                                    <input type="text" id="${this.idFields.name}" 
                                    class="${this.inputClass}" />
                               </div>
@@ -498,7 +498,7 @@ class Form {
                                    class="${this.inputClass}" />
                               </div>
                               <div>
-                                   <label class="text-gray-800 font-medium">Nombre alternativo</label>
+                                   <label class="text-gray-800 font-medium">Alternate Name</label>
                                    <input type="text" id="${this.idFields.alternateName}" 
                               class="${this.inputClass}" />
                               </div>
@@ -517,18 +517,18 @@ class Form {
                                    </select>
                               </div>
                               <div>
-                                   <label class="text-gray-800 font-medium">Expresión regular</label>
+                                   <label class="text-gray-800 font-medium">Pattern</label>
                                    <input type="text" id="${this.idFields.pattern}" 
                                    class="${this.inputClass}" />
                               </div>
                               <div>
-                                   <label class="text-gray-800 font-medium">Tipo</label>
+                                   <label class="text-gray-800 font-medium">Type</label>
                                    <select class="border border-gray-300 rounded-xl h-12 px-4 w-full" data-action="fieldtype" id="${this.idFields.type}">
                                         ${htmlTypes}
                                    </select>
                               </div>
                               <div>
-                                   <label class="text-gray-800 font-medium">Requerido</label>
+                                   <label class="text-gray-800 font-medium">Required</label>
                                    <select class="border border-gray-300 rounded-xl h-12 px-4 w-full" id="${this.idFields.required}">
                                         <option value="true">Si</option>
                                         <option value="false">No</option>
@@ -538,14 +538,14 @@ class Form {
                          <div class="flex flex-col mt-4 border border-gray-300 rounded-xl p-3 hidden" id="${this.idCustomFields.options}">
                               <div class="flex items-center gap-2 mb-2">
                                    <label class="text-gray-800 font-medium">Options</label>
-                              <button class="bg-blue-50 tetx-xs text-blue-600 px-2 py-2 rounded-md font-medium" data-action="addOption">Agregar</button>
+                              <button class="bg-blue-50 tetx-xs text-blue-600 px-2 py-2 rounded-md font-medium" data-action="addOption">Add</button>
                               </div>
                               <div class="border border-gray-200 rounded-xl overflow-hidden">
                                    <table class="w-full">
                                         <thead class="bg-gray-50 h-12">
                                              <tr>
-                                             <th class="font-medium text-left px-3">Nombre</th>
-                                             <th class="font-medium text-left px-3">Valor</th>
+                                             <th class="font-medium text-left px-3">Name</th>
+                                             <th class="font-medium text-left px-3">Value</th>
                                              </tr>
                                         </thead>
                                         <tbody id="${this.idCustomFields.optionsBody}"></tbody>

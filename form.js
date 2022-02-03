@@ -536,7 +536,6 @@ class Form {
                     <div class="flex flex-col w-full ${column !== "field" ? "pointer-events-none" : ""}">
                     <div class="pointer-events-none">
                          ${el.label || el.title} ${el.required == true ? "*" : ""}
-                         ${el.position}
                     </div>
                ${htmlField}
                </div>
@@ -1205,25 +1204,52 @@ function Forms({ form_builder, selector, key_parent, columns }) {
                          `
                          break
                     case 'h1':
+                    case 'H1':
                          html += `
                      <div class="relative grid col-span-${el.columns ? el.columns : '3'}" name="${el.name}">
-                         <h1 class="text-2xl font-bold">${el.label}</h1>
+                         <h1 class="text-6xl font-bold">${el.label}</h1>
                      </div>
                      `
                          break
                     case 'h2':
+                    case 'H2':
                          html += `
                      <div class="relative grid col-span-${el.columns ? el.columns : '3'}" name="${el.name}">
-                         <h2 class="text-xl font-bold">${el.label}</h2>
+                         <h2 class="text-5xl font-bold">${el.label}</h2>
                      </div>
                      `
                          break
                     case 'h3':
+                    case 'H3':
                          html += `
                      <div class="relative grid col-span-${el.columns ? el.columns : '3'}" name="${el.name}">
-                         <h3 class="text-md font-bold">${el.label}</h3>
+                         <h3 class="text-4xl font-bold">${el.label}</h3>
                      </div>
                      `
+                         break
+                    case 'h4':
+                    case 'H4':
+                         html += `
+                         <div class="relative grid col-span-${el.columns ? el.columns : '3'}" name="${el.name}">
+                         <h4 class="text-3xl font-bold">${el.label}</h4>
+                         </div>
+                         `
+                         break
+                    case 'h5':
+                    case 'H5':
+                         html += `
+                         <div class="relative grid col-span-${el.columns ? el.columns : '3'}" name="${el.name}">
+                         <h5 class="text-2xl font-bold">${el.label}</h5>
+                         </div>
+                         `
+                         break
+                    case 'h6':
+                    case 'H6':
+                         html += `
+                         <div class="relative grid col-span-${el.columns ? el.columns : '3'}" name="${el.name}">
+                         <h6 class="text-xl font-bold">${el.label}</h6>
+                         </div>
+                         `
                          break
                     case 'p':
                          html += `

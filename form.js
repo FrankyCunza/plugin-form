@@ -1,15 +1,15 @@
 const types = [
      {
           title: "Button",
-          type: "button"
+          name: "button"
      },
      {
           title: "Checkbox",
-          type: "checkbox"
+          name: "checkbox"
      },
      {
           title: "Color",
-          type: "color"
+          name: "color"
      },
      {
           title: "Date",
@@ -93,27 +93,27 @@ const types = [
      },
      {
           title: "H1",
-          name: "H1"
+          name: "h1"
      },
      {
           title: "H2",
-          name: "H2"
+          name: "h2"
      },
      {
           title: "H3",
-          name: "H3"
+          name: "h3"
      },
      {
           title: "H4",
-          name: "H4"
+          name: "h4"
      },
      {
           title: "H5",
-          name: "H5"
+          name: "h5"
      },
      {
           title: "H6",
-          name: "H6"
+          name: "h6"
      },
      {
           title: "Paragraph",
@@ -129,89 +129,7 @@ class Form {
                {
                     blocks: [
                          {
-                              label: "Personal Data",
-                              name: "personal_data",
-                              position: 1,
-                              fields: [
-                                   {
-                                        label: "Name",
-                                        name: "name",
-                                        type: "text",
-                                        position: 1
-                                   },
-                                   {
-                                        label: "Last Name",
-                                        name: "last_name",
-                                        type: "text",
-                                        position: 2
-                                   },
-                                   {
-                                        label: "Titulo 1",
-                                        name: "last_name",
-                                        type: "h1",
-                                        position: 2
-                                   },
-                                   {
-                                        label: "Titulo 2",
-                                        name: "last_name",
-                                        type: "h2",
-                                        position: 2
-                                   },
-                                   {
-                                        label: "Titulo 3",
-                                        name: "last_name",
-                                        type: "h3",
-                                        position: 2
-                                   },
-                                   {
-                                        label: "Titulo 4",
-                                        name: "Titulo 4",
-                                        type: "h4",
-                                        position: 2
-                                   },
-                                   {
-                                        label: "Titulo 5",
-                                        name: "Titulo 5",
-                                        type: "h5",
-                                        position: 2
-                                   }, {
-                                        label: "Titulo 6",
-                                        name: "h6",
-                                        type: "h6",
-                                        position: 2
-                                   }
-                              ]
-                         },
-                         {
-                              title: "Personal Data Test",
-                              name: "personal_data_test",
-                              position: 2,
-                              fields: [
-                                   {
-                                        label: "Name Field",
-                                        name: "name",
-                                        type: "field_text",
-                                        position: 1
-                                   },
-                                   {
-                                        label: "Last Name",
-                                        name: "last_name",
-                                        type: "text",
-                                        position: 2
-                                   },
-                                   {
-                                        label: "Last Name",
-                                        name: "last_name",
-                                        type: "field_select",
-                                        position: 3,
-                                        options: [
-                                             {
-                                                  title: "Peru",
-                                                  value: "peru"
-                                             }
-                                        ]
-                                   }
-                              ]
+                              fields: []
                          }
                     ],
                     title: "Personal Information",
@@ -219,74 +137,18 @@ class Form {
                     position: 2
                },
                {
-                    blocks: [
-                         {
-                              title: "Passport",
-                              name: "passport",
-                              position: 1,
-                              fields: [
-                                   {
-                                        label: "Pasaporte",
-                                        name: "passport",
-                                        position: 1
-                                   }
-                              ]
-                         }
-                    ],
+                    blocks: [],
                     label: "Passport Details",
                     name: "passport_details",
                     position: 1
                },
                {
-                    blocks: [
-                         {
-                              label: "Test",
-                              name: "test",
-                              position: 1,
-                              fields: [
-                                   {
-                                        label: "Test",
-                                        name: "test",
-                                        position: 1
-                                   }
-                              ]
-                         }
-                    ],
+                    blocks: [],
                     label: "Test",
                     name: "test",
-                    position: null
                },
                {
-                    blocks: [
-                         {
-                              label: "Test Two",
-                              name: "test_two",
-                              position: 1,
-                              fields: [
-                                   {
-                                        label: "Test",
-                                        name: "test",
-                                        position: 1
-                                   },
-                                   {
-                                        label: "Select",
-                                        name: "select",
-                                        position: 2,
-                                        type: "select",
-                                        options: [
-                                             {
-                                                  title: "Peru",
-                                                  value: "peru"
-                                             },
-                                             {
-                                                  title: "Argentina",
-                                                  value: "argentina"
-                                             }
-                                        ]
-                                   }
-                              ]
-                         }
-                    ],
+                    blocks: [],
                     label: "Test Two",
                     name: "test_two",
                     position: null
@@ -457,7 +319,7 @@ class Form {
                <div class="fixed w-screen h-screen top-0 left-0 flex items-center justify-center z-20 hidden" id="${this.modalSectionId}">
                <div class="bg-black bg-opacity-20 absolute top-0 left-0 w-full h-full" data-action="modalForm" data-modaltarget="${this.modalSectionId}"></div>
                <div class="bg-white p-5 rounded-xl relative max-w-3xl w-full">
-                    <h2 class="font-bold text-xl text-gray-800 mb-3">Agregar sección</h2>
+                    <h2 class="font-bold text-xl text-gray-800 mb-3">Add section</h2>
                <input type="text" id="${this.modalSectionInput}" 
                class="${this.inputClass}" />
                <button type="button" data-action="savesection" class="mt-3 bg-blue-600 px-4 py-3 rounded-xl text-white">Save</button>
@@ -468,7 +330,7 @@ class Form {
                <div class="fixed w-screen h-screen top-0 left-0 flex items-center justify-center z-20 hidden" id="${this.modalBlockId}">
                <div class="bg-black bg-opacity-20 absolute top-0 left-0 w-full h-full" data-action="modalForm" data-modaltarget="${this.modalBlockId}"></div>
                <div class="bg-white p-5 rounded-xl relative max-w-3xl w-full">
-                    <h2 class="font-bold text-xl text-gray-800 mb-3">Agregar bloque</h2>
+                    <h2 class="font-bold text-xl text-gray-800 mb-3">Add block</h2>
                <input type="text" id="${this.modalBlockInput}" 
                class="${this.inputClass}" />
                <button type="button" data-action="saveblock" class="mt-3 bg-blue-600 px-4 py-3 rounded-xl text-white">Save</button>
@@ -484,7 +346,7 @@ class Form {
           let htmlModalField = `
                <div class="fixed w-screen h-screen top-0 left-0 py-10 flex items-center justify-center z-20 hidden" id="${this.modalFieldId}">
                <div class="bg-black bg-opacity-20 absolute top-0 left-0 w-full h-screen" data-action="modalForm" data-modaltarget="${this.modalFieldId}"></div>
-                    <div class="bg-white p-5 rounded-xl relative max-w-3xl w-full h-full overflow-y-auto">
+                    <div class="bg-white p-5 rounded-xl relative max-w-3xl w-full h-max overflow-y-auto" style="max-height: 90vh">
                          <h2 class="font-bold text-xl text-gray-800 mb-3">Add field</h2>
                          <div class="grid grid-cols-1 gap-2 md:grid-cols-3">
                               <div>
@@ -530,7 +392,7 @@ class Form {
                               <div>
                                    <label class="text-gray-800 font-medium">Required</label>
                                    <select class="border border-gray-300 rounded-xl h-12 px-4 w-full" id="${this.idFields.required}">
-                                        <option value="true">Si</option>
+                                        <option value="true">Yes</option>
                                         <option value="false">No</option>
                                    </select>
                               </div>
@@ -654,6 +516,12 @@ class Form {
                     case "h3":
                     case "h2":
                     case "h1":
+                    case "H6":
+                    case "H5":
+                    case "H4":
+                    case "H3":
+                    case "H2":
+                    case "H1":
                          htmlField += `<${el.type} class="${this.titles[el.type].class}">${el.label || el.title}</${el.type}>`
                          break;
                     case "p":
@@ -668,14 +536,15 @@ class Form {
                     <div class="flex flex-col w-full ${column !== "field" ? "pointer-events-none" : ""}">
                     <div class="pointer-events-none">
                          ${el.label || el.title} ${el.required == true ? "*" : ""}
+                         ${el.position}
                     </div>
                ${htmlField}
                </div>
                <div class="flex gap-1.5 absolute top-1 right-1.5">
-                    <div data-action="edit${column}" data-index="${index}" class="text-xs font-medium text-blue-600">Edit</div>
-                    <div data-action="delete${column}" data-index="${index}" class="text-xs font-medium text-red-600">Delete</div>
-                    <div data-action="moveup${column}" data-index="${index}" class="text-xs font-medium text-yellow-600">Up</div>
-                    <div data-action="movedown${column}" data-index="${index}" class="text-xs font-medium text-yellow-600">Down</div>
+                    <div data-action="edit${column}" data-position="${el.position}" data-index="${index}" class="text-xs font-medium text-blue-600">Edit</div>
+                    <div data-action="delete${column}" data-position="${el.position}" data-index="${index}" class="text-xs font-medium text-red-600">Delete</div>
+                    <div data-action="moveup${column}" data-position="${el.position}" data-index="${index}" class="text-xs font-medium text-yellow-600">Up</div>
+                    <div data-action="movedown${column}" data-position="${el.position}" data-index="${index}" class="text-xs font-medium text-yellow-600">Down</div>
                </div>
           </button>
           `
@@ -685,9 +554,7 @@ class Form {
           const selector = document.getElementById(this.colSectionId)
           let html = ""
           if (this.forms.length > 0) {
-               this.forms.sort(function (a, b) {
-                    return a.position - b.position
-               }).forEach((el, i) => {
+               this.resetPositions(this.forms).forEach((el, i) => {
                     html += this.button({ index: i, column: 'section', el })
                })
           } else {
@@ -701,9 +568,7 @@ class Form {
           const selector = document.getElementById(this.colBlockId)
           let html = ""
           if (this.forms[this.indexSection]['blocks']?.length > 0) {
-               this.forms[this.indexSection]['blocks'].sort(function (a, b) {
-                    return a.position - b.position
-               }).forEach((el, i) => {
+               this.resetPositions(this.forms[this.indexSection]['blocks']).forEach((el, i) => {
                     html += this.button({ index: i, column: 'block', el })
                })
           } else {
@@ -716,9 +581,7 @@ class Form {
           const selector = document.getElementById(this.colFieldId)
           let html = ""
           if (this.forms[this.indexSection]['blocks'][this.indexBlock]['fields'].length > 0) {
-               this.forms[this.indexSection]['blocks'][this.indexBlock]['fields'].sort(function (a, b) {
-                    return a.position - b.position
-               }).forEach((el, i) => {
+               this.resetPositions(this.forms[this.indexSection]['blocks'][this.indexBlock]['fields']).forEach((el, i) => {
                     html += this.button({ index: i, column: 'field', el })
                })
           } else {
@@ -788,7 +651,7 @@ class Form {
                          label,
                          name,
                          info,
-                         alternateName: this.selectorsFields.name.value.toLowerCase().replace(/\s{1,}/g, '_').replace(/[^\w\s]/gi, ''),
+                         alternateName,
                          value,
                          columns,
                          pattern,
@@ -814,6 +677,7 @@ class Form {
           }
           document.getElementById(this.modalFieldId).classList.toggle("hidden")
           this.printFields()
+          console.log(JSON.stringify(this.forms[this.indexSection]['blocks'][this.indexBlock]['fields']))
      }
 
      deleteSection() {
@@ -890,52 +754,85 @@ class Form {
           document.getElementById(e.target.dataset.modaltarget).classList.toggle("hidden")
      }
 
-     moveItem({ array, arrow }) {
+     resetPositions(data) {
+          let lastPosition = data.filter(el => el.position >= 1).length
+          let newData = data.map(el => {
+               if (!el.position) {
+                    lastPosition++
+                    el.position = parseFloat(lastPosition)
+               } else {
+                    el.position = parseFloat(el.position)
+               }
+               return el
+          }).sort(function (a, b) {
+               return a.position - b.position
+          })
+          // console.log(newData)
+          return newData
+     }
+
+     moveItem( { array, arrow, position } ) {
+          array = this.resetPositions(array)
           if (arrow === "up") {
-               let positionFilterUp = array.filter(el => el.position >= 1).length
-               array.forEach(el => {
-                    if (!el.position) {
-                         el.position = positionFilterUp
-                         positionFilterUp++
-                    } else if (el.position === 1) {
-                         el.position = array.filter(el => el.position >= 1).length
-                    } else if (el.position > 1) {
-                         el.position = el.position - 1
-                    }
-               })
+               if (position === 1) {
+                    array.map(el => {
+                         if (el.position === 1) {
+                              el.position = array.length
+                         } else  {
+                              el.position = el.position - 1
+                         }
+                         return el;
+                    })
+               } else {
+                    array.map(el => {
+                         if (el.position === position) {
+                              el.position = position - 1
+                         } else if (el.position === (position-1)) {
+                              el.position = el.position + 1
+                         }
+                         return el;
+                    })
+               }
                return array
           }
 
           if (arrow === "down") {
-               const lengthPosition = array.filter(ele => ele.position >= 1).length
-               let positionDownFilter = array.filter(ele => ele.position >= 1).length
-               positionDownFilter = positionDownFilter + 1
-               array.forEach(el => {
-                    if (!el.position) {
-                         el.position = positionDownFilter
-                         positionDownFilter++
-                    } else if (el.position === lengthPosition) {
-                         el.position = 1
-                    } else if (el.position >= 1) {
-                         el.position = el.position + 1
-                    }
-               })
+               if (position === array.length) {
+                    array.map(el => {
+                         if (el.position == array.length) {
+                              el.position = 1
+                         } else {
+                              el.position = el.position + 1
+                         }
+                         return el;
+                    })
+               } else {
+                    array.map(el => {
+                         if (el.position == position) {
+                              el.position = (position+1)
+                         } else if (el.position == (position + 1)) {
+                              el.position = (el.position-1)
+                         }
+                         return el;
+                    })
+               }
                return array
           }
      }
 
-     move({ column, arrow }) {
+     move( { column, arrow, position } ) {
+          console.log(position)
           switch (column) {
                case "section":
-                    this.forms = this.moveItem({ array: this.forms, arrow })
+                    this.forms = this.moveItem( { array: this.forms, arrow, position } )
                     this.printSections();
                     break;
                case "block":
-                    this.forms[this.indexSection]['blocks'] = this.moveItem({ array: this.forms[this.indexSection]['blocks'], arrow })
+                    this.forms[this.indexSection]['blocks'] = this.moveItem( { array: this.forms[this.indexSection]['blocks'], arrow, position } )
                     this.printBlocks();
                     break;
                case "field":
-                    this.forms[this.indexSection]['blocks'][this.indexBlock]['fields'] = this.moveItem({ array: this.forms[this.indexSection]['blocks'][this.indexBlock]['fields'], arrow })
+                    this.forms[this.indexSection]['blocks'][this.indexBlock]['fields'] = this.moveItem( { array: this.forms[this.indexSection]['blocks'][this.indexBlock]['fields'], arrow, position } )
                     this.printFields()
                     break;
                default:
@@ -944,9 +841,11 @@ class Form {
      }
 
      customFields(type) {
+          console.log(type)
           switch (type) {
                case "select":
                case "field_select":
+               case "checkbox":
                     this.selectorsCustomFields.options.classList.remove("hidden")
                     break;
                default:
@@ -1071,27 +970,27 @@ class Form {
                          break;
                     case "moveupsection":
                          this.indexSection = e.target.dataset.index
-                         this.move({ column: "section", arrow: "up" })
+                         this.move({ column: "section", arrow: "up", position: parseFloat(e.target.dataset.position) })
                          break;
                     case "movedownsection":
                          this.indexSection = e.target.dataset.index
-                         this.move({ column: "section", arrow: "down" })
+                         this.move({ column: "section", arrow: "down", position: parseFloat(e.target.dataset.position) })
                          break
                     case "moveupblock":
                          this.indexBlock = e.target.dataset.index
-                         this.move({ column: "block", arrow: "up" })
+                         this.move({ column: "block", arrow: "up", position: parseFloat(e.target.dataset.position) })
                          break;
                     case "movedownblock":
                          this.indexBlock = e.target.dataset.index
-                         this.move({ column: "block", arrow: "down" })
+                         this.move({ column: "block", arrow: "down", position: parseFloat(e.target.dataset.position) })
                          break;
                     case "moveupfield":
                          this.indexField = e.target.dataset.index
-                         this.move({ column: "field", arrow: "up" })
+                         this.move({ column: "field", arrow: "up", position: parseFloat(e.target.dataset.position) })
                          break;
                     case "movedownfield":
                          this.indexField = e.target.dataset.index
-                         this.move({ column: "field", arrow: "down" })
+                         this.move({ column: "field", arrow: "down", position: parseFloat(e.target.dataset.position) })
                          break;
                     case "modalForm":
                          this.sectionMethod = "add";
@@ -1187,7 +1086,7 @@ function Forms({ form_builder, selector, key_parent, columns }) {
                     case "url":
                          html += `
                               <div class="relative grid col-span-${el.columns ? el.columns : '3'}">
-                                   ${label(`<label class="font-semibold mb-0 text-sm block text-gray-600">${el.label} ${el.required == "true" ? '*' : ''}</label>`, el.info ? info(el.info) : '')}                            
+                                   ${label(`<label class="font-semibold mb-0 text-sm block text-gray-600">${el.label} ${el.required ? '*' : ''}</label>`, el.info ? info(el.info) : '')}                            
                                    ${warning}
                                    <input value="${el.value || ""}" ${el.type == "image" ? `src='${el.value}'` : ""} type="${el.type.includes("field_") ? el.type.split("field_")[1] : el.type}" ${el.type == "file" ? 'multiple' : ''} data-fullkey="${key_parent || ""}${el.name}" name="${el.name}" ${htmlDataAttributes} data-alternatename="${el.alternate_name || el.alternateName || ""}" pattern="${el.pattern}" data-required="${el.required}" data-placeholder="${el.placeholder || el.label}" autocomplete="${el.name}" 
                                    class="${classInput}">
@@ -1198,7 +1097,7 @@ function Forms({ form_builder, selector, key_parent, columns }) {
                     case "color":
                          html += `
                       <div class="relative grid col-span-${el.columns ? el.columns : '3'}">
-                        ${label(`<label class="font-semibold mb-0 text-sm block text-gray-600">${el.label} ${el.required == "true" ? '*' : ''}</label>`, el.info ? info(el.info) : '')}     
+                        ${label(`<label class="font-semibold mb-0 text-sm block text-gray-600">${el.label} ${el.required ? '*' : ''}</label>`, el.info ? info(el.info) : '')}     
                         ${warning}
                         <input value="${el.value}" type="color" name="${el.name}" class="w-full h-8">
                         ${checked}
@@ -1208,7 +1107,7 @@ function Forms({ form_builder, selector, key_parent, columns }) {
                     case "image":
                          html += `
                               <div class="relative grid col-span-${el.columns ? el.columns : '3'}">
-                                   ${label(`<label class="font-semibold mb-0 text-sm block text-gray-600">${el.label} ${el.required == "true" ? '*' : ''}</label>`, el.info ? info(el.info) : '')}     
+                                   ${label(`<label class="font-semibold mb-0 text-sm block text-gray-600">${el.label} ${el.required ? '*' : ''}</label>`, el.info ? info(el.info) : '')}     
                                    <input src="${el.value}" type="image" name="${el.name}" class="w-full">
                               </div>
                          `
@@ -1217,7 +1116,7 @@ function Forms({ form_builder, selector, key_parent, columns }) {
                     case 'select':
                          html += `
                               <div class="relative grid col-span-${el.columns ? el.columns : '3'}">
-                              ${label(`<label class="font-semibold mb-0 text-sm block text-gray-600">${el.label} ${el.required == "true" ? '*' : ''}</label>`, el.info ? info(el.info) : '')} 
+                              ${label(`<label class="font-semibold mb-0 text-sm block text-gray-600">${el.label} ${el.required ? '*' : ''}</label>`, el.info ? info(el.info) : '')} 
                               ${warning}
                               <select type="${types[el.type]}" value="${el.value || ""}" data-fullkey="${key_parent || ""}${el.name}" name="${el.name}" ${htmlDataAttributes} data-alternatename="${el.alternate_name || el.alternateName || ""}"  data-required="${el.required}" data-placeholder="${el.placeholder || el.label}" autocomplete="${el.name}" 
                               class="${classInput}">
@@ -1244,7 +1143,7 @@ function Forms({ form_builder, selector, key_parent, columns }) {
                     case 'radio':
                          html += `
                          <div class="relative grid col-span-${el.columns ? el.columns : '3'}">
-                              ${label(`<label class="font-semibold mb-0 text-sm block text-gray-600">${el.label} ${el.required == "true" ? '*' : ''}</label>`, el.info ? info(el.info) : '')} 
+                              ${label(`<label class="font-semibold mb-0 text-sm block text-gray-600">${el.label} ${el.required ? '*' : ''}</label>`, el.info ? info(el.info) : '')} 
                               <div class="flex">
                                    <div>
                                         <label class="flex border border-gray-200 px-3 py-2 rounded-xl w-max items-center">
@@ -1280,13 +1179,13 @@ function Forms({ form_builder, selector, key_parent, columns }) {
                                         ${warning}
                                         <input type="checkbox" data-multiple="false" class="cursor-pointer" data-fullkey="${key_parent + el.name}" name="${el.name}" data-required="${el.required && 'true'}" />
                                         ${checked}
-                                        <p class="ml-2">${el.label} ${el.required == "true" ? '*' : ''}</p>
+                                        <p class="ml-2">${el.label} ${el.required ? '*' : ''}</p>
                                    </label>
                               </div>
                               `
                          html += `
                               <div class="relative grid col-span-${el.columns ? el.columns : '3'}">
-                                   <label class="font-semibold mb-0 text-sm block text-gray-600">${el.label} ${el.required == "true" ? '*' : ''}</label>
+                                   <label class="font-semibold mb-0 text-sm block text-gray-600">${el.label} ${el.required ? '*' : ''}</label>
                                    <div class="grid ${el?.options?.length > 0 ? "grid-cols-4 gap-3" : ""} w-full">
                                         ${htmlChekboxes}
                                    </div>
@@ -1297,7 +1196,7 @@ function Forms({ form_builder, selector, key_parent, columns }) {
                     case 'textarea':
                          html += `
                          <div class="relative grid col-span-${el.columns ? el.columns : '3'} ${el.hide ? 'hidden' : ''}" name="blockform${el.name}">
-                              ${label(`<label class="font-semibold mb-0 text-sm block text-gray-600">${el.label} ${el.required == "true" ? '*' : ''}</label>`, el.info ? info(el.info) : '')} 
+                              ${label(`<label class="font-semibold mb-0 text-sm block text-gray-600">${el.label} ${el.required ? '*' : ''}</label>`, el.info ? info(el.info) : '')} 
                               ${warning}
                               <textarea data-fullkey="${key_parent || "" + el.name}" spellcheck="false" autocomplete="off" name="${el.name}" ${htmlDataAttributes} data-alternatename="${el.alternate_name || el.alternateName || ""}" pattern="${el.pattern}" data-required="${el.required}" data-placeholder="${el.placeholder || el.label}" autocomplete="${el.name}" 
                               class="${classInput}"></textarea>
@@ -1385,6 +1284,7 @@ function constructFormValues({ builder, values }) {
                     case "text":
                     case "time":
                     case "url":
+                    case "select":
                     case "textarea":
                          html += `
                               <div>
@@ -1563,5 +1463,5 @@ async function validateForm({ selector, form_builder, name }) {
                reject(false)
           }
      })
-     return await promise
+     return await promise;
 }

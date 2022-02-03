@@ -20,21 +20,29 @@
                     name: "button",
                     type: "button",
                     value: "Button",
-                    position: 1
+                    position: 1,
+                    required: true
                },
                {
                     label: "Checkbox",
                     name: "checkbox",
                     type: "checkbox",
                     value: "Checkbox",
-                    position: 1
+                    position: 1,
+                    options: [
+                         {
+                              title: "Asma",
+                              values: "asma"
+                         }
+                    ]
                },
                {
                     label: "Color",
                     name: "color",
                     type: "color",
                     value: "Color",
-                    position: 1
+                    position: 1,
+                    required: true
                },
                {
                     label: "Date",
@@ -71,13 +79,13 @@
                     value: "hidden",
                     position: 1
                },
-               {
-                    label: "Image",
-                    name: "image",
-                    type: "image",
-                    value: "https://concepto.de/wp-content/uploads/2015/03/paisaje-800x409.jpg",
-                    position: 1
-               },
+               // {
+               //      label: "Image",
+               //      name: "image",
+               //      type: "image",
+               //      value: "https://concepto.de/wp-content/uploads/2015/03/paisaje-800x409.jpg",
+               //      position: 1
+               // },
                {
                     label: "Month",
                     name: "month",

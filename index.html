@@ -13,8 +13,197 @@
      <script src="https://cdn.tailwindcss.com/3.0.0"></script>
      <script src="form.js"></script>
      <script>
-          let form = new Form('form', { sections: 3 })
+          let form = new Form('form', { sections: 1 })
+          form.resetFields([
+              {
+                "alternateName": "", 
+                "columns": "1", 
+                "info": "", 
+                "label": "SELECT", 
+                "name": "select", 
+                "options": [
+                  {
+                    "title": "DAVID", 
+                    "value": "1"
+                  }, 
+                  {
+                    "title": "ERICK", 
+                    "value": "2"
+                  }
+                ], 
+                "pattern": "", 
+                "position": 8, 
+                "required": false, 
+                "type": "select", 
+                "value": ""
+              }, 
+              {
+                "alternateName": "", 
+                "columns": "1", 
+                "info": "", 
+                "label": "25 H2", 
+                "name": "25_h2", 
+                "options": [
+                  {
+                    "title": "", 
+                    "value": ""
+                  }, 
+                  {
+                    "title": "", 
+                    "value": ""
+                  }
+                ], 
+                "pattern": "", 
+                "position": 31, 
+                "required": true, 
+                "type": "H2", 
+                "value": "HOLA DAVID H2"
+              }, 
+              {
+                "alternateName": "", 
+                "columns": "1", 
+                "info": "", 
+                "label": "26 H3", 
+                "name": "26_h3", 
+                "options": [], 
+                "pattern": "", 
+                "position": 32, 
+                "required": true, 
+                "type": "H3", 
+                "value": ""
+              }, 
+              {
+                "alternateName": "", 
+                "columns": "1", 
+                "info": "", 
+                "label": "27 H4", 
+                "name": "27_h4", 
+                "options": [], 
+                "pattern": "", 
+                "position": 33, 
+                "required": true, 
+                "type": "H4", 
+                "value": ""
+              }, 
+              {
+                "alternateName": "", 
+                "columns": "1", 
+                "info": "", 
+                "label": "30 PARAGRAPH", 
+                "name": "30_paragraph", 
+                "options": [], 
+                "pattern": "", 
+                "position": 34, 
+                "required": true, 
+                "type": "p", 
+                "value": ""
+              }, 
+              {
+                "alternateName": "", 
+                "columns": "1", 
+                "info": "", 
+                "label": "28 H5", 
+                "name": "28_h5", 
+                "options": [], 
+                "pattern": "", 
+                "position": 35, 
+                "required": true, 
+                "type": "H5", 
+                "value": ""
+              }, 
+              {
+                "alternateName": "", 
+                "columns": "1", 
+                "info": "", 
+                "label": "29 H6", 
+                "name": "29_h6", 
+                "options": [], 
+                "pattern": "", 
+                "position": 36, 
+                "required": true, 
+                "type": "H6", 
+                "value": ""
+              }, 
+              {
+                "alternateName": "", 
+                "columns": "1", 
+                "info": "", 
+                "label": "IMAGE", 
+                "name": "image", 
+                "options": [
+                  {
+                    "title": "DAVID", 
+                    "value": "1"
+                  }, 
+                  {
+                    "title": "ERICK", 
+                    "value": "2"
+                  }, 
+                  {
+                    "title": "", 
+                    "value": ""
+                  }
+                ], 
+                "pattern": "", 
+                "position": 8, 
+                "required": true, 
+                "type": "image", 
+                "value": "https://www.hola.com/imagenes/estar-bien/20180925130054/consejos-para-cuidar-a-un-gatito-recien-nacido-cs/0-601-526/cuidardgatito-t.webp?filter=high"
+              }
+            ])
+
           let data = [
+                {
+                  "columns": "3", 
+                  "info": "", 
+                  "label": "Reason for Consultation", 
+                  "name": "primary_concern", 
+                  "options": [], 
+                  "pattern": "", 
+                  "required": true, 
+                  "type": "field_text"
+                }, 
+                {
+                  "columns": "3", 
+                  "info": "", 
+                  "label": "Have you recently been tested for COVID-19?", 
+                  "name": "have_you_recently_been_tested_for_covid19", 
+                  "options": [
+                    {
+                      "title": "Yes", 
+                      "value": "Yes"
+                    }, 
+                    {
+                      "title": "No", 
+                      "value": "No"
+                    }
+                  ], 
+                  "pattern": "", 
+                  "required": true, 
+                  "type": "field_select"
+                }, 
+                {
+                  "columns": "3", 
+                  "info": "", 
+                  "label": "If yes, please provide the result", 
+                  "name": "primary_concern", 
+                  "alternateName": "primary_concern_two", 
+                  "options": [
+                    {
+                      "title": "Positive", 
+                      "value": "Positive"
+                    }, 
+                    {
+                      "title": "Negative", 
+                      "value": "Negative"
+                    }
+                  ], 
+                  "pattern": "", 
+                  "required": true, 
+                  "type": "field_select"
+                }
+          ]
+          let dataa = [
                {
                     label: "Button",
                     name: "button",
@@ -213,11 +402,15 @@
 
           document.getElementById("values").innerHTML = constructFormValues({ builder: data, values: values })
 
-          Forms({ form_builder: data, selector: "construct", key_parent: "", columns: 3 })
+          Forms({ form_builder: data, selector: "construct", key_parent: "", columns: 3, values: {
+               primary_concern: "Nice",
+               have_you_recently_been_tested_for_covid19: "Yes"
+          } })
 
           document.getElementById("construct").addEventListener("submit", e => {
                e.preventDefault();
                validateForm({ selector: "construct", form_builder: data, name: "" }).then(res => {
+                    console.log(data)
                     console.log(res[1])
                }).catch(err => {
                     console.log(err)

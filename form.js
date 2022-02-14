@@ -1,5 +1,13 @@
 const types = [
      {
+          title: "Text",
+          name: "text"
+     },
+     {
+          title: "Textarea",
+          name: "textarea"
+     },
+     {
           title: "Button",
           name: "button"
      },
@@ -70,10 +78,6 @@ const types = [
      {
           title: "Tel",
           name: "tel"
-     },
-     {
-          title: "Text",
-          name: "text"
      },
      {
           title: "Time",
@@ -156,22 +160,22 @@ class Form {
           ]
           this.titles = {
                h1: {
-                    class: "font-bold text-xl"
+                    class: "font-bold text-6xl"
                },
                h2: {
-                    class: "font-bold text-2xl"
+                    class: "font-bold text-5xl"
                },
                h3: {
-                    class: "font-bold text-3xl"
+                    class: "font-bold text-4xl"
                },
                h4: {
-                    class: "font-bold text-5xl"
+                    class: "font-bold text-3xl"
                },
                h5: {
-                    class: "font-bold text-5xl"
+                    class: "font-bold text-2xl"
                },
                h6: {
-                    class: "font-bold text-6xl"
+                    class: "font-bold text-xl"
                }
           }
           this.indexSection = null
@@ -197,7 +201,8 @@ class Form {
                pattern: "fieldPattern",
                type: "fieldType",
                required: "fieldRequired",
-               value: "fieldValue"
+               value: "fieldValue",
+               hidden: "fieldhidden"
           }
           this.idCustomFields = {
                options: "fieldOptions",
@@ -230,7 +235,8 @@ class Form {
                columns: document.getElementById(this.idFields.columns),
                pattern: document.getElementById(this.idFields.pattern),
                type: document.getElementById(this.idFields.type),
-               required: document.getElementById(this.idFields.required)
+               required: document.getElementById(this.idFields.required),
+               hidden: document.getElementById(this.idFields.hidden)
           }
           this.selectorsCustomFields = {
                options: document.getElementById(this.idCustomFields.options), // FATHER OPTIONS
@@ -372,7 +378,7 @@ class Form {
                               <div>
                                    <label class="text-gray-800 font-medium">Columns</label>
                                    <select class="border border-gray-300 rounded-xl h-12 px-4 w-full" id="${this.idFields.columns}">
-                                   <option value="1">1</option>
+                                        <option value="1">1</option>
                                         <option value="2">2</option>
                                         <option value="3">3</option>
                                         <option value="4" hidden>4</option>
@@ -394,6 +400,13 @@ class Form {
                                    <select class="border border-gray-300 rounded-xl h-12 px-4 w-full" id="${this.idFields.required}">
                                         <option value="true">Yes</option>
                                         <option value="false">No</option>
+                                   </select>
+                              </div>
+                              <div>
+                                   <label class="text-gray-800 font-medium">Hidden</label>
+                                   <select class="border border-gray-300 rounded-xl h-12 px-4 w-full" id="${this.idFields.hidden}">
+                                        <option value="false">No</option>
+                                        <option value="true">Yes</option>
                                    </select>
                               </div>
                          </div>
@@ -498,6 +511,9 @@ class Form {
                     case "image":
                          htmlField = `<input src="${el.value}" type="image" class="w-full" placeholder="${el.placeholder || ""}" />`
                          break;
+                    case "textarea":
+                         htmlField = `<textarea class="${this.inputClass} py-2" placeholder="${el.placeholder || ""}"></textarea>` ;
+                         break;
                     case "select":
                     case "field_select":
                          if (el?.options.length > 0) {
@@ -522,7 +538,7 @@ class Form {
                     case "H3":
                     case "H2":
                     case "H1":
-                         htmlField += `<${el.type} class="${this.titles[el.type].class}">${el.label || el.title}</${el.type}>`
+                         htmlField += `<${el.type.toLowerCase()} class="${this.titles[el.type.toLowerCase()].class}">${el.label || el.title}</${el.type.toLowerCase()}>`
                          break;
                     case "p":
                          htmlField += `<p class="text-base">${el.label || el.title}</p>`
@@ -553,7 +569,8 @@ class Form {
           const selector = document.getElementById(this.colSectionId)
           let html = ""
           if (this.forms.length > 0) {
-               this.resetPositions(this.forms).forEach((el, i) => {
+               this.forms = this.resetPositions(this.forms)
+               this.forms.forEach((el, i) => {
                     html += this.button({ index: i, column: 'section', el })
                })
           } else {
@@ -567,7 +584,8 @@ class Form {
           const selector = document.getElementById(this.colBlockId)
           let html = ""
           if (this.forms[this.indexSection]['blocks']?.length > 0) {
-               this.resetPositions(this.forms[this.indexSection]['blocks']).forEach((el, i) => {
+               this.forms[this.indexSection]['blocks'] = this.resetPositions(this.forms[this.indexSection]['blocks'])
+               this.forms[this.indexSection]['blocks'].forEach((el, i) => {
                     html += this.button({ index: i, column: 'block', el })
                })
           } else {
@@ -580,7 +598,8 @@ class Form {
           const selector = document.getElementById(this.colFieldId)
           let html = ""
           if (this.forms[this.indexSection]['blocks'][this.indexBlock]['fields'].length > 0) {
-               this.resetPositions(this.forms[this.indexSection]['blocks'][this.indexBlock]['fields']).forEach((el, i) => {
+               this.forms[this.indexSection]['blocks'][this.indexBlock]['fields'] = this.resetPositions(this.forms[this.indexSection]['blocks'][this.indexBlock]['fields'])
+               this.forms[this.indexSection]['blocks'][this.indexBlock]['fields'].forEach((el, i) => {
                     html += this.button({ index: i, column: 'field', el })
                })
           } else {
@@ -642,6 +661,7 @@ class Form {
           const pattern = String.raw`${this.selectorsFields.pattern.value}`
           const type = this.selectorsFields.type.value
           const required = this.selectorsFields.required.value == "true" ? true :  false
+          const hidden = this.selectorsFields.hidden.value == "true" ? true :  false
           const value = this.selectorsFields.value.value
           const options = this.options
           if (label) {
@@ -656,6 +676,7 @@ class Form {
                          pattern,
                          type,
                          required,
+                         hidden,
                          position: this.forms[this.indexSection]['blocks'][this.indexBlock]['fields'].length + 1,
                          options
                     })
@@ -670,6 +691,7 @@ class Form {
                     item.pattern = pattern
                     item.type = type
                     item.required = required
+                    item.hidden = hidden
                     item.options = options
                     console.log(item)
                }
@@ -703,7 +725,7 @@ class Form {
      editSection() {
           let section = this.forms[this.indexSection]
           document.getElementById(this.modalSectionId).classList.toggle("hidden")
-          document.getElementById(this.modalSectionInput).value = section.label
+          document.getElementById(this.modalSectionInput).value = section.label || section.title
      }
 
      editBlock() {
@@ -714,7 +736,6 @@ class Form {
 
      editField() {
           let field = this.forms[this.indexSection]['blocks'][this.indexBlock]['fields'][this.indexField]
-          console.log(field.required)
           this.selectorsFields.name.value = field.label || ""
           this.selectorsFields.info.value = field.info || ""
           this.selectorsFields.alternateName.value = field.alternateName || ""
@@ -754,6 +775,9 @@ class Form {
      }
 
      resetPositions(data) {
+          if (data.length <= 0 || JSON.stringify(data) === "{}" || JSON.stringify(data).startsWith("{")) {
+               return  []
+          }
           let lastPosition = data.filter(el => el.position >= 1).length
           let newData = data.map(el => {
                if (!el.position) {
@@ -766,6 +790,9 @@ class Form {
           }).sort(function (a, b) {
                return a.position - b.position
           })
+          for (let i=0; i < newData.length; i++) {
+               newData[i].position = i + 1
+          }
           // console.log(newData)
           return newData
      }
@@ -854,7 +881,7 @@ class Form {
      }
 
      resetForms(data) {
-          this.forms = data
+          this.forms = this.resetPositions(data)
           this.printSections()
      }
 
@@ -863,7 +890,7 @@ class Form {
      }
 
      resetFields(data) {
-          this.forms[this.indexSection]['blocks'][this.indexBlock]['fields'] = data
+          this.forms[this.indexSection]['blocks'][this.indexBlock]['fields'] = this.resetPositions(data)
           this.printFields();
      }
 
@@ -1022,7 +1049,7 @@ class Form {
      }
 }
 
-function Forms({ form_builder, selector, key_parent, columns }) {
+function Forms({ form_builder, selector, key_parent, columns, values = {} }) {
      const info = (info) => {
           return `
             <div class="ml-2">
@@ -1051,7 +1078,7 @@ function Forms({ form_builder, selector, key_parent, columns }) {
           html += `<div class="grid grid-cols-1 md:grid-cols-${columns} gap-3 items-end">`
           let checked = '<span class="hidden absolute bottom-4 text-green-500 right-2 pointer-events-none"><i class="fas fa-check"></i></span>'
           let warning = '<span class="hidden absolute bottom-4 text-red-500 right-2 pointer-events-none"><i class="fas fa-exclamation-triangle"></i></span>'
-          form_builder.forEach((el, i) => {
+          JSON.stringify(form_builder).startsWith("{") ? "" : form_builder?.forEach((el, i) => {
                let htmlDataAttributes = ""
                if (el.hasOwnProperty("data_attributes")) {
                     Object.entries(el?.data_attributes).forEach(([key, value]) => {
@@ -1084,10 +1111,10 @@ function Forms({ form_builder, selector, key_parent, columns }) {
                     case "time":
                     case "url":
                          html += `
-                              <div class="relative grid col-span-${el.columns ? el.columns : '3'}">
+                              <div class="relative grid col-span-${el.columns ? el.columns : '3'} ${el.hidden && "hidden"}"">
                                    ${label(`<label class="font-semibold mb-0 text-sm block text-gray-600">${el.label} ${el.required ? '*' : ''}</label>`, el.info ? info(el.info) : '')}                            
                                    ${warning}
-                                   <input value="${el.value || ""}" ${el.type == "image" ? `src='${el.value}'` : ""} type="${el.type.includes("field_") ? el.type.split("field_")[1] : el.type}" ${el.type == "file" ? 'multiple' : ''} data-fullkey="${key_parent || ""}${el.name}" name="${el.name}" ${htmlDataAttributes} data-alternatename="${el.alternate_name || el.alternateName || ""}" pattern="${el.pattern}" data-required="${el.required}" data-placeholder="${el.placeholder || el.label}" autocomplete="${el.name}" 
+                                   <input value="${values[el?.name] ? values[el.name] : el.value || ""}" ${el.type == "image" ? `src='${el.value}'` : ""} type="${el.type.includes("field_") ? el.type.split("field_")[1] : el.type}" ${el.type == "file" ? 'multiple' : ''} data-fullkey="${key_parent || ""}${el.name}" name="${el.name}" ${htmlDataAttributes} data-alternatename="${el.alternate_name || el.alternateName || ""}" pattern="${el.pattern}" data-required="${el.required}" data-placeholder="${el.placeholder || el.label}" autocomplete="${el.name}" 
                                    class="${classInput}">
                                    ${checked}
                               </div>
@@ -1095,7 +1122,7 @@ function Forms({ form_builder, selector, key_parent, columns }) {
                          break;
                     case "color":
                          html += `
-                      <div class="relative grid col-span-${el.columns ? el.columns : '3'}">
+                      <div class="relative grid col-span-${el.columns ? el.columns : '3'} ${el.hidden && "hidden"}"">
                         ${label(`<label class="font-semibold mb-0 text-sm block text-gray-600">${el.label} ${el.required ? '*' : ''}</label>`, el.info ? info(el.info) : '')}     
                         ${warning}
                         <input value="${el.value}" type="color" name="${el.name}" class="w-full h-8">
@@ -1105,7 +1132,7 @@ function Forms({ form_builder, selector, key_parent, columns }) {
                          break;
                     case "image":
                          html += `
-                              <div class="relative grid col-span-${el.columns ? el.columns : '3'}">
+                              <div class="relative grid col-span-${el.columns ? el.columns : '3'} ${el.hidden && "hidden"}"">
                                    ${label(`<label class="font-semibold mb-0 text-sm block text-gray-600">${el.label} ${el.required ? '*' : ''}</label>`, el.info ? info(el.info) : '')}     
                                    <input src="${el.value}" type="image" name="${el.name}" class="w-full">
                               </div>
@@ -1114,22 +1141,22 @@ function Forms({ form_builder, selector, key_parent, columns }) {
                     case 'field_select':
                     case 'select':
                          html += `
-                              <div class="relative grid col-span-${el.columns ? el.columns : '3'}">
+                              <div class="relative grid col-span-${el.columns ? el.columns : '3'} ${el.hidden && "hidden"}"">
                               ${label(`<label class="font-semibold mb-0 text-sm block text-gray-600">${el.label} ${el.required ? '*' : ''}</label>`, el.info ? info(el.info) : '')} 
                               ${warning}
-                              <select type="${types[el.type]}" value="${el.value || ""}" data-fullkey="${key_parent || ""}${el.name}" name="${el.name}" ${htmlDataAttributes} data-alternatename="${el.alternate_name || el.alternateName || ""}"  data-required="${el.required}" data-placeholder="${el.placeholder || el.label}" autocomplete="${el.name}" 
+                              <select type="${types[el.type]}" value="${values[el?.name] ? values[el.name] : el.value || ""}" data-fullkey="${key_parent || ""}${el.name}" name="${el.name}" ${htmlDataAttributes} data-alternatename="${el.alternate_name || el.alternateName || ""}"  data-required="${el.required}" data-placeholder="${el.placeholder || el.label}" autocomplete="${el.name}" 
                               class="${classInput}">
                          `
                          html += `<option hidden value="">Select</option>`
-                         el?.options && el?.options?.forEach((el, i) => {
+                         el?.options && el?.options?.forEach(ele => {
                               let htmlDataAttributesByOptions = ""
-                              if (el.hasOwnProperty("data_attributes")) {
-                                   Object.entries(el?.data_attributes).forEach(([key, value]) => {
+                              if (ele.hasOwnProperty("data_attributes")) {
+                                   Object.entries(ele?.data_attributes).forEach(([key, value]) => {
                                         htmlDataAttributesByOptions += `data-${key}=${value} `
                                    })
                               }
                               html += `
-                            <option value="${el.value}" ${htmlDataAttributesByOptions}>${el.title}</option>
+                            <option value="${ele.value}" ${values[el?.name] == ele.value ? "selected" : ""} ${htmlDataAttributesByOptions}>${ele.title}</option>
                         `
                          })
                          html += `
@@ -1141,7 +1168,7 @@ function Forms({ form_builder, selector, key_parent, columns }) {
                     case 'field_radio':
                     case 'radio':
                          html += `
-                         <div class="relative grid col-span-${el.columns ? el.columns : '3'}">
+                         <div class="relative grid col-span-${el.columns ? el.columns : '3'} ${el.hidden && "hidden"}"">
                               ${label(`<label class="font-semibold mb-0 text-sm block text-gray-600">${el.label} ${el.required ? '*' : ''}</label>`, el.info ? info(el.info) : '')} 
                               <div class="flex">
                                    <div>
@@ -1173,7 +1200,7 @@ function Forms({ form_builder, selector, key_parent, columns }) {
                               `
                          }) :
                               htmlChekboxes += `
-                              <div class="relative w-full grid col-span-${el.columns ? el.columns : '3'}">
+                              <div class="relative w-full grid col-span-${el.columns ? el.columns : '3'} ${el.hidden && "hidden"}"">
                                    <label class="flex w-full items-center py-4 border rounded-xl px-4 cursor-pointer">
                                         ${warning}
                                         <input type="checkbox" data-multiple="false" class="cursor-pointer" data-fullkey="${key_parent + el.name}" name="${el.name}" data-required="${el.required && 'true'}" />
@@ -1183,7 +1210,7 @@ function Forms({ form_builder, selector, key_parent, columns }) {
                               </div>
                               `
                          html += `
-                              <div class="relative grid col-span-${el.columns ? el.columns : '3'}">
+                              <div class="relative grid col-span-${el.columns ? el.columns : '3'} ${el.hidden && "hidden"}"">
                                    <label class="font-semibold mb-0 text-sm block text-gray-600">${el.label} ${el.required ? '*' : ''}</label>
                                    <div class="grid ${el?.options?.length > 0 ? "grid-cols-4 gap-3" : ""} w-full">
                                         ${htmlChekboxes}
@@ -1194,7 +1221,7 @@ function Forms({ form_builder, selector, key_parent, columns }) {
                     case 'field_textarea':
                     case 'textarea':
                          html += `
-                         <div class="relative grid col-span-${el.columns ? el.columns : '3'} ${el.hide ? 'hidden' : ''}" name="blockform${el.name}">
+                         <div class="relative grid col-span-${el.columns ? el.columns : '3'} ${el.hidden && "hidden"}" ${el.hide ? 'hidden' : ''}" name="blockform${el.name}">
                               ${label(`<label class="font-semibold mb-0 text-sm block text-gray-600">${el.label} ${el.required ? '*' : ''}</label>`, el.info ? info(el.info) : '')} 
                               ${warning}
                               <textarea data-fullkey="${key_parent || "" + el.name}" spellcheck="false" autocomplete="off" name="${el.name}" ${htmlDataAttributes} data-alternatename="${el.alternate_name || el.alternateName || ""}" pattern="${el.pattern}" data-required="${el.required}" data-placeholder="${el.placeholder || el.label}" autocomplete="${el.name}" 
@@ -1206,7 +1233,7 @@ function Forms({ form_builder, selector, key_parent, columns }) {
                     case 'h1':
                     case 'H1':
                          html += `
-                     <div class="relative grid col-span-${el.columns ? el.columns : '3'}" name="${el.name}">
+                     <div class="relative grid col-span-${el.columns ? el.columns : '3'} ${el.hidden && "hidden"}"" name="${el.name}">
                          <h1 class="text-6xl font-bold">${el.label}</h1>
                      </div>
                      `
@@ -1214,7 +1241,7 @@ function Forms({ form_builder, selector, key_parent, columns }) {
                     case 'h2':
                     case 'H2':
                          html += `
-                     <div class="relative grid col-span-${el.columns ? el.columns : '3'}" name="${el.name}">
+                     <div class="relative grid col-span-${el.columns ? el.columns : '3'} ${el.hidden && "hidden"}"" name="${el.name}">
                          <h2 class="text-5xl font-bold">${el.label}</h2>
                      </div>
                      `
@@ -1222,7 +1249,7 @@ function Forms({ form_builder, selector, key_parent, columns }) {
                     case 'h3':
                     case 'H3':
                          html += `
-                     <div class="relative grid col-span-${el.columns ? el.columns : '3'}" name="${el.name}">
+                     <div class="relative grid col-span-${el.columns ? el.columns : '3'} ${el.hidden && "hidden"}"" name="${el.name}">
                          <h3 class="text-4xl font-bold">${el.label}</h3>
                      </div>
                      `
@@ -1230,7 +1257,7 @@ function Forms({ form_builder, selector, key_parent, columns }) {
                     case 'h4':
                     case 'H4':
                          html += `
-                         <div class="relative grid col-span-${el.columns ? el.columns : '3'}" name="${el.name}">
+                         <div class="relative grid col-span-${el.columns ? el.columns : '3'} ${el.hidden && "hidden"}"" name="${el.name}">
                          <h4 class="text-3xl font-bold">${el.label}</h4>
                          </div>
                          `
@@ -1238,7 +1265,7 @@ function Forms({ form_builder, selector, key_parent, columns }) {
                     case 'h5':
                     case 'H5':
                          html += `
-                         <div class="relative grid col-span-${el.columns ? el.columns : '3'}" name="${el.name}">
+                         <div class="relative grid col-span-${el.columns ? el.columns : '3'} ${el.hidden && "hidden"}"" name="${el.name}">
                          <h5 class="text-2xl font-bold">${el.label}</h5>
                          </div>
                          `
@@ -1246,14 +1273,14 @@ function Forms({ form_builder, selector, key_parent, columns }) {
                     case 'h6':
                     case 'H6':
                          html += `
-                         <div class="relative grid col-span-${el.columns ? el.columns : '3'}" name="${el.name}">
+                         <div class="relative grid col-span-${el.columns ? el.columns : '3'} ${el.hidden && "hidden"}"" name="${el.name}">
                          <h6 class="text-xl font-bold">${el.label}</h6>
                          </div>
                          `
                          break
                     case 'p':
                          html += `
-                     <div class="relative grid col-span-${el.columns ? el.columns : '3'}" name="${el.name}">
+                     <div class="relative grid col-span-${el.columns ? el.columns : '3'} ${el.hidden && "hidden"}"" name="${el.name}">
                          <p>${el.label}</p>
                      </div>
                      `
@@ -1292,6 +1319,7 @@ function constructFormValues({ builder, values }) {
                     case "field_password":
                     case "field_file":
                     case "field_number":
+                    case "field_select":
                     case "color":
                     case "date":
                     case "datetime-local":
@@ -1312,6 +1340,19 @@ function constructFormValues({ builder, values }) {
                     case "url":
                     case "select":
                     case "textarea":
+                    case "p":
+                    case "h1":
+                    case "h2":
+                    case "h3":
+                    case "h4":
+                    case "h5":
+                    case "h6":
+                    case "H1":
+                    case "H2":
+                    case "H3":
+                    case "H4":
+                    case "H5":
+                    case "H6":
                          html += `
                               <div>
                                    <h2 class="font-semibold">${types[key].title}</h2>

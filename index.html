@@ -4,11 +4,12 @@
      <meta charset="UTF-8">
      <meta http-equiv="X-UA-Compatible" content="IE=edge">
      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
      <title>Plugin Form</title>
 </head>
 <body>
-     <div id="form"></div>
      <form novalidate id="construct"></form>
+     <div id="form"></div>
      <div id="values"></div>
      <script src="https://cdn.tailwindcss.com/3.0.0"></script>
      <script src="form.js"></script>
@@ -153,56 +154,100 @@
             ])
 
           let data = [
-                {
-                  "columns": "3", 
-                  "info": "", 
-                  "label": "Reason for Consultation", 
-                  "name": "primary_concern", 
-                  "options": [], 
-                  "pattern": "", 
-                  "required": true, 
-                  "type": "field_text"
-                }, 
-                {
-                  "columns": "3", 
-                  "info": "", 
-                  "label": "Have you recently been tested for COVID-19?", 
-                  "name": "have_you_recently_been_tested_for_covid19", 
-                  "options": [
-                    {
-                      "title": "Yes", 
-                      "value": "Yes"
-                    }, 
-                    {
-                      "title": "No", 
-                      "value": "No"
-                    }
-                  ], 
-                  "pattern": "", 
-                  "required": true, 
-                  "type": "field_select"
-                }, 
-                {
-                  "columns": "3", 
-                  "info": "", 
-                  "label": "If yes, please provide the result", 
-                  "name": "primary_concern", 
-                  "alternateName": "primary_concern_two", 
-                  "options": [
-                    {
-                      "title": "Positive", 
-                      "value": "Positive"
-                    }, 
-                    {
-                      "title": "Negative", 
-                      "value": "Negative"
-                    }
-                  ], 
-                  "pattern": "", 
-                  "required": true, 
-                  "type": "field_select"
-                }
-          ]
+          {
+      "alternateName":"",
+      "columns":"1",
+      "info":"",
+      "label":"SELECT",
+      "name":"text",
+      "options":[
+         {
+            "title":"DAVID",
+            "value":"1"
+         },
+         {
+            "title":"ERICK",
+            "value":"2"
+         }
+      ],
+      "pattern":"",
+      "position":1,
+      "required":false,
+      "type":"text",
+      "value":""
+   },
+   {
+      "alternateName":"",
+      "columns":"1",
+      "info":"",
+      "label":"Comida",
+      "name":"comida",
+      "options":[
+         {
+            "title":"DAVID",
+            "value":"1"
+         },
+         {
+            "title":"ERICK",
+            "value":"2"
+         }
+      ],
+      "pattern":"",
+      "position":1,
+      "required":false,
+      "type":"radio",
+      "value":""
+   },
+   {
+      "alternateName":"",
+      "columns":"1",
+      "info":"",
+      "label":"SELECT",
+      "name":"select",
+      "options":[
+         {
+            "title":"DAVID",
+            "value":"1"
+         },
+         {
+            "title":"ERICK",
+            "value":"2"
+         }
+      ],
+      "pattern":"",
+      "position":1,
+      "required":false,
+      "type":"select",
+      "value":""
+   },
+   {
+      "label":"Pais",
+      "name":"pais",
+      "info":"",
+      "alternateName":"",
+      "value":"",
+      "columns":"1",
+      "pattern":"",
+      "type":"radio-multiple",
+      "required":true,
+      "hidden":false,
+      "position":2,
+      "options":[
+         {
+            "title":"Argentina",
+            "value":"Argentina"
+         },
+         {
+            "title":"Peru",
+            "value":"Peru"
+         },
+         {
+            "title":"España",
+            "value":"España"
+         }
+      ]
+   }
+]
           let dataa = [
                {
                     label: "Button",

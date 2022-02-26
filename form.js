@@ -60,6 +60,10 @@ const types = [
           name: "radio"
      },
      {
+          title: "Radio Multiple",
+          name: "radio-multiple"
+     },
+     {
           title: "Range",
           name: "range"
      },
@@ -872,6 +876,7 @@ class Form {
                case "select":
                case "field_select":
                case "checkbox":
+               case "radio-multiple":
                     this.selectorsCustomFields.options.classList.remove("hidden")
                     break;
                default:
@@ -1186,7 +1191,32 @@ function Forms({ form_builder, selector, key_parent, columns, values = {} }) {
                               </div>
                          </div>
                          `
-                         break
+                         break;
+                    case 'radio-multiple':
+                         let htmlOptions = ""
+                         el?.options.forEach((check, i) => {
+                              htmlOptions += `
+                                   <label class="bg-gray-50 hover:bg-gray-100 p-4 border border-gray-300 rounded-xl relative cursor-pointer">
+                                        <span class="text-left">${check.title}</span>
+                                        <input type="radio" data-multiple=true class="cursor-pointer" 
+                                             data-multiple="true" 
+                                             data-keyparent="${el.name}" 
+                                             data-value=${check.value}
+                                             data-fullkey="${key_parent || "" + check.title}" 
+                                             name="${el.name}" ${htmlDataAttributes} 
+                                             data-alternatename="${check.alternate_name || ""}" />
+                                   </label>
+                              `
+                         })
+                         html += `
+                         <div class="relative grid col-span-${el.columns ? el.columns : '3'} ${el.hidden && "hidden"}"">
+                              ${label(`<label class="font-semibold mb-0 text-sm block text-gray-600">${el.label} ${el.required ? '*' : ''}</label>`, el.info ? info(el.info) : '')} 
+                              <div class="flex flex-col gap-2">
+                                   ${htmlOptions}
+                              </div>
+                         </div>
+                         `
+                         break;
                     case 'field_checkboxes':
                     case 'field_checkbox':
                     case "checkbox":
@@ -1229,7 +1259,7 @@ function Forms({ form_builder, selector, key_parent, columns, values = {} }) {
                               ${checked}
                          </div>
                          `
-                         break
+                         break;
                     case 'h1':
                     case 'H1':
                          html += `
@@ -1308,6 +1338,7 @@ function constructFormValues({ builder, values }) {
           }
      })
      let html = ''
+     html += `<div class="grid grid-cols-1 gap-2">`
      Object.entries(values).forEach(([key, value]) => {
           if (builder.length > 0 && types[key]) {
                switch (types[key].type) {
@@ -1367,23 +1398,29 @@ function constructFormValues({ builder, values }) {
                          if (typeof value == "boolean") {
                               htmlValues = value
                          } else {
+                              htmlValues += `
+                              <table class="max-w-sm rounded border-l border-r border-b w-full text-sm">
+                                   <tbody>`
                               Object.entries(value).forEach(([key, value]) => {
                                    htmlValues += `
-                          	<div class="flex">
-                            	<h2 class="font-semibold">${key}:</h2>
-                              <p>${value}</p>
-                            </div>
-                          `
+                                   <tr class="border-t">
+                                        <td class="p-2 font-semibold bg-gray-50 border-r">${key}:</td>
+                                        <td class="p-2">${value ? "Si" : "No"}</td>
+                                   </tr>
+                              `
                               })
+                              htmlValues += `
+                                   </tbody>
+                              </table>`
                          }
                          html += `
-                        <div>
-                          <h2 class="font-semibold">${types[key].title}</h2>
-                          <div class="flex flex-col">
-                          	${htmlValues}
-                          </div>
-                        </div>
-											`
+                              <div>
+                                   <h2 class="font-semibold">${types[key].title}</h2>
+                                   <div class="flex flex-col">
+                                        ${htmlValues}
+                                   </div>
+                              </div>
+                         `
                          break;
                     case "field_file":
                     case "file":
@@ -1407,6 +1444,7 @@ function constructFormValues({ builder, values }) {
                }
           }
      })
+     html += `</div>`
      return html
 }
 
@@ -1478,16 +1516,30 @@ async function validateForm({ selector, form_builder, name }) {
                          }
                          break;
                     case "radio":
-                         const radioButtons = document.querySelectorAll(`input[name="${forms[i].name}"]`);
-                         let selected;
-                         for (const radioButton of radioButtons) {
-                              if (radioButton.checked) {
-                                   selected = radioButton.getAttribute("data-value");
-                                   break;
+                         if (!forms[i].dataset.multiple) {
+                              const radioButtons = document.querySelectorAll(`input[name="${forms[i].name}"]`);
+                              let selected;
+                              for (const radioButton of radioButtons) {
+                                   if (radioButton.checked) {
+                                        selected = radioButton.getAttribute("data-value");
+                                        break;
+                                   }
                               }
+                              form[forms[i].getAttribute("name")] = selected == "true" ? true : false  
+                              fd.append(forms[i].getAttribute("name"), selected == "true" ? true : false)
+                         } else {
+                              const radioButtons = document.querySelectorAll(`input[name="${forms[i].name}"]`);
+                              console.log(radioButtons)
+                              let selected;
+                              for (const radioButton of radioButtons) {
+                                   if (radioButton.checked) {
+                                        selected = radioButton.getAttribute("data-value");
+                                        break;
+                                   }
+                              }
+                              form[forms[i].getAttribute("name")] = selected  
+                              fd.append(forms[i].getAttribute("name"), selected)
                          }
-                         form[forms[i].getAttribute("name")] = selected == "true" ? true : false  
-                         fd.append(forms[i].getAttribute("name"), selected == "true" ? true : false)
                          break;
                     case "field_checkboxes":
                     case "field_checkbox":

@@ -697,7 +697,6 @@ class Form {
                     item.required = required
                     item.hidden = hidden
                     item.options = options
-                    console.log(item)
                }
           }
           document.getElementById(this.modalFieldId).classList.toggle("hidden")
@@ -851,7 +850,6 @@ class Form {
      }
 
      move( { column, arrow, position } ) {
-          console.log(position)
           switch (column) {
                case "section":
                     this.forms = this.moveItem( { array: this.forms, arrow, position } )
@@ -871,7 +869,6 @@ class Form {
      }
 
      customFields(type) {
-          console.log(type)
           switch (type) {
                case "select":
                case "field_select":
@@ -1081,8 +1078,8 @@ function Forms({ form_builder, selector, key_parent, columns, values = {} }) {
     `
      const printForms = () => {
           html += `<div class="grid grid-cols-1 md:grid-cols-${columns} gap-3 items-end">`
-          let checked = '<span class="hidden absolute bottom-4 text-green-500 right-2 pointer-events-none"><i class="fas fa-check"></i></span>'
-          let warning = '<span class="hidden absolute bottom-4 text-red-500 right-2 pointer-events-none"><i class="fas fa-exclamation-triangle"></i></span>'
+          let checked = '<span class="hidden absolute bottom-4 text-green-500 right-2 pointer-events-none iconvalidation"><i class="fas fa-check"></i></span>'
+          let warning = '<span class="hidden absolute bottom-4 text-red-500 right-2 pointer-events-none iconvalidation"><i class="fas fa-exclamation-triangle"></i></span>'
           JSON.stringify(form_builder).startsWith("{") ? "" : form_builder?.forEach((el, i) => {
                let htmlDataAttributes = ""
                if (el.hasOwnProperty("data_attributes")) {
@@ -1260,6 +1257,14 @@ function Forms({ form_builder, selector, key_parent, columns, values = {} }) {
                          </div>
                          `
                          break;
+                    case 'button':
+                         html += `
+                         <div class="relative grid col-span-${el.columns ? el.columns : '3'} ${el.hidden && "hidden"}" ${el.hide ? 'hidden' : ''}" name="blockform${el.name}">
+                              <button type="button" class="${classInput} bg-blue-600 text-white"
+                              data-fullkey="${key_parent || ""}${el.name}" name="${el.name}" ${htmlDataAttributes} data-alternatename="${el.alternate_name || el.alternateName || ""}">${el.label}</button>
+                         </div>
+                         `
+                         break;
                     case 'h1':
                     case 'H1':
                          html += `
@@ -1320,6 +1325,9 @@ function Forms({ form_builder, selector, key_parent, columns, values = {} }) {
                }
           })
           html += `</div>`
+          html += `
+               <button type="button" class="mt-3 hidden w-full bg-blue-600 rounded-lg py-3 text-white font-medium">Send</button>
+          `
      }
      printForms()
      if (selector) {
@@ -1404,8 +1412,10 @@ function constructFormValues({ builder, values }) {
                               Object.entries(value).forEach(([key, value]) => {
                                    htmlValues += `
                                    <tr class="border-t">
-                                        <td class="p-2 font-semibold bg-gray-50 border-r">${key}:</td>
-                                        <td class="p-2">${value ? "Si" : "No"}</td>
+                                        <td class="p-2 font-semibold bg-gray-50 border-r">${key}</td>
+                                        <td class="p-2 w-12">
+                                             ${value ? "<i class='fas fa-check text-green-600'></i>" : "<i class='fas fa-times text-red-600'></i>"}
+                                        </td>
                                    </tr>
                               `
                               })
@@ -1449,7 +1459,8 @@ function constructFormValues({ builder, values }) {
 }
 
 async function validateForm({ selector, form_builder, name }) {
-     let forms = document.getElementById(selector).elements
+     const selectorForm = document.getElementById(selector)
+     let forms = selectorForm.elements
      let fd = new FormData()
      let filenames = []
      let form = {}
@@ -1470,6 +1481,7 @@ async function validateForm({ selector, form_builder, name }) {
      let promise = new Promise((resolve, reject) => {
           let checked = []
           for (let i = 0; i < forms.length; i++) {
+               let field = form_builder.find(el => el.name == forms[i].getAttribute("name"))
                switch (forms[i].type) {
                     case "field_text":
                     case "field_date":
@@ -1498,21 +1510,25 @@ async function validateForm({ selector, form_builder, name }) {
                     case "select-one":
                          form[forms[i].getAttribute(name || "name")] = forms[i].value
                          fd.append(forms[i].getAttribute(name || "name"), forms[i].value)
-                         if (forms[i].dataset.required == 'true' && forms[i].getAttribute("pattern")) {
-                              let patt = form_builder.find(el => el.name == forms[i].getAttribute("name")).pattern
-                              const [, pattern, flags] = patt.match(/\/(.*)\/([a-z]*)/);
-                              const regex = new RegExp(pattern, flags);
-                              if (!regex.test(forms[i].value)) {
+                         if(field?.skipValidation == true) {
+                              
+                         } else {
+                              if (forms[i].dataset.required == 'true' && forms[i].getAttribute("pattern")) {
+                                   let patt = field.pattern
+                                   const [, pattern, flags] = patt.match(/\/(.*)\/([a-z]*)/);
+                                   const regex = new RegExp(pattern, flags);
+                                   if (!regex.test(forms[i].value)) {
+                                        error(forms[i])
+                                        checked.push(false)
+                                   } else {
+                                        success(forms[i])
+                                   }
+                              } else if (forms[i].dataset.required == 'true' && !forms[i].value) {
                                    error(forms[i])
                                    checked.push(false)
                               } else {
                                    success(forms[i])
                               }
-                         } else if (forms[i].dataset.required == 'true' && !forms[i].value) {
-                              error(forms[i])
-                              checked.push(false)
-                         } else {
-                              success(forms[i])
                          }
                          break;
                     case "radio":
@@ -1529,7 +1545,6 @@ async function validateForm({ selector, form_builder, name }) {
                               fd.append(forms[i].getAttribute("name"), selected == "true" ? true : false)
                          } else {
                               const radioButtons = document.querySelectorAll(`input[name="${forms[i].name}"]`);
-                              console.log(radioButtons)
                               let selected;
                               for (const radioButton of radioButtons) {
                                    if (radioButton.checked) {

@@ -1,3 +1,28 @@
+function uniqueIdForm() {
+     const firstItem = {
+         value: "0"
+     };
+     /*length can be increased for lists with more items.*/
+     let counter = "123456789".split('')
+         .reduce((acc, curValue, curIndex, arr) => {
+             const curObj = {};
+             curObj.value = curValue;
+             curObj.prev = acc;
+ 
+             return curObj;
+         }, firstItem);
+     firstItem.prev = counter;
+ 
+     return function () {
+         let now = Date.now();
+         if (typeof performance === "object" && typeof performance.now === "function") {
+             now = performance.now().toString().replace('.', '');
+         }
+         counter = counter.prev;
+         return `${now}${Math.random().toString(16).substr(2)}${counter.value}`;
+     }
+ }
+ 
 const types = [
      {
           title: "Text",
@@ -182,15 +207,16 @@ class Form {
                     class: "font-bold text-xl"
                }
           }
+          this.idFormColumns = uniqueIdForm()()
           this.indexSection = null
           this.indexBlock = null
           this.indexField = null
-          this.modalSectionId = 'modalSection'
-          this.modalBlockId = 'modalBlock'
-          this.modalFieldId = 'modalField'
-          this.colSectionId = 'colSections'
-          this.colBlockId = 'colBlocks'
-          this.colFieldId = 'colFields'
+          this.modalSectionId = uniqueIdForm()()
+          this.modalBlockId = uniqueIdForm()()
+          this.modalFieldId = uniqueIdForm()()
+          this.colSectionId = uniqueIdForm()()
+          this.colBlockId = uniqueIdForm()()
+          this.colFieldId = uniqueIdForm()()
           this.modalSectionInput = 'modalSectionInput'
           this.modalBlockInput = 'modalBlockInpuit'
           this.sectionMethod = "add"
@@ -231,6 +257,7 @@ class Form {
                default:
                     break;
           }
+          this.selectorFormColumns = document.getElementById(this.idFormColumns)
           this.selectorsFields = {
                name: document.getElementById(this.idFields.name),
                info: document.getElementById(this.idFields.info),
@@ -250,29 +277,29 @@ class Form {
 
      constructTop() {
           let htmlSection = `
-  <div class="w-full">
-    <button data-action="modalForm" data-name="section" data-modaltarget="${this.modalSectionId}" class="bg-gray-50 py-3.5 font-medium focus:ring-4 focus:ring-blue-200 w-full hover:bg-blue-50 hover:text-blue-700 ring-inset">
-      Create section
-    </button>
-  </div>
-`
-          let htmlBlock = `
-  <div>
-    <button data-action="modalForm" data-name="block" data-modaltarget="${this.modalBlockId}" class="bg-gray-50 py-3.5 font-medium focus:ring-4 focus:ring-blue-200 w-full hover:bg-blue-50 hover:text-blue-700 ring-inset">
-      Create block
-    </button>
-  </div>
-`
-          let htmlField = `
-     <div>
-    <button data-action="modalForm" data-name="field" data-modaltarget="${this.modalFieldId}" class="bg-gray-50 py-3.5 font-medium focus:ring-4 focus:ring-blue-200 w-full hover:bg-blue-50 hover:text-blue-700 ring-inset">
-      Create field
-    </button>
-  </div>
-`
+               <div class="w-full">
+                    <button data-action="modalForm" data-name="section" data-modaltarget="${this.modalSectionId}" class="bg-gray-50 py-3.5 font-medium focus:ring-4 focus:ring-blue-200 w-full hover:bg-blue-50 hover:text-blue-700 ring-inset">
+                         Create section
+                    </button>
+               </div>
+          `
+                    let htmlBlock = `
+               <div>
+                    <button data-action="modalForm" data-name="block" data-modaltarget="${this.modalBlockId}" class="bg-gray-50 py-3.5 font-medium focus:ring-4 focus:ring-blue-200 w-full hover:bg-blue-50 hover:text-blue-700 ring-inset">
+                         Create block
+                    </button>
+               </div>
+          `
+                    let htmlField = `
+               <div>
+                    <button data-action="modalForm" data-name="field" data-modaltarget="${this.modalFieldId}" class="bg-gray-50 py-3.5 font-medium focus:ring-4 focus:ring-blue-200 w-full hover:bg-blue-50 hover:text-blue-700 ring-inset">
+                         Create field
+                    </button>
+               </div>
+          `
           let htmlButtonActions = `
-  <div class="grid grid-cols-${this.sections} text-gray-800 w-full">
-`
+               <div class="grid grid-cols-${this.sections} text-gray-800 w-full">
+          `
           switch (this.sections) {
                case 1:
                     htmlButtonActions += htmlField
@@ -293,13 +320,12 @@ class Form {
      get Forms() {
           switch (this.sections) {
                case 1:
-                    return this.forms
-                    break;
                case 2:
-                    return this.forms
-                    break;
                case 3:
-                    return this.forms
+                    return {
+                         form: this.forms,
+                         columns: parseInt(parseFloat(this.selectorFormColumns.value))
+                    };
                     break;
                default:
                     break;
@@ -309,17 +335,15 @@ class Form {
      constructLines() {
           let html = "";
           html += `
-     <div class="grid grid-cols-${this.sections} absolute w-full h-full pointer-events-none z-10">
-`;
+          <div class="grid grid-cols-${this.sections} absolute w-full h-full pointer-events-none z-10">
+          `;
           [... new Array(this.sections)].forEach((el, i) => {
                html += `
-       <div class="${i < this.sections - 1 ? 'border-r border-gray-300' : ''}">
-                </div>
-     `
-          })
+               <div class="${i < this.sections - 1 ? 'border-r border-gray-300' : ''}"></div>
+          `})
           html += `
-     </div>
-`
+          </div>
+          `
           return html
      }
 
@@ -327,25 +351,25 @@ class Form {
           let html = ""
           let htmlModalSection = `
                <div class="fixed w-screen h-screen top-0 left-0 flex items-center justify-center z-20 hidden" id="${this.modalSectionId}">
-               <div class="bg-black bg-opacity-20 absolute top-0 left-0 w-full h-full" data-action="modalForm" data-modaltarget="${this.modalSectionId}"></div>
-               <div class="bg-white p-5 rounded-xl relative max-w-3xl w-full">
-                    <h2 class="font-bold text-xl text-gray-800 mb-3">Add section</h2>
-               <input type="text" id="${this.modalSectionInput}" 
-               class="${this.inputClass}" />
-               <button type="button" data-action="savesection" class="mt-3 bg-blue-600 px-4 py-3 rounded-xl text-white">Save</button>
+                    <div class="bg-black bg-opacity-20 absolute top-0 left-0 w-full h-full" data-action="modalForm" data-modaltarget="${this.modalSectionId}"></div>
+                    <div class="bg-white p-5 rounded-xl relative max-w-3xl w-full">
+                         <h2 class="font-bold text-xl text-gray-800 mb-3">Add section</h2>
+                         <input type="text" id="${this.modalSectionInput}" 
+                         class="${this.inputClass}" />
+                         <button type="button" data-action="savesection" class="mt-3 bg-blue-600 px-4 py-3 rounded-xl text-white">Save</button>
+                    </div>
                </div>
-          </div>
           `
           let htmlModalBlock = `
                <div class="fixed w-screen h-screen top-0 left-0 flex items-center justify-center z-20 hidden" id="${this.modalBlockId}">
-               <div class="bg-black bg-opacity-20 absolute top-0 left-0 w-full h-full" data-action="modalForm" data-modaltarget="${this.modalBlockId}"></div>
-               <div class="bg-white p-5 rounded-xl relative max-w-3xl w-full">
-                    <h2 class="font-bold text-xl text-gray-800 mb-3">Add block</h2>
-               <input type="text" id="${this.modalBlockInput}" 
-               class="${this.inputClass}" />
-               <button type="button" data-action="saveblock" class="mt-3 bg-blue-600 px-4 py-3 rounded-xl text-white">Save</button>
+                    <div class="bg-black bg-opacity-20 absolute top-0 left-0 w-full h-full" data-action="modalForm" data-modaltarget="${this.modalBlockId}"></div>
+                    <div class="bg-white p-5 rounded-xl relative max-w-3xl w-full">
+                         <h2 class="font-bold text-xl text-gray-800 mb-3">Add block</h2>
+                         <input type="text" id="${this.modalBlockInput}" 
+                         class="${this.inputClass}" />
+                         <button type="button" data-action="saveblock" class="mt-3 bg-blue-600 px-4 py-3 rounded-xl text-white">Save</button>
+                    </div>
                </div>
-          </div>
           `
           let htmlTypes = ""
           this.types.forEach(el => {
@@ -355,7 +379,7 @@ class Form {
           })
           let htmlModalField = `
                <div class="fixed w-screen h-screen top-0 left-0 py-10 flex items-center justify-center z-20 hidden" id="${this.modalFieldId}">
-               <div class="bg-black bg-opacity-20 absolute top-0 left-0 w-full h-screen" data-action="modalForm" data-modaltarget="${this.modalFieldId}"></div>
+                    <div class="bg-black bg-opacity-20 absolute top-0 left-0 w-full h-screen" data-action="modalForm" data-modaltarget="${this.modalFieldId}"></div>
                     <div class="bg-white p-5 rounded-xl relative max-w-3xl w-full h-max overflow-y-auto" style="max-height: 90vh">
                          <h2 class="font-bold text-xl text-gray-800 mb-3">Add field</h2>
                          <div class="grid grid-cols-1 gap-2 md:grid-cols-3">
@@ -472,10 +496,6 @@ class Form {
           }
           html += `</div>`
           return html
-     }
-
-     get Forms() {
-          return this.forms
      }
 
      button({ index, column, el }) {
@@ -892,8 +912,18 @@ class Form {
      }
 
      resetFields(data) {
-          this.forms[this.indexSection]['blocks'][this.indexBlock]['fields'] = this.resetPositions(data)
-          this.printFields();
+          switch (this.sections) {
+               case 3:
+                    break;
+               case 2:
+                    break;
+               case 1:
+                    this.forms[this.indexSection]['blocks'][this.indexBlock]['fields'] = this.resetPositions(data)
+                    this.printFields();
+                    break;
+               default:
+                    break;
+          }
      }
 
      get options() {
@@ -942,13 +972,19 @@ class Form {
 
      constructForm() {
           let html = `
-	<div class="flex flex-col relative">
-    ${this.constructLines()}
-    ${this.constructTop()}
-    ${this.constructBody()}
-	</div>
-	${this.constructModals()}
-`
+               <div class="flex flex-col gap-3">
+                    <div>
+                         <label class="font-medium block">Columns</label>
+                         <input type="number" id="${this.idFormColumns}" class="border focus:outline-none focus:ring-4 focus:ring-blue-400 rounded-lg p-3 ring-inset" placeholder="columns" />
+                    </div>
+                    <div class="flex flex-col relative">
+                         ${this.constructLines()}
+                         ${this.constructTop()}
+                         ${this.constructBody()}
+                    </div>
+               </div>
+               ${this.constructModals()}
+          `
           document.getElementById(this.selector).innerHTML = `${html}`
           document.body.addEventListener("click", e => {
                switch (e.target.dataset.action) {
@@ -1051,7 +1087,7 @@ class Form {
      }
 }
 
-function Forms({ form_builder, selector, key_parent, columns, values = {} }) {
+function Forms({ form_builder, selector, key_parent, columns, values = {}, showButtonSubmit = false }) {
      const info = (info) => {
           return `
             <div class="ml-2">
@@ -1070,11 +1106,29 @@ function Forms({ form_builder, selector, key_parent, columns, values = {} }) {
 
      let html = ''
      html += `
-        <style>
-            .tooltip:hover p {
-                display: flex;
-            }
-        </style>
+          <style>
+               .tooltip:hover p {
+                    display: flex;
+               }
+               .form__checkbox + div {
+                    min-height: 120px;
+                    display: flex;
+                    justify-content: center;
+                    align-items: center;
+                    width: 100%;
+                    height: 100%;
+                    background: #ffff;
+                    outline: 1px solid #ccc;
+               }
+               .form__checkbox:checked + div {
+                    outline: 2px solid blue;
+                    color: blue;
+                    font-weight: bold;
+               }
+               .form__checkbox:checked + div div {
+                    display: flex
+               }
+          </style>
     `
      const printForms = () => {
           html += `<div class="grid grid-cols-1 md:grid-cols-${columns} gap-3 items-end">`
@@ -1174,14 +1228,14 @@ function Forms({ form_builder, selector, key_parent, columns, values = {} }) {
                               ${label(`<label class="font-semibold mb-0 text-sm block text-gray-600">${el.label} ${el.required ? '*' : ''}</label>`, el.info ? info(el.info) : '')} 
                               <div class="flex">
                                    <div>
-                                        <label class="flex border border-gray-200 px-3 py-2 rounded-xl w-max items-center">
-                                             <input type="radio" name="${el.name}" data-value="true" ${htmlDataAttributes} data-alternatename="${el.alternate_name || el.alternateName || ""}" />
+                                        <label class="flex border border-gray-200 px-3 cursor-pointer py-2 rounded-xl w-max items-center">
+                                             <input type="radio" class="cursor-pointer" name="${el.name}" data-value="true" ${htmlDataAttributes} data-alternatename="${el.alternate_name || el.alternateName || ""}" />
                                              <span class="ml-2">Yes</span>
                                         </label>
                                    </div>
                                    <div class="ml-2">
-                                        <label class="flex border border-gray-200 px-3 py-2 rounded-xl w-max items-center">
-                                             <input type="radio" name="${el.name}" data-value="false" ${htmlDataAttributes} data-alternatename="${el.alternate_name || el.alternateName || ""}" />
+                                        <label class="flex border border-gray-200 px-3 cursor-pointer py-2 rounded-xl w-max items-center">
+                                             <input type="radio" class="cursor-pointer" name="${el.name}" data-value="false" ${htmlDataAttributes} data-alternatename="${el.alternate_name || el.alternateName || ""}" />
                                              <span class="ml-2">No</span>
                                         </label>
                                    </div>
@@ -1194,7 +1248,6 @@ function Forms({ form_builder, selector, key_parent, columns, values = {} }) {
                          el?.options.forEach((check, i) => {
                               htmlOptions += `
                                    <label class="bg-gray-50 hover:bg-gray-100 p-4 border border-gray-300 rounded-xl relative cursor-pointer">
-                                        <span class="text-left">${check.title}</span>
                                         <input type="radio" data-multiple=true class="cursor-pointer" 
                                              data-multiple="true" 
                                              data-keyparent="${el.name}" 
@@ -1202,6 +1255,7 @@ function Forms({ form_builder, selector, key_parent, columns, values = {} }) {
                                              data-fullkey="${key_parent || "" + check.title}" 
                                              name="${el.name}" ${htmlDataAttributes} 
                                              data-alternatename="${check.alternate_name || ""}" />
+                                        <span class="text-left">${check.title}</span>
                                    </label>
                               `
                          })
@@ -1218,12 +1272,17 @@ function Forms({ form_builder, selector, key_parent, columns, values = {} }) {
                     case 'field_checkbox':
                     case "checkbox":
                          let htmlChekboxes = ""
-                         el?.options?.length > 0 ? el?.options.forEach((check, i) => {
+                         el?.options?.length > 0 ? el?.options.forEach(check => {
                               htmlChekboxes += `
-                                   <label class="bg-gray-50 hover:bg-gray-100 p-4 border border-gray-300 rounded-xl relative cursor-pointer">
-                                        <span class="text-left">${check.title}</span>
-                                        <input type="checkbox" class="cursor-pointer" data-multiple="true" data-keyparent="${el.name}" data-fullkey="${key_parent || "" + check.title}" name="${check.title}" ${htmlDataAttributes} data-alternatename="${check.alternate_name || ""}" />
-                                   </label>
+                                   <div class="relative flex rounded-xl w-full">
+                                        <input type="checkbox" class="cursor-pointer focus:outline-none focus:ring-4 ring-inset rounded-xl focus:ring-blue-200 absolute w-full h-full appearance-none form__checkbox" data-multiple="true" data-keyparent="${el.name}" data-fullkey="${key_parent || "" + check.title}" name="${check.title}" ${htmlDataAttributes} data-alternatename="${check.alternate_name || ""}" />
+                                        <div class="text-sm rounded-xl">
+                                             <div class="absolute top-2 right-2 w-6 h-6 flex items-center justify-center text-sm bg-opacity-30 rounded-full bg-white hidden">
+                                                  <i class="fas fa-check"></i>
+                                             </div>
+                                             ${check.title}
+                                        </div>
+                                   </div>
                               `
                          }) :
                               htmlChekboxes += `
@@ -1239,7 +1298,7 @@ function Forms({ form_builder, selector, key_parent, columns, values = {} }) {
                          html += `
                               <div class="relative grid col-span-${el.columns ? el.columns : '3'} ${el.hidden && "hidden"}"">
                                    <label class="font-semibold mb-0 text-sm block text-gray-600">${el.label} ${el.required ? '*' : ''}</label>
-                                   <div class="grid ${el?.options?.length > 0 ? "grid-cols-4 gap-3" : ""} w-full">
+                                   <div class="grid ${el?.options?.length > 0 ? "grid-cols-4 gap-3" : ""} w-full mt-1">
                                         ${htmlChekboxes}
                                    </div>
                               </div>
@@ -1356,20 +1415,17 @@ function constructFormValues({ builder, values }) {
                     case "field_address":
                     case "field_email":
                     case "field_password":
-                    case "field_file":
                     case "field_number":
                     case "field_select":
                     case "color":
                     case "date":
                     case "datetime-local":
                     case "email":
-                    case "file":
                     case "hidden":
                     case "image":
                     case "month":
                     case "number":
                     case "password":
-                    case "radio":
                     case "range":
                     case "reset":
                     case "search":
@@ -1399,12 +1455,20 @@ function constructFormValues({ builder, values }) {
                               </div>
                          `
                          break;
+                    case "radio":
+                         html += `
+                              <div>
+                                   <h2 class="font-semibold">${types[key].title}</h2>
+                                   <p>${value ? "Si" : 'No'}</p>
+                              </div>
+                         `
+                         break;
                     case "checkbox":
                     case "field_checkbox":
                     case "field_checkboxes":
                          let htmlValues = ""
                          if (typeof value == "boolean") {
-                              htmlValues = value
+                              htmlValues = value ? "Si" : "No"
                          } else {
                               htmlValues += `
                               <table class="max-w-sm rounded border-l border-r border-b w-full text-sm">

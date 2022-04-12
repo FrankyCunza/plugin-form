@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
      <meta charset="UTF-8">
      <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -8,8 +9,9 @@
      <link href="https://cdnjs.cloudflare.com/ajax/libs/tailwindcss/2.2.19/tailwind.min.css" rel="stylesheet">
      <title>Plugin Form</title>
 </head>
+
 <body>
-     <div class="grid grid-cols-3 w-screen gap-4 p-4">
+     <div class="grid grid-cols-1 w-screen gap-4 p-4">
           <form novalidate id="construct"></form>
           <div id="form"></div>
           <div id="values"></div>
@@ -17,215 +19,215 @@
      <script src="https://cdn.tailwindcss.com/3.0.0"></script>
      <script src="form.js"></script>
      <script>
-          let form = new Form('form', { sections: 1 })
+          let form = new Form('form', { sections: 3 })
           form.resetFields([
-              {
-                "alternateName": "", 
-                "columns": "1", 
-                "info": "", 
-                "label": "SELECT", 
-                "name": "select", 
-                "options": [
-                  {
-                    "title": "DAVID", 
-                    "value": "1"
-                  }, 
-                  {
-                    "title": "ERICK", 
-                    "value": "2"
-                  }
-                ], 
-                "pattern": "", 
-                "position": 8, 
-                "required": false, 
-                "type": "select", 
-                "value": ""
-              }, 
-              {
-                "alternateName": "", 
-                "columns": "1", 
-                "info": "", 
-                "label": "25 H2", 
-                "name": "25_h2", 
-                "options": [
-                  {
-                    "title": "", 
+               {
+                    "alternateName": "",
+                    "columns": "1",
+                    "info": "",
+                    "label": "SELECT",
+                    "name": "select",
+                    "options": [
+                         {
+                              "title": "DAVID",
+                              "value": "1"
+                         },
+                         {
+                              "title": "ERICK",
+                              "value": "2"
+                         }
+                    ],
+                    "pattern": "",
+                    "position": 8,
+                    "required": false,
+                    "type": "select",
                     "value": ""
-                  }, 
-                  {
-                    "title": "", 
+               },
+               {
+                    "alternateName": "",
+                    "columns": "1",
+                    "info": "",
+                    "label": "25 H2",
+                    "name": "25_h2",
+                    "options": [
+                         {
+                              "title": "",
+                              "value": ""
+                         },
+                         {
+                              "title": "",
+                              "value": ""
+                         }
+                    ],
+                    "pattern": "",
+                    "position": 31,
+                    "required": true,
+                    "type": "H2",
+                    "value": "HOLA DAVID H2"
+               },
+               {
+                    "alternateName": "",
+                    "columns": "1",
+                    "info": "",
+                    "label": "26 H3",
+                    "name": "26_h3",
+                    "options": [],
+                    "pattern": "",
+                    "position": 32,
+                    "required": true,
+                    "type": "H3",
                     "value": ""
-                  }
-                ], 
-                "pattern": "", 
-                "position": 31, 
-                "required": true, 
-                "type": "H2", 
-                "value": "HOLA DAVID H2"
-              }, 
-              {
-                "alternateName": "", 
-                "columns": "1", 
-                "info": "", 
-                "label": "26 H3", 
-                "name": "26_h3", 
-                "options": [], 
-                "pattern": "", 
-                "position": 32, 
-                "required": true, 
-                "type": "H3", 
-                "value": ""
-              }, 
-              {
-                "alternateName": "", 
-                "columns": "1", 
-                "info": "", 
-                "label": "27 H4", 
-                "name": "27_h4", 
-                "options": [], 
-                "pattern": "", 
-                "position": 33, 
-                "required": true, 
-                "type": "H4", 
-                "value": ""
-              }, 
-              {
-                "alternateName": "", 
-                "columns": "1", 
-                "info": "", 
-                "label": "30 PARAGRAPH", 
-                "name": "30_paragraph", 
-                "options": [], 
-                "pattern": "", 
-                "position": 34, 
-                "required": true, 
-                "type": "p", 
-                "value": ""
-              }, 
-              {
-                "alternateName": "", 
-                "columns": "1", 
-                "info": "", 
-                "label": "28 H5", 
-                "name": "28_h5", 
-                "options": [], 
-                "pattern": "", 
-                "position": 35, 
-                "required": true, 
-                "type": "H5", 
-                "value": ""
-              }, 
-              {
-                "alternateName": "", 
-                "columns": "1", 
-                "info": "", 
-                "label": "29 H6", 
-                "name": "29_h6", 
-                "options": [], 
-                "pattern": "", 
-                "position": 36, 
-                "required": true, 
-                "type": "H6", 
-                "value": ""
-              }
-            ])
+               },
+               {
+                    "alternateName": "",
+                    "columns": "1",
+                    "info": "",
+                    "label": "27 H4",
+                    "name": "27_h4",
+                    "options": [],
+                    "pattern": "",
+                    "position": 33,
+                    "required": true,
+                    "type": "H4",
+                    "value": ""
+               },
+               {
+                    "alternateName": "",
+                    "columns": "1",
+                    "info": "",
+                    "label": "30 PARAGRAPH",
+                    "name": "30_paragraph",
+                    "options": [],
+                    "pattern": "",
+                    "position": 34,
+                    "required": true,
+                    "type": "p",
+                    "value": ""
+               },
+               {
+                    "alternateName": "",
+                    "columns": "1",
+                    "info": "",
+                    "label": "28 H5",
+                    "name": "28_h5",
+                    "options": [],
+                    "pattern": "",
+                    "position": 35,
+                    "required": true,
+                    "type": "H5",
+                    "value": ""
+               },
+               {
+                    "alternateName": "",
+                    "columns": "1",
+                    "info": "",
+                    "label": "29 H6",
+                    "name": "29_h6",
+                    "options": [],
+                    "pattern": "",
+                    "position": 36,
+                    "required": true,
+                    "type": "H6",
+                    "value": ""
+               }
+          ])
 
           let data = [
-          {
-      "alternateName":"",
-      "columns":"1",
-      "info":"",
-      "label":"Name",
-      "name":"text",
-      skipValidation: true,
-      "options":[
-         {
-            "title":"DAVID",
-            "value":"1"
-         },
-         {
-            "title":"ERICK",
-            "value":"2"
-         }
-      ],
-      "pattern":"",
-      "position":1,
-      "required":true,
-      "type":"text",
-      "value":""
-   },
-   {
-      "alternateName":"",
-      "columns":"1",
-      "info":"",
-      "label":"Comida",
-      "name":"comida",
-      "options":[
-         {
-            "title":"DAVID",
-            "value":"1"
-         },
-         {
-            "title":"ERICK",
-            "value":"2"
-         }
-      ],
-      "pattern":"",
-      "position":1,
-      "required":false,
-      "type":"radio",
-      "value":""
-   },
-   {
-      "alternateName":"",
-      "columns":"1",
-      "info":"",
-      "label":"SELECT",
-      "name":"select",
-      "options":[
-         {
-            "title":"DAVID",
-            "value":"1"
-         },
-         {
-            "title":"ERICK",
-            "value":"2"
-         }
-      ],
-      "pattern":"",
-      "position":1,
-      "required":false,
-      "type":"select",
-      "value":""
-   },
-   {
-      "label":"Pais",
-      "name":"pais",
-      "info":"",
-      "alternateName":"",
-      "value":"",
-      "columns":"1",
-      "pattern":"",
-      "type":"radio-multiple",
-      "required":true,
-      "hidden":false,
-      "position":2,
-      "options":[
-         {
-            "title":"Argentina",
-            "value":"Argentina"
-         },
-         {
-            "title":"Peru",
-            "value":"Peru"
-         },
-         {
-            "title":"España",
-            "value":"España"
-         }
-      ]
-   }
-]
+               {
+                    "alternateName": "",
+                    "columns": "1",
+                    "info": "",
+                    "label": "Name",
+                    "name": "text",
+                    skipValidation: true,
+                    "options": [
+                         {
+                              "title": "DAVID",
+                              "value": "1"
+                         },
+                         {
+                              "title": "ERICK",
+                              "value": "2"
+                         }
+                    ],
+                    "pattern": "",
+                    "position": 1,
+                    "required": true,
+                    "type": "text",
+                    "value": ""
+               },
+               {
+                    "alternateName": "",
+                    "columns": "1",
+                    "info": "",
+                    "label": "Comida",
+                    "name": "comida",
+                    "options": [
+                         {
+                              "title": "DAVID",
+                              "value": "1"
+                         },
+                         {
+                              "title": "ERICK",
+                              "value": "2"
+                         }
+                    ],
+                    "pattern": "",
+                    "position": 1,
+                    "required": false,
+                    "type": "radio",
+                    "value": ""
+               },
+               {
+                    "alternateName": "",
+                    "columns": "1",
+                    "info": "",
+                    "label": "SELECT",
+                    "name": "select",
+                    "options": [
+                         {
+                              "title": "DAVID",
+                              "value": "1"
+                         },
+                         {
+                              "title": "ERICK",
+                              "value": "2"
+                         }
+                    ],
+                    "pattern": "",
+                    "position": 1,
+                    "required": false,
+                    "type": "select",
+                    "value": ""
+               },
+               {
+                    "label": "Pais",
+                    "name": "pais",
+                    "info": "",
+                    "alternateName": "",
+                    "value": "",
+                    "columns": "1",
+                    "pattern": "",
+                    "type": "checkbox",
+                    "required": true,
+                    "hidden": false,
+                    "position": 2,
+                    "options": [
+                         {
+                              "title": "Argentina",
+                              "value": "Argentina"
+                         },
+                         {
+                              "title": "Peru",
+                              "value": "Peru"
+                         },
+                         {
+                              "title": "España",
+                              "value": "España"
+                         }
+                    ]
+               }
+          ]
           let dataa = [
                {
                     label: "Button",
@@ -414,11 +416,14 @@
                     ]
                }
           ]
+          console.log(form.Forms)
 
-          Forms({ form_builder: data, selector: "construct", key_parent: "", columns: 3, values: {
-               primary_concern: "Nice",
-               have_you_recently_been_tested_for_covid19: "Yes"
-          } })
+          Forms({
+               form_builder: data, selector: "construct", key_parent: "", columns: 3, values: {
+                    primary_concern: "Nice",
+                    have_you_recently_been_tested_for_covid19: "Yes"
+               }
+          })
 
           document.getElementById("construct").addEventListener("submit", e => {
                e.preventDefault();
@@ -430,4 +435,5 @@
           })
      </script>
 </body>
+
 </html>

@@ -1099,7 +1099,7 @@ function Forms({ form_builder, selector, key_parent, columns, values = {}, showB
      }
 
      const label = (label, info) => {
-          return `<div class="flex items-center mb-0.5">${label} ${info}</div>`
+          return label.length > 0 ? `<div class="flex items-center mb-0.5">${label} ${info}</div>` : ''
      }
 
      const classInput = "bg-white placeholder-gray-500 w-full border border-gray-300 hover:border-blue-600 py-2.5 rounded-lg px-4 focus:outline-none focus:ring-2 focus:ring-blue-600"
@@ -1138,7 +1138,7 @@ function Forms({ form_builder, selector, key_parent, columns, values = {}, showB
                let htmlDataAttributes = ""
                if (el.hasOwnProperty("data_attributes")) {
                     Object.entries(el?.data_attributes).forEach(([key, value]) => {
-                         htmlDataAttributes += `data-${key}=${value}`
+                         htmlDataAttributes += `data-${key}='${value}'`
                     })
                }
                switch (el.type) {
@@ -1168,9 +1168,9 @@ function Forms({ form_builder, selector, key_parent, columns, values = {}, showB
                     case "url":
                          html += `
                               <div class="relative grid col-span-${el.columns ? el.columns : '3'} ${el.hidden && "hidden"}"">
-                                   ${label(`<label class="font-semibold mb-0 text-sm block text-gray-600">${el.label} ${el.required ? '*' : ''}</label>`, el.info ? info(el.info) : '')}                            
+                                   ${el.label && label(`<label class="font-semibold mb-0 text-sm block text-gray-600">${el.label} ${el.required ? '*' : ''}</label>`, el.info ? info(el.info) : '')}                            
                                    ${warning}
-                                   <input value="${values[el?.name] ? values[el.name] : el.value || ""}" ${el.type == "image" ? `src='${el.value}'` : ""} type="${el.type.includes("field_") ? el.type.split("field_")[1] : el.type}" ${el.type == "file" ? 'multiple' : ''} data-fullkey="${key_parent || ""}${el.name}" name="${el.name}" ${htmlDataAttributes} data-alternatename="${el.alternate_name || el.alternateName || ""}" pattern="${el.pattern}" data-required="${el.required}" data-placeholder="${el.placeholder || el.label}" autocomplete="${el.name}" 
+                                   <input value="${values[el?.name] ? values[el.name] : el.value || ""}" ${el.type == "image" ? `src='${el.value}'` : ""} type="${el.type.includes("field_") ? el.type.split("field_")[1] : el.type}" ${el.type == "file" ? 'multiple' : ''} data-fullkey="${key_parent || ""}${el.name}" name="${el.name}" ${htmlDataAttributes} data-alternatename="${el.alternate_name || el.alternateName || ""}" pattern="${el.pattern}" data-required="${el.required || false}" data-placeholder="${el.placeholder || el.label}" autocomplete="${el.name}" 
                                    class="${classInput}">
                                    ${checked}
                               </div>

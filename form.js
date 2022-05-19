@@ -449,6 +449,7 @@ class Form {
                                              <tr>
                                              <th class="font-medium text-left px-3">Name</th>
                                              <th class="font-medium text-left px-3">Value</th>
+                                             <th class="font-medium text-left px-3">Icon</th>
                                              </tr>
                                         </thead>
                                         <tbody id="${this.idCustomFields.optionsBody}"></tbody>
@@ -932,7 +933,8 @@ class Form {
           for (let i = 0; i < children.length; i++) {
                array.push({
                     title: children[i].children[0].children[0].value,
-                    value: children[i].children[1].children[0].value
+                    value: children[i].children[1].children[0].value,
+                    icon: children[i].children[2].children[0].value,
                })
           }
           return array
@@ -946,6 +948,9 @@ class Form {
                </td>
                <td class="p-3 relative">
                     <input type="text" value="${option?.value || ""}" placeholder="Value" class="${this.inputClass}" />
+               </td>
+               <td class="p-3 relative">
+                    <input type="text" value="${option?.icon || ""}" placeholder="Value" class="${this.inputClass}" />
                     <button data-action="deleteoption" class="w-8 h-8 bg-red-200 text-red-800 rounded flex items-center justify-center absolute top-5 right-5"><i class="fas fa-trash pointer-events-none"></i></button>
                </td>
           </tr>

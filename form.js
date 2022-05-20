@@ -151,6 +151,10 @@ const types = [
      {
           title: "Paragraph",
           name: "p"
+     },
+     {
+          title: "HTML",
+          name: "html"
      }
 ]
 
@@ -162,6 +166,8 @@ class Form {
                {
                     blocks: [
                          {
+                              title: "nice",
+                              name: "nice",
                               fields: []
                          }
                     ],
@@ -236,7 +242,9 @@ class Form {
           }
           this.idCustomFields = {
                options: "fieldOptions",
-               optionsBody: "fieldOptionsBody"
+               optionsBody: "fieldOptionsBody",
+               html: "fieldHTMLSelector",
+               htmlTextarea: "fieldHTMLSelectorTextarea"
           }
           this.indexSection = null;
           this.indexBlock = null;
@@ -271,7 +279,9 @@ class Form {
           }
           this.selectorsCustomFields = {
                options: document.getElementById(this.idCustomFields.options), // FATHER OPTIONS
-               optionsBody: document.getElementById(this.idCustomFields.optionsBody) // CHILD OPTIONS
+               optionsBody: document.getElementById(this.idCustomFields.optionsBody), // CHILD OPTIONS
+               html: document.getElementById(this.idCustomFields.html),
+               htmlTextarea: document.getElementById(this.idCustomFields.htmlTextarea)
           }
      }
 
@@ -441,7 +451,7 @@ class Form {
                          <div class="flex flex-col mt-4 border border-gray-300 rounded-xl p-3 hidden" id="${this.idCustomFields.options}">
                               <div class="flex items-center gap-2 mb-2">
                                    <label class="text-gray-800 font-medium">Options</label>
-                              <button class="bg-blue-50 tetx-xs text-blue-600 px-2 py-2 rounded-md font-medium" data-action="addOption">Add</button>
+                                   <button class="bg-blue-50 tetx-xs text-blue-600 px-2 py-2 rounded-md font-medium" data-action="addOption">Add</button>
                               </div>
                               <div class="border border-gray-200 rounded-xl overflow-hidden">
                                    <table class="w-full">
@@ -455,6 +465,12 @@ class Form {
                                         <tbody id="${this.idCustomFields.optionsBody}"></tbody>
                                    </table>
                               </div>
+                         </div>
+                         <div class="flex flex-col mt-4 border border-gray-300 rounded-xl p-3 hidden" id="${this.idCustomFields.html}">
+                              <div class="flex items-center gap-2 mb-2">
+                                   <label class="text-gray-800 font-medium">HTML</label>
+                              </div>
+                              <textarea class="${this.inputClass} pt-4" style="height: 150px;" id="${this.idCustomFields.htmlTextarea}"></textarea>
                          </div>
                          <button type="button" data-action="savefield" class="mt-3 bg-blue-600 px-4 py-3 rounded-xl text-white">Save</button>
                     </div>
@@ -688,6 +704,7 @@ class Form {
           const required = this.selectorsFields.required.value == "true" ? true :  false
           const hidden = this.selectorsFields.hidden.value == "true" ? true :  false
           const value = this.selectorsFields.value.value
+          const html = this.selectorsCustomFields.htmlTextarea.value
           const options = this.options
           if (label) {
                if (this.fieldMethod === "add") {
@@ -703,7 +720,8 @@ class Form {
                          required,
                          hidden,
                          position: this.forms[this.indexSection]['blocks'][this.indexBlock]['fields'].length + 1,
-                         options
+                         options,
+                         html
                     })
                } else {
                     let item = this.forms[this.indexSection]['blocks'][this.indexBlock]['fields'][this.indexField]
@@ -717,11 +735,13 @@ class Form {
                     item.type = type
                     item.required = required
                     item.hidden = hidden
-                    item.options = options
+                    item.options = options,
+                    item.html = html
                }
           }
           document.getElementById(this.modalFieldId).classList.toggle("hidden")
           this.printFields()
+          console.log(this.forms[this.indexSection]['blocks'][this.indexBlock]['fields'])
           console.log(JSON.stringify(this.forms[this.indexSection]['blocks'][this.indexBlock]['fields']))
      }
 
@@ -896,9 +916,15 @@ class Form {
                case "checkbox":
                case "radio-multiple":
                     this.selectorsCustomFields.options.classList.remove("hidden")
+                    this.selectorsCustomFields.html.classList.remove("hidden")
+                    break;
+               case "html":
+                    this.selectorsCustomFields.options.classList.add("hidden")
+                    this.selectorsCustomFields.html.classList.remove("hidden")
                     break;
                default:
                     this.selectorsCustomFields.options.classList.add("hidden")
+                    this.selectorsCustomFields.html.classList.add("hidden")
                     break;
           }
      }
@@ -1365,7 +1391,7 @@ function Forms({ form_builder, selector, key_parent, columns, values = {}, showB
                     case 'H5':
                          html += `
                          <div class="relative grid col-span-${el.columns ? el.columns : '3'} ${el.hidden && "hidden"}"" name="${el.name}">
-                         <h5 class="text-2xl font-bold">${el.label}</h5>
+                              <h5 class="text-2xl font-bold">${el.label}</h5>
                          </div>
                          `
                          break
@@ -1373,17 +1399,24 @@ function Forms({ form_builder, selector, key_parent, columns, values = {}, showB
                     case 'H6':
                          html += `
                          <div class="relative grid col-span-${el.columns ? el.columns : '3'} ${el.hidden && "hidden"}"" name="${el.name}">
-                         <h6 class="text-xl font-bold">${el.label}</h6>
+                              <h6 class="text-xl font-bold">${el.label}</h6>
                          </div>
                          `
                          break
                     case 'p':
                          html += `
-                     <div class="relative grid col-span-${el.columns ? el.columns : '3'} ${el.hidden && "hidden"}"" name="${el.name}">
-                         <p>${el.label}</p>
-                     </div>
+                         <div class="relative grid col-span-${el.columns ? el.columns : '3'} ${el.hidden && "hidden"}"" name="${el.name}">
+                              <p>${el.label}</p>
+                         </div>
                      `
                          break
+                    case 'html':
+                         html += `
+                         <div class="relative grid col-span-${el.columns ? el.columns : '3'} ${el.hidden && "hidden"}"" name="${el.name}">
+                              ${el.html}
+                         </div>
+                     `
+                         break;
                     default:
                          break
                }

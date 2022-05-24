@@ -1165,7 +1165,7 @@ function Forms({ form_builder, selector, key_parent, columns, values = {}, showB
                     outline: 2px solid blue;
                     font-weight: bold;
                }
-               .form__checkbox:checked + div div {
+               .form__checkbox:checked + div div.form__checkbox--circle {
                     display: flex;
                     background: blue;
                     color: white;
@@ -1319,13 +1319,13 @@ function Forms({ form_builder, selector, key_parent, columns, values = {}, showB
                                    <div class="relative flex rounded-xl w-full">
                                         <input type="checkbox" class="cursor-pointer focus:outline-none focus:ring-4 ring-inset rounded-xl focus:ring-blue-200 absolute w-full h-full appearance-none form__checkbox" data-multiple="true" data-keyparent="${el.name}" data-fullkey="${key_parent || "" + check.title}" name="${check.title}" ${htmlDataAttributes} data-alternatename="${check.alternate_name || ""}" />
                                         <div class="text-sm rounded-xl flex flex-col gap-2 items-center justify-center">
-                                             <div class="absolute top-2 right-2 w-6 h-6 flex items-center justify-center text-sm bg-opacity-30 rounded-full bg-white hidden">
+                                             <div class="form__checkbox--circle absolute top-2 right-2 w-6 h-6 flex items-center justify-center text-sm bg-opacity-30 rounded-full bg-white hidden">
                                                   <i class="fas fa-check"></i>
                                              </div>
                                              <div class="${!check?.icon && 'hidden'} bg-gray-100 p-2 rounded-lg">
                                                   <img src="${check?.icon}" style="max-width: 45px; max-height: 45px;" onerror="this.src='https://icons.veo365.com/image/167492439-no-photo-or-blank-image-icon-loading-images-or-missing-image-mark-image-not-available-or-image-comin.webp';" />
                                              </div>
-                                             <span class="flex font-medium">${check.title}</span>
+                                             <span class="flex font-medium text-center leading-4">${check.title}</span>
                                         </div>
                                    </div>
                               `
@@ -1343,7 +1343,7 @@ function Forms({ form_builder, selector, key_parent, columns, values = {}, showB
                          html += `
                               <div class="relative grid col-span-${el.columns ? el.columns : '3'} ${el.hidden && "hidden"}"">
                                    <label class="font-semibold mb-0 text-base block text-gray-900">${el.label} ${el.required ? '*' : ''}</label>
-                                   <div class="grid ${el?.options?.length > 0 ? "grid-cols-4 gap-3" : ""} w-full mt-1">
+                                   <div class="grid ${el?.options?.length > 0 ? "grid-cols-2 md:grid-cols-4 gap-3" : ""} w-full mt-1">
                                         ${htmlChekboxes}
                                    </div>
                               </div>

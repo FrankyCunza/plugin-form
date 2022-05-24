@@ -457,9 +457,11 @@ class Form {
                                    <table class="w-full">
                                         <thead class="bg-gray-50 h-12">
                                              <tr>
-                                             <th class="font-medium text-left px-3">Name</th>
-                                             <th class="font-medium text-left px-3">Value</th>
-                                             <th class="font-medium text-left px-3">Icon</th>
+                                                  <th class="font-medium text-left px-3">Name</th>
+                                                  <th class="font-medium text-left px-3">Value</th>
+                                                  <th class="font-medium text-left px-3">Icon</th>
+                                                  <th class="font-medium text-left px-3">Required</th>
+                                                  <th class="font-medium text-left px-3">Textarea</th>
                                              </tr>
                                         </thead>
                                         <tbody id="${this.idCustomFields.optionsBody}"></tbody>
@@ -916,7 +918,7 @@ class Form {
                case "checkbox":
                case "radio-multiple":
                     this.selectorsCustomFields.options.classList.remove("hidden")
-                    this.selectorsCustomFields.html.classList.remove("hidden")
+                    this.selectorsCustomFields.html.classList.add("hidden")
                     break;
                case "html":
                     this.selectorsCustomFields.options.classList.add("hidden")
@@ -961,6 +963,8 @@ class Form {
                     title: children[i].children[0].children[0].value,
                     value: children[i].children[1].children[0].value,
                     icon: children[i].children[2].children[0].value,
+                    required: children[i].children[3].children[0].checked,
+                    textarea: children[i].children[4].children[0].checked
                })
           }
           return array
@@ -977,6 +981,12 @@ class Form {
                </td>
                <td class="p-3 relative">
                     <input type="text" value="${option?.icon || ""}" placeholder="Value" class="${this.inputClass}" />
+               </td>
+               <td class="p-3 relative">
+                    <input type="checkbox" ${option?.required && 'checked'} placeholder="Value" class="${this.inputClass}" />
+               </td>
+               <td class="p-3 relative">
+                    <input type="checkbox" ${option?.textarea && 'checked'} placeholder="Value" class="${this.inputClass}" />
                     <button data-action="deleteoption" class="w-8 h-8 bg-red-200 text-red-800 rounded flex items-center justify-center absolute top-5 right-5"><i class="fas fa-trash pointer-events-none"></i></button>
                </td>
           </tr>
@@ -1153,11 +1163,12 @@ function Forms({ form_builder, selector, key_parent, columns, values = {}, showB
                }
                .form__checkbox:checked + div {
                     outline: 2px solid blue;
-                    color: blue;
                     font-weight: bold;
                }
                .form__checkbox:checked + div div {
-                    display: flex
+                    display: flex;
+                    background: blue;
+                    color: white;
                }
           </style>
     `
@@ -1199,7 +1210,7 @@ function Forms({ form_builder, selector, key_parent, columns, values = {}, showB
                     case "url":
                          html += `
                               <div class="relative grid col-span-${el.columns ? el.columns : '3'} ${el.hidden && "hidden"}"">
-                                   ${el.label && label(`<label class="font-semibold mb-0 text-sm block text-gray-600">${el.label} ${el.required ? '*' : ''}</label>`, el.info ? info(el.info) : '')}                            
+                                   ${el.label && label(`<label class="font-semibold mb-0 text-base block text-gray-900">${el.label} ${el.required ? '*' : ''}</label>`, el.info ? info(el.info) : '')}                            
                                    ${warning}
                                    <input value="${values[el?.name] ? values[el.name] : el.value || ""}" ${el.type == "image" ? `src='${el.value}'` : ""} type="${el.type.includes("field_") ? el.type.split("field_")[1] : el.type}" ${el.type == "file" ? 'multiple' : ''} data-fullkey="${key_parent || ""}${el.name}" name="${el.name}" ${htmlDataAttributes} data-alternatename="${el.alternate_name || el.alternateName || ""}" pattern="${el.pattern}" data-required="${el.required || false}" data-placeholder="${el.placeholder || el.label}" autocomplete="${el.name}" 
                                    class="${classInput}">
@@ -1210,7 +1221,7 @@ function Forms({ form_builder, selector, key_parent, columns, values = {}, showB
                     case "color":
                          html += `
                       <div class="relative grid col-span-${el.columns ? el.columns : '3'} ${el.hidden && "hidden"}"">
-                        ${label(`<label class="font-semibold mb-0 text-sm block text-gray-600">${el.label} ${el.required ? '*' : ''}</label>`, el.info ? info(el.info) : '')}     
+                        ${label(`<label class="font-semibold mb-0 text-base block text-gray-900">${el.label} ${el.required ? '*' : ''}</label>`, el.info ? info(el.info) : '')}     
                         ${warning}
                         <input value="${el.value}" type="color" name="${el.name}" class="w-full h-8">
                         ${checked}
@@ -1220,7 +1231,7 @@ function Forms({ form_builder, selector, key_parent, columns, values = {}, showB
                     case "image":
                          html += `
                               <div class="relative grid col-span-${el.columns ? el.columns : '3'} ${el.hidden && "hidden"}"">
-                                   ${label(`<label class="font-semibold mb-0 text-sm block text-gray-600">${el.label} ${el.required ? '*' : ''}</label>`, el.info ? info(el.info) : '')}     
+                                   ${label(`<label class="font-semibold mb-0 text-base block text-gray-900">${el.label} ${el.required ? '*' : ''}</label>`, el.info ? info(el.info) : '')}     
                                    <input src="${el.value}" type="image" name="${el.name}" class="w-full">
                               </div>
                          `
@@ -1229,7 +1240,7 @@ function Forms({ form_builder, selector, key_parent, columns, values = {}, showB
                     case 'select':
                          html += `
                               <div class="relative grid col-span-${el.columns ? el.columns : '3'} ${el.hidden && "hidden"}"">
-                              ${label(`<label class="font-semibold mb-0 text-sm block text-gray-600">${el.label} ${el.required ? '*' : ''}</label>`, el.info ? info(el.info) : '')} 
+                              ${label(`<label class="font-semibold mb-0 text-base block text-gray-900">${el.label} ${el.required ? '*' : ''}</label>`, el.info ? info(el.info) : '')} 
                               ${warning}
                               <select type="${types[el.type]}" value="${values[el?.name] ? values[el.name] : el.value || ""}" data-fullkey="${key_parent || ""}${el.name}" name="${el.name}" ${htmlDataAttributes} data-alternatename="${el.alternate_name || el.alternateName || ""}"  data-required="${el.required}" data-placeholder="${el.placeholder || el.label}" autocomplete="${el.name}" 
                               class="${classInput}">
@@ -1256,7 +1267,7 @@ function Forms({ form_builder, selector, key_parent, columns, values = {}, showB
                     case 'radio':
                          html += `
                          <div class="relative grid col-span-${el.columns ? el.columns : '3'} ${el.hidden && "hidden"}"">
-                              ${label(`<label class="font-semibold mb-0 text-sm block text-gray-600">${el.label} ${el.required ? '*' : ''}</label>`, el.info ? info(el.info) : '')} 
+                              ${label(`<label class="font-semibold mb-0 text-base block text-gray-900">${el.label} ${el.required ? '*' : ''}</label>`, el.info ? info(el.info) : '')} 
                               <div class="flex">
                                    <div>
                                         <label class="flex border border-gray-200 px-3 cursor-pointer py-2 rounded-xl w-max items-center">
@@ -1292,7 +1303,7 @@ function Forms({ form_builder, selector, key_parent, columns, values = {}, showB
                          })
                          html += `
                          <div class="relative grid col-span-${el.columns ? el.columns : '3'} ${el.hidden && "hidden"}"">
-                              ${label(`<label class="font-semibold mb-0 text-sm block text-gray-600">${el.label} ${el.required ? '*' : ''}</label>`, el.info ? info(el.info) : '')} 
+                              ${label(`<label class="font-semibold mb-0 text-base block text-gray-900">${el.label} ${el.required ? '*' : ''}</label>`, el.info ? info(el.info) : '')} 
                               <div class="flex flex-col gap-2">
                                    ${htmlOptions}
                               </div>
@@ -1307,11 +1318,11 @@ function Forms({ form_builder, selector, key_parent, columns, values = {}, showB
                               htmlChekboxes += `
                                    <div class="relative flex rounded-xl w-full">
                                         <input type="checkbox" class="cursor-pointer focus:outline-none focus:ring-4 ring-inset rounded-xl focus:ring-blue-200 absolute w-full h-full appearance-none form__checkbox" data-multiple="true" data-keyparent="${el.name}" data-fullkey="${key_parent || "" + check.title}" name="${check.title}" ${htmlDataAttributes} data-alternatename="${check.alternate_name || ""}" />
-                                        <div class="text-sm rounded-xl">
+                                        <div class="text-sm rounded-xl flex flex-col items-center justify-center">
                                              <div class="absolute top-2 right-2 w-6 h-6 flex items-center justify-center text-sm bg-opacity-30 rounded-full bg-white hidden">
                                                   <i class="fas fa-check"></i>
                                              </div>
-                                             ${check.title}
+                                             <span class="flex font-medium">${check.title}</span>
                                         </div>
                                    </div>
                               `
@@ -1328,7 +1339,7 @@ function Forms({ form_builder, selector, key_parent, columns, values = {}, showB
                               `
                          html += `
                               <div class="relative grid col-span-${el.columns ? el.columns : '3'} ${el.hidden && "hidden"}"">
-                                   <label class="font-semibold mb-0 text-sm block text-gray-600">${el.label} ${el.required ? '*' : ''}</label>
+                                   <label class="font-semibold mb-0 text-base block text-gray-900">${el.label} ${el.required ? '*' : ''}</label>
                                    <div class="grid ${el?.options?.length > 0 ? "grid-cols-4 gap-3" : ""} w-full mt-1">
                                         ${htmlChekboxes}
                                    </div>
@@ -1339,7 +1350,7 @@ function Forms({ form_builder, selector, key_parent, columns, values = {}, showB
                     case 'textarea':
                          html += `
                          <div class="relative grid col-span-${el.columns ? el.columns : '3'} ${el.hidden && "hidden"}" ${el.hide ? 'hidden' : ''}" name="blockform${el.name}">
-                              ${label(`<label class="font-semibold mb-0 text-sm block text-gray-600">${el.label} ${el.required ? '*' : ''}</label>`, el.info ? info(el.info) : '')} 
+                              ${label(`<label class="font-semibold mb-0 text-base block text-gray-900">${el.label} ${el.required ? '*' : ''}</label>`, el.info ? info(el.info) : '')} 
                               ${warning}
                               <textarea data-fullkey="${key_parent || "" + el.name}" spellcheck="false" autocomplete="off" name="${el.name}" ${htmlDataAttributes} data-alternatename="${el.alternate_name || el.alternateName || ""}" pattern="${el.pattern}" data-required="${el.required}" data-placeholder="${el.placeholder || el.label}" autocomplete="${el.name}" 
                               class="${classInput}"></textarea>

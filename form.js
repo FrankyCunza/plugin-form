@@ -529,7 +529,6 @@ class Form {
                     case "field_password":
                     case "field_file":
                     case "field_number":
-                    case "checkbox":
                     case "color":
                     case "date":
                     case "datetime-local":
@@ -548,8 +547,43 @@ class Form {
                     case "text":
                     case "time":
                     case "url":
-                    case "checkbox":
                          htmlField = `<input ${el.type == "image" ? `src="${el.value}"` : ""} type="${el.type.includes("field_") ? el.type.split("field_")[1] : el.type}" class="${this.inputClass}" placeholder="${el.placeholder || ""}" />`
+                         break;
+                    case "checkbox":
+                         let html = ""
+                         if (el?.options.length > 0) {
+                              html += `<div class="grid grid-cols-2 md:grid-cols-3 gap-3">`
+                              el.options.forEach(opt => {
+                                   html += `
+                                        <div class="border border-solid border-gray-400 rounded-lg p-3 flex flex-col items-center justify-center shadow hover:shadow-xl">
+                                             <label>${opt.title}</label>
+                                             <input type="checkbox" />
+                                        </div>
+                                   `
+                              })
+                              html += `</div>`
+                         } else {
+                              html += `<input type="checkbox" />`
+                         }
+                         htmlField = html
+                         break;
+                    case "radio-multiple":
+                         let htmlRadio = ""
+                         if (el?.options.length > 0) {
+                              htmlRadio += `<div class="grid grid-cols-2 md:grid-cols-3 gap-3">`
+                              el.options.forEach(opt => {
+                                   htmlRadio += `
+                                        <div class="border border-solid border-gray-400 rounded-lg p-3 flex flex-col items-center justify-center shadow hover:shadow-xl">
+                                             <label>${opt.title}</label>
+                                             <input type="radio" />
+                                        </div>
+                                   `
+                              })
+                              htmlRadio += `</div>`
+                         } else {
+                              htmlRadio += `<input type="checkbox" />`
+                         }
+                         htmlField = htmlRadio
                          break;
                     case "image":
                          htmlField = `<input src="${el.value}" type="image" class="w-full" placeholder="${el.placeholder || ""}" />`
@@ -1530,7 +1564,7 @@ function constructFormValues({ builder, values }) {
                                    <tr class="border-t">
                                         <td class="p-2 font-semibold bg-gray-50 border-r">${key}</td>
                                         <td class="p-2 w-12">
-                                             ${value ? "<i class='fas fa-check text-green-600'></i>" : "<i class='fas fa-times text-red-600'></i>"}
+                                             ${value?.checked === true || value === true ? "<i class='fas fa-check text-green-600'></i>" : "<i class='fas fa-times text-red-600'></i>"}
                                         </td>
                                    </tr>
                               `

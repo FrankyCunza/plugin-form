@@ -1325,6 +1325,7 @@ function Forms({ form_builder, selector, key_parent, columns, values = {}, showB
                               htmlOptions += `
                                    <label class="bg-gray-50 hover:bg-gray-100 p-4 border border-gray-300 rounded-xl relative cursor-pointer">
                                         <input type="radio" data-multiple=true class="cursor-pointer" 
+                                             data-required="${el.required}"
                                              data-multiple="true" 
                                              data-keyparent="${el.name}" 
                                              data-value=${check.value}
@@ -1704,6 +1705,13 @@ async function validateForm({ selector, form_builder, name }) {
                               }
                               form[forms[i].getAttribute("name")] = selected  
                               fd.append(forms[i].getAttribute("name"), selected)
+
+                              if (forms[i].dataset.required == 'true' && !form[forms[i].getAttribute("name")]) {
+                                   forms[i].parentElement.classList.add("border-red-300")
+                                   checked.push(false)
+                              } else {
+                                   forms[i].parentElement.classList.remove("border-red-300")
+                              }
                          }
                          break;
                     case "field_checkboxes":

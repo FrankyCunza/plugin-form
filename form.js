@@ -231,6 +231,7 @@ class Form {
           this.types = types
           this.idFields = {
                name: "fieldName",
+               nameAdditional: "fieldNameAdditional",
                info: "fieldInfo",
                alternateName: "fieldAlternateName",
                columns: "fieldColumns",
@@ -268,6 +269,7 @@ class Form {
           this.selectorFormColumns = document.getElementById(this.idFormColumns)
           this.selectorsFields = {
                name: document.getElementById(this.idFields.name),
+               nameAdditional: document.getElementById(this.idFields.nameAdditional),
                info: document.getElementById(this.idFields.info),
                alternateName: document.getElementById(this.idFields.alternateName),
                value: document.getElementById(this.idFields.value),
@@ -396,6 +398,11 @@ class Form {
                               <div>
                                    <label class="text-gray-800 font-medium">Name</label>
                                    <input type="text" id="${this.idFields.name}" 
+                                   class="${this.inputClass}" />
+                              </div>
+                              <div>
+                                   <label class="text-gray-800 font-medium">Additional name</label>
+                                   <input type="text" id="${this.idFields.nameAdditional}" 
                                    class="${this.inputClass}" />
                               </div>
                               <div>
@@ -732,6 +739,7 @@ class Form {
           else {
                name = this.selectorsFields.alternateName.value
           }
+          const nameAdditional = this.selectorsFields.nameAdditional.value
           const info = this.selectorsFields.info.value
           const alternateName = this.selectorsFields.alternateName.value
           const columns = this.selectorsFields.columns.value
@@ -747,6 +755,7 @@ class Form {
                     this.forms[this.indexSection]['blocks'][this.indexBlock]['fields'].push({
                          label,
                          name,
+                         nameAdditional,
                          info,
                          alternateName,
                          value,
@@ -763,6 +772,7 @@ class Form {
                     let item = this.forms[this.indexSection]['blocks'][this.indexBlock]['fields'][this.indexField]
                     item.label = label
                     item.name = name
+                    item.nameAdditional = nameAdditional
                     item.info = info
                     item.alternateName = alternateName
                     item.value = value
@@ -817,6 +827,7 @@ class Form {
      editField() {
           let field = this.forms[this.indexSection]['blocks'][this.indexBlock]['fields'][this.indexField]
           this.selectorsFields.name.value = field.label || ""
+          this.selectorsFields.nameAdditional.value = field.nameAdditional || ""
           this.selectorsFields.info.value = field.info || ""
           this.selectorsFields.alternateName.value = field.alternateName || ""
           this.selectorsFields.value.value = field.value || ""
@@ -843,6 +854,8 @@ class Form {
                     }
                     break;
                case "field":
+                    this.selectorsFields.name.value = ""
+                    this.selectorsFields.nameAdditional.value = ""
                     if (this.indexBlock < 0 || this.indexBlock === null || this.indexBlock === undefined) {
                          alert("Por favor seleccione un bloque")
                          return false;
@@ -1244,7 +1257,7 @@ function Forms({ form_builder, selector, key_parent, columns, values = {}, showB
                     case "url":
                          html += `
                               <div class="relative grid col-span-${el.columns ? el.columns : '3'} ${el.hidden && "hidden"}"">
-                                   ${el.label && label(`<label class="font-semibold mb-0 text-base block text-gray-900">${el.label} ${el.required ? '*' : ''}</label>`, el.info ? info(el.info) : '')}                            
+                                   ${el.label && label(`<label class="font-semibold mb-0 text-base block text-gray-900">${el.label} ${el?.nameAdditional ? `(${el.nameAdditional})`  : ""} ${el.required ? '*' : ''}</label>`, el.info ? info(el.info) : '')}                            
                                    ${warning}
                                    <input value="${values[el?.name] ? values[el.name] : el.value || ""}" ${el.type == "image" ? `src='${el.value}'` : ""} type="${el.type.includes("field_") ? el.type.split("field_")[1] : el.type}" ${el.type == "file" ? 'multiple' : ''} data-fullkey="${key_parent || ""}${el.name}" name="${el.name}" ${htmlDataAttributes} data-alternatename="${el.alternate_name || el.alternateName || ""}" pattern="${el.pattern}" data-required="${el.required || false}" data-placeholder="${el.placeholder || el.label}" autocomplete="${el.name}" 
                                    class="${classInput}">
@@ -1659,6 +1672,7 @@ async function validateForm({ selector, form_builder, name }) {
                     case "url":
                     case "textarea":
                     case "select-one":
+                    case "select":
                          form[forms[i].getAttribute(name || "name")] = forms[i].value
                          fd.append(forms[i].getAttribute(name || "name"), forms[i].value)
                          if(field?.skipValidation == true) {

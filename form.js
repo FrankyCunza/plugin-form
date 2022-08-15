@@ -17,7 +17,7 @@ const COUNTRIES = [
     }
 ]
 
-const classNameInputSelect = "p-2.5 focus:outline-none rounded bg-white focus:outline-none focus:ring-4 focus:shadow-md focus:ring-blue-200 w-full border border-solid border-gray-300 hover:border-gray-400"
+const classNameInputSelectHookForm = "p-2.5 focus:outline-none rounded bg-white focus:outline-none focus:ring-4 focus:shadow-md focus:ring-blue-200 w-full border border-solid border-gray-300 hover:border-gray-400"
 class CustomField extends HTMLElement {
     constructor() {
         super()
@@ -31,7 +31,7 @@ class CustomField extends HTMLElement {
         this.name = null
         this.option = null
         this.optionValue = null
-        this.classNameInput = classNameInputSelect
+        this.classNameInput = classNameInputSelectHookForm
         this.checkedHtml = '<span class="hidden absolute bottom-4 text-green-500 right-2 pointer-events-none iconvalidation"><i class="fas fa-check"></i></span>'
         this.warningHtml = '<span class="hidden absolute bottom-4 text-red-500 right-2 pointer-events-none iconvalidation"><i class="fas fa-exclamation-triangle"></i></span>'
         this.inputFilePreviewImage = null
@@ -1253,18 +1253,24 @@ class Form {
     }
 
     resetFields(data) {
-        switch (this.sections) {
-            case 3:
-                break;
-            case 2:
-                break;
-            case 1:
-                this.forms[this.currentLanguage]['sections'][this.indexSection]['blocks'][this.indexBlock]['fields'] = this.resetPositions(data)
-                this.printFields();
-                break;
-            default:
-                break;
-        }
+         console.log(data)
+         if ("en" in data) {
+              this.forms = data
+              this.printFields()
+         } else {
+              switch (this.sections) {
+                  case 3:
+                      break;
+                  case 2:
+                      break;
+                  case 1:
+                      this.forms[this.currentLanguage]['sections'][this.indexSection]['blocks'][this.indexBlock]['fields'] = this.resetPositions(data[0]['blocks'][0]['fields'])
+                      this.printFields();
+                      break;
+                  default:
+                      break;
+              }
+         }
     }
 
     get options() {

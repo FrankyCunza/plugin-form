@@ -7,151 +7,144 @@
      <meta name="viewport" content="width=device-width, initial-scale=1.0">
      <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
      <link href="https://cdnjs.cloudflare.com/ajax/libs/tailwindcss/2.2.19/tailwind.min.css" rel="stylesheet">
+     <link rel="stylesheet" href="form.css">
      <title>Plugin Form</title>
 </head>
 
 <body>
      <div class="grid grid-cols-1 w-screen gap-4 p-4">
-          <form novalidate id="construct"></form>
-          <div id="form"></div>
+          <div>
+               <h2 class="font-bold text-2xl">BUILDER</h2>
+               <form novalidate id="construct"></form>
+          </div>
+          <div id="form" class="p-4 bg-gray-100 border border-solid border-gray-500"></div>
           <div id="values"></div>
      </div>
      <script src="https://cdn.tailwindcss.com/3.0.0"></script>
      <script src="form.js"></script>
      <script>
-          let form = new Form('form', { sections: 3 })
-          form.resetFields([
-               {
-                    "alternateName": "",
-                    "columns": "1",
-                    "info": "",
-                    "label": "SELECT",
-                    "name": "select",
-                    "options": [
-                         {
-                              "title": "DAVID",
-                              "value": "1"
-                         },
-                         {
-                              "title": "ERICK",
-                              "value": "2"
-                         }
-                    ],
-                    "pattern": "",
-                    "position": 8,
-                    "required": false,
-                    "type": "select",
-                    "value": ""
-               },
-               {
-                    "alternateName": "",
-                    "columns": "1",
-                    "info": "",
-                    "label": "25 H2",
-                    "name": "25_h2",
-                    "options": [
-                         {
-                              "title": "",
-                              "value": ""
-                         },
-                         {
-                              "title": "",
-                              "value": ""
-                         }
-                    ],
-                    "pattern": "",
-                    "position": 31,
-                    "required": true,
-                    "type": "H2",
-                    "value": "HOLA DAVID H2"
-               },
-               {
-                    "alternateName": "",
-                    "columns": "1",
-                    "info": "",
-                    "label": "26 H3",
-                    "name": "26_h3",
-                    "options": [],
-                    "pattern": "",
-                    "position": 32,
-                    "required": true,
-                    "type": "H3",
-                    "value": ""
-               },
-               {
-                    "alternateName": "",
-                    "columns": "1",
-                    "info": "",
-                    "label": "27 H4",
-                    "name": "27_h4",
-                    "options": [],
-                    "pattern": "",
-                    "position": 33,
-                    "required": true,
-                    "type": "H4",
-                    "value": ""
-               },
-               {
-                    "alternateName": "",
-                    "columns": "1",
-                    "info": "",
-                    "label": "30 PARAGRAPH",
-                    "name": "30_paragraph",
-                    "options": [],
-                    "pattern": "",
-                    "position": 34,
-                    "required": true,
-                    "type": "p",
-                    "value": ""
-               },
-               {
-                    "alternateName": "",
-                    "columns": "1",
-                    "info": "",
-                    "label": "28 H5",
-                    "name": "28_h5",
-                    "options": [],
-                    "pattern": "",
-                    "position": 35,
-                    "required": true,
-                    "type": "H5",
-                    "value": ""
-               },
-               {
-                    "alternateName": "",
-                    "columns": "1",
-                    "info": "",
-                    "label": "29 H6",
-                    "name": "29_h6",
-                    "options": [],
-                    "pattern": "",
-                    "position": 36,
-                    "required": true,
-                    "type": "H6",
-                    "value": ""
-               }
-          ])
+          let form = new Form('form', { sections: 1 })
+          // form.resetFields([
+          //      {
+          //           "alternateName": "",
+          //           "columns": "1",
+          //           "info": "",
+          //           "label": "SELECT",
+          //           "name": "select",
+          //           "options": [
+          //                {
+          //                     "title": "DAVID",
+          //                     "value": "1"
+          //                },
+          //                {
+          //                     "title": "ERICK",
+          //                     "value": "2"
+          //                }
+          //           ],
+          //           "pattern": "",
+          //           "position": 8,
+          //           "required": false,
+          //           "type": "select",
+          //           "value": ""
+          //      },
+          //      {
+          //           "alternateName": "",
+          //           "columns": "1",
+          //           "info": "",
+          //           "label": "25 H2",
+          //           "name": "25_h2",
+          //           "options": [
+          //                {
+          //                     "title": "",
+          //                     "value": ""
+          //                },
+          //                {
+          //                     "title": "",
+          //                     "value": ""
+          //                }
+          //           ],
+          //           "pattern": "",
+          //           "position": 31,
+          //           "required": true,
+          //           "type": "H2",
+          //           "value": "HOLA DAVID H2"
+          //      },
+          //      {
+          //           "alternateName": "",
+          //           "columns": "1",
+          //           "info": "",
+          //           "label": "26 H3",
+          //           "name": "26_h3",
+          //           "options": [],
+          //           "pattern": "",
+          //           "position": 32,
+          //           "required": true,
+          //           "type": "H3",
+          //           "value": ""
+          //      },
+          //      {
+          //           "alternateName": "",
+          //           "columns": "1",
+          //           "info": "",
+          //           "label": "27 H4",
+          //           "name": "27_h4",
+          //           "options": [],
+          //           "pattern": "",
+          //           "position": 33,
+          //           "required": true,
+          //           "type": "H4",
+          //           "value": ""
+          //      },
+          //      {
+          //           "alternateName": "",
+          //           "columns": "1",
+          //           "info": "",
+          //           "label": "30 PARAGRAPH",
+          //           "name": "30_paragraph",
+          //           "options": [],
+          //           "pattern": "",
+          //           "position": 34,
+          //           "required": true,
+          //           "type": "p",
+          //           "value": ""
+          //      },
+          //      {
+          //           "alternateName": "",
+          //           "columns": "1",
+          //           "info": "",
+          //           "label": "28 H5",
+          //           "name": "28_h5",
+          //           "options": [],
+          //           "pattern": "",
+          //           "position": 35,
+          //           "required": true,
+          //           "type": "H5",
+          //           "value": ""
+          //      },
+          //      {
+          //           "alternateName": "",
+          //           "columns": "1",
+          //           "info": "",
+          //           "label": "29 H6",
+          //           "name": "29_h6",
+          //           "options": [],
+          //           "pattern": "",
+          //           "position": 36,
+          //           "required": true,
+          //           "type": "H6",
+          //           "value": ""
+          //      }
+          // ])
 
           let data = [
                {
                     "alternateName": "",
                     "columns": "1",
                     "info": "",
-                    "label": "Name",
-                    "name": "text",
+                    "label": "Nombre",
+                    "name": "name",
                     skipValidation: true,
-                    "options": [
-                         {
-                              "title": "DAVID",
-                              "value": "1"
-                         },
-                         {
-                              "title": "ERICK",
-                              "value": "2"
-                         }
-                    ],
                     "pattern": "",
-                    "position": 1,
                     "required": true,
                     "type": "text",
                     "value": ""
@@ -162,18 +155,7 @@
                     "info": "",
                     "label": "Comida",
                     "name": "comida",
-                    "options": [
-                         {
-                              "title": "DAVID",
-                              "value": "1"
-                         },
-                         {
-                              "title": "ERICK",
-                              "value": "2"
-                         }
-                    ],
                     "pattern": "",
-                    "position": 1,
                     "required": false,
                     "type": "radio",
                     "value": ""
@@ -187,15 +169,14 @@
                     "options": [
                          {
                               "title": "DAVID",
-                              "value": "1"
+                              "value": "david"
                          },
                          {
                               "title": "ERICK",
-                              "value": "2"
+                              "value": "erick"
                          }
                     ],
                     "pattern": "",
-                    "position": 1,
                     "required": false,
                     "type": "select",
                     "value": ""
@@ -211,223 +192,42 @@
                     "type": "checkbox",
                     "required": true,
                     "hidden": false,
-                    "position": 2,
                     "options": [
                          {
                               "title": "Argentina",
-                              "value": "Argentina"
+                              "value": "argentina"
                          },
                          {
                               "title": "Peru",
-                              "value": "Peru"
+                              "value": "peru"
                          },
                          {
                               "title": "España",
-                              "value": "España"
+                              "value": "spain"
                          }
                     ]
+               },
+               {
+                    "label": "Are you married?",
+                    "name": "areyoumarried",
+                    "info": "",
+                    "alternateName": "",
+                    "value": "",
+                    "columns": "1",
+                    "pattern": "",
+                    "type": "checkbox",
+                    "required": false,
+                    "hidden": false,
                }
           ]
-          let dataa = [
-               {
-                    label: "Button",
-                    name: "button",
-                    type: "button",
-                    value: "Button",
-                    position: 1,
-                    required: true
-               },
-               {
-                    label: "Checkbox",
-                    name: "checkbox",
-                    type: "checkbox",
-                    value: "Checkbox",
-                    position: 1,
-                    options: [
-                         {
-                              title: "Asma",
-                              values: "asma"
-                         }
-                    ]
-               },
-               {
-                    label: "Color",
-                    name: "color",
-                    type: "color",
-                    value: "Color",
-                    position: 1,
-                    required: true
-               },
-               {
-                    label: "Date",
-                    name: "date",
-                    type: "date",
-                    value: "date",
-                    position: 1
-               },
-               {
-                    label: "Datetime Local",
-                    name: "datetime-local",
-                    type: "datetime-local",
-                    value: "datetime-local",
-                    position: 1
-               },
-               {
-                    label: "Email",
-                    name: "email",
-                    type: "email",
-                    value: "email",
-                    position: 1
-               },
-               {
-                    label: "File",
-                    name: "file",
-                    type: "file",
-                    value: "file",
-                    position: 1
-               },
-               {
-                    label: "Hidden",
-                    name: "hidden",
-                    type: "hidden",
-                    value: "hidden",
-                    position: 1
-               },
-               // {
-               //      label: "Image",
-               //      name: "image",
-               //      type: "image",
-               //      value: "https://concepto.de/wp-content/uploads/2015/03/paisaje-800x409.jpg",
-               //      position: 1
-               // },
-               {
-                    label: "Month",
-                    name: "month",
-                    type: "month",
-                    value: "month",
-                    position: 1
-               },
-               {
-                    label: "Number",
-                    name: "number",
-                    type: "number",
-                    value: "number",
-                    position: 1
-               },
-               {
-                    label: "Password",
-                    name: "password",
-                    type: "password",
-                    value: "password",
-                    position: 1
-               },
-               {
-                    label: "Radio",
-                    name: "radio",
-                    type: "radio",
-                    value: "radio",
-                    position: 1
-               },
-               {
-                    label: "Range",
-                    name: "range",
-                    type: "range",
-                    value: "range",
-                    position: 1
-               },
-               {
-                    label: "Reset",
-                    name: "reset",
-                    type: "reset",
-                    value: "reset",
-                    position: 1
-               },
-               {
-                    label: "Search",
-                    name: "search",
-                    type: "search",
-                    value: "search",
-                    position: 1
-               },
-               {
-                    label: "Submit",
-                    name: "submit",
-                    type: "submit",
-                    value: "submit",
-                    position: 1
-               },
-               {
-                    label: "Tel",
-                    name: "tel",
-                    type: "tel",
-                    value: "tel",
-                    position: 1
-               },
-               {
-                    label: "Text",
-                    name: "text",
-                    type: "text",
-                    value: "text",
-                    position: 1
-               },
-               {
-                    label: "Time",
-                    name: "time",
-                    type: "time",
-                    value: "time",
-                    position: 1
-               },
-               {
-                    label: "Url",
-                    name: "url",
-                    type: "url",
-                    value: "url",
-                    position: 1
-               },
-               {
-                    label: "Week",
-                    name: "week",
-                    type: "week",
-                    value: "week",
-                    position: 1
-               },
-               {
-                    label: "Are your married?",
-                    name: "are_married",
-                    type: "checkbox",
-                    position: 1
-               },
-               {
-                    label: "Radio",
-                    name: "radio",
-                    type: "radio",
-                    position: 1
-               },
-               {
-                    label: "Are your +18?",
-                    name: "are_married_eighteen",
-                    type: "checkbox",
-                    position: 1,
-                    options: [
-                         {
-                              title: "Yes",
-                              value: "yes"
-                         }
-                    ]
-               }
-          ]
-          console.log(form.Forms)
 
           Forms({
-               form_builder: data, selector: "construct", key_parent: "", columns: 3, values: {
-                    primary_concern: "Nice",
-                    have_you_recently_been_tested_for_covid19: "Yes"
-               }
+               form_builder: data, selector: "construct", key_parent: "", columns: 1, values: {}
           })
 
           document.getElementById("construct").addEventListener("submit", e => {
                e.preventDefault();
-               validateForm({ selector: "construct", form_builder: data, name: "" }).then(res => {
+               validateForm({ selector: "construct", form_builder: [], name: "" }).then(res => {
                     console.log(res[1])
                }).catch(err => {
                     console.log(err)

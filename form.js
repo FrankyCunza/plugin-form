@@ -770,17 +770,14 @@ class Form {
     constructBody() {
         let htmlSection = `
                <div class="w-full bg-white" data-section="section" id="${this.colSectionId}">
-
           </div>
           `
         let htmlBlock = `
                <div class="w-full bg-white" data-section="block" id="${this.colBlockId}">
-
           </div>
           `
         let htmlField = `
                <div class="w-full bg-white" data-section="field" id="${this.colFieldId}">
-
           </div>
           `
         let html = ""

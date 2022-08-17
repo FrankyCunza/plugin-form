@@ -1,0 +1,22 @@
+{
+  "name": "plugin-form",
+  "version": "1.0.0",
+  "description": "",
+  "main": "form.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/FrankyCunza/plugin-form.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/FrankyCunza/plugin-form/issues"
+  },
+  "homepage": "https://github.com/FrankyCunza/plugin-form#readme",
+  "dependencies": {
+    "http-server": "^14.1.1"
+  }
+}

@@ -231,7 +231,7 @@ class CustomField extends HTMLElement {
         // console.log("Change attribute")
     }
 }
-window.customElements.define('custom-field', CustomField);
+window.customElements.define('custom-field-hook', CustomField);
 
 function uniqueIdForm() {
     const firstItem = {
@@ -1349,7 +1349,7 @@ class Form {
                 }
             ]
         })}
-                            <custom-field type="number" data-id="${this.idFormColumns}" label="Columns"></custom-field>
+                            <custom-field-hook type="number" data-id="${this.idFormColumns}" label="Columns"></custom-field-hook>
                         </div>
                     </div>
                     <div class="flex flex-col relative">
@@ -1600,7 +1600,7 @@ function Forms({ form_builder, selector = "", key_parent = "", columns = 1, valu
                     }
                     html += `
                               <div data-allfields="${formId}" data-indexblockfield="${i}" class="relative grid col-span-${el.columns ? el.columns : '3'} ${el.hidden ? "hidden" : ""}">
-                                   <custom-field 
+                                   <custom-field-hook 
                                         type="${el.type}" 
                                         alternatename="${el.alternate_name || ""}"
                                         pattern="${el.pattern || ""}"
@@ -1612,7 +1612,7 @@ function Forms({ form_builder, selector = "", key_parent = "", columns = 1, valu
                                         required="${el.required || false}" 
                                         data-name='${el.name}'
                                         ${htmlDataAttributes}
-                                        label="${el.label}">${htmlInt}</custom-field>
+                                        label="${el.label}">${htmlInt}</custom-field-hook>
                               </div>
                          `
                     break;
@@ -1624,7 +1624,7 @@ function Forms({ form_builder, selector = "", key_parent = "", columns = 1, valu
                             checkedRadio = true
                         }
                         htmlOptions += `
-                                   <custom-field 
+                                   <custom-field-hook 
                                         option="${check.title}"
                                         optionvalue="${check.value}"
                                         onlyfield="true"
@@ -1638,15 +1638,15 @@ function Forms({ form_builder, selector = "", key_parent = "", columns = 1, valu
                                         disabled="${el.disabled || false}" 
                                         required="${el.required || false}" 
                                         name="${el.name}" 
-                                        label="${el.label}">${htmlInt}</custom-field>
+                                        label="${el.label}">${htmlInt}</custom-field-hook>
                               `
                     })
                     html += `
                          <div data-allfields="${formId}" data-indexblockfield="${i}" class="relative grid col-span-${el.columns ? el.columns : '3'} ${el.hidden ? "hidden" : ""}">
-                              <custom-field 
+                              <custom-field-hook 
                                    type="label" 
                                    required="${el.required || false}" 
-                                   label="${el.label}"></custom-field>
+                                   label="${el.label}"></custom-field-hook>
                               <div class="flex flex-col gap-2">
                                    ${htmlOptions}
                               </div>
@@ -1670,7 +1670,7 @@ function Forms({ form_builder, selector = "", key_parent = "", columns = 1, valu
                 case 'p':
                     html += `
                               <div data-allfields="${formId}" data-indexblockfield="${i}" class="relative grid col-span-${el.columns ? el.columns : '3'} ${el.hidden ? "hidden" : ""}" name="${el.name}">
-                                   <custom-field type="${el.type}" label="${el.label}"></custom-field>
+                                   <custom-field-hook type="${el.type}" label="${el.label}"></custom-field-hook>
                               </div>`
                     break;
                 case 'html':

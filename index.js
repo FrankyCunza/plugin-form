@@ -1,1 +1,1 @@
-import { HookFormPanel, CustomField } from "./modules/components/form/index.js";
+import { HookFormPanel, CustomFieldHook } from "./modules_aputek/components/form/index.js";

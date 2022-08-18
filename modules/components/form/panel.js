@@ -13,7 +13,7 @@ export class HookFormPanel extends HTMLElement {
         this.currentBlock = null
         this.fields = null
         this.currentField = null
-        this.language = HOOKFORMCOUNTRIES[0]['name']
+        this.language = "es" || HOOKFORMCOUNTRIES[0]['name']
         this.data = {}
         this.levels = 1
     }
@@ -29,7 +29,7 @@ export class HookFormPanel extends HTMLElement {
     printLanguages() {
         let html = ""
         HOOKFORMCOUNTRIES.forEach(el => {
-            html += `<option value="${el.name}">${el.title}</option>`
+            html += `<option value="${el.name}" ${el.name === this.language ? "selected" : ""}>${el.title}</option>`
         })
         return html
     }
@@ -39,10 +39,10 @@ export class HookFormPanel extends HTMLElement {
         html += `
             <div class="grid grid-cols-3">
                 <div class="p-4">
-                    <custom-field label="Columnas" data-value="${this.data.columns}" type="text"></custom-field>
+                    <custom-field label="Columnas" data-value="${this.data?.columns || ""}" type="text"></custom-field>
                 </div>
                 <div class="p-4">
-                    <custom-field type="select" label="Language">
+                    <custom-field type="select" data-action="language" label="Language">
                         ${this.printLanguages()}
                     </custom-field>
                 </div>
@@ -149,12 +149,12 @@ export class HookFormPanel extends HTMLElement {
         let html = ""
         let htmlModalSection = `
             <h2 class="font-bold text-xl text-gray-800 mb-3">${type === "edit" ? "Edit" : "Add"} section</h2>
-            <custom-field type="text" data-value="${values}" onlyfield="true" required="true" name="inputsection"></custom-field>
+            <custom-field type="text" data-value="${values || ""}" onlyfield="true" required="true" name="inputsection"></custom-field>
             <button type="button" data-action="savesection" class="mt-3 bg-blue-600 px-4 py-3 w-full rounded-xl text-white">Save</button>
           `
         let htmlModalBlock = `
             <h2 class="font-bold text-xl text-gray-800 mb-3">${type === "edit" ? "Edit" : "Add"} block</h2>
-            <custom-field type="text" data-value="${values}" onlyfield="true" required="true" name="inputblock"></custom-field>
+            <custom-field type="text" data-value="${values || ""}" onlyfield="true" required="true" name="inputblock"></custom-field>
             <button type="button" data-action="saveblock" class="mt-3 bg-blue-600 px-4 py-3 w-full rounded-xl text-white">Save</button>
           `
         let htmlModalField = `
@@ -237,6 +237,7 @@ export class HookFormPanel extends HTMLElement {
     }
 
     toggleModal({ column, type = "add", values }) {
+        this.type = type
         this.querySelector("[data-modal]").classList.toggle("hidden")
         this.querySelector("[id='contentmodal']").innerHTML = this.printModals({ column, type, values })
     }
@@ -359,7 +360,13 @@ export class HookFormPanel extends HTMLElement {
         ]
     }) {
         this.data = data
+        this.printColumn()
+    }
+
+    printColumn() {
         if (this.levels == 3) {
+            this.querySelector("[data-column='block']").innerHTML = ""
+            this.querySelector("[data-column='field']").innerHTML = ""
             let html = ""
             this.data.form.forEach((el, index) => {
                 html += this.buttonColumn({ column: "section", index: index, el: el, title: el['title'][this.language] })
@@ -435,7 +442,6 @@ export class HookFormPanel extends HTMLElement {
     }
 
     editColumn({ column, index, key }) {
-        this.type = "edit"
         console.log(column)
         let values = null
         switch (column) {
@@ -467,6 +473,7 @@ export class HookFormPanel extends HTMLElement {
     }
 
     saveSection() {
+        console.log(this.type)
         validateForm({ selector: "[data-modal]" })
         .then(res => {
             console.log(res[1])
@@ -493,6 +500,13 @@ export class HookFormPanel extends HTMLElement {
         })
     }
 
+    changeLanguage(lang) {
+        this.language = lang
+        this.printColumn()
+        console.log(this.language)
+        console.log("Change")
+    }
+
     render() {
         let html = ""
         html += "<div class='relative shadow border border-gray-300'>"
@@ -507,7 +521,7 @@ export class HookFormPanel extends HTMLElement {
         this.addEventListener("click", e => {
             switch (e.target.dataset.action) {
                 case "modal":
-                    this.toggleModal({ column: e.target.dataset.name })
+                    this.toggleModal({ column: e.target.dataset.name, type: "add" })
                     break;
                 case "savesection":
                     this.saveSection()
@@ -527,6 +541,16 @@ export class HookFormPanel extends HTMLElement {
                 case "editblock":
                 case "editfield":
                     this.editColumn({ column: e.target.dataset.column, index: e.target.dataset.index, key: e.target.dataset.key })
+                    break;
+            }
+        })
+
+        this.addEventListener("change", e => {
+            switch (e.target.dataset.action) {
+                case "language":
+                    this.changeLanguage(e.target.value)
+                    break;
+                default:
                     break;
             }
         })

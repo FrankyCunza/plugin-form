@@ -415,10 +415,9 @@ export class HookFormPanel extends HTMLElement {
 
         if (levels == 1) {
             let html = ""
-            this.data.form[this.indexSection]['blocks'][this.indexBlock]['fields'].forEach((el, index) => {
-                html += this.buttonColumn({ column: "block", index: index, el: el, title: el['title'][this.language] })
-            })
-            this.querySelector("[data-column='field']").innerHTML = html
+            console.log(this.indexSection)
+            console.log(this.indexBlock)
+            console.log(this.data.form)
         }
         if (this.indexSection) {
             this.querySelector(`[data-action='columnsection'][data-index='${this.indexSection}']`).click()
@@ -628,8 +627,6 @@ export class HookFormPanel extends HTMLElement {
             this.data['form'][this.indexSection]['blocks'][this.indexBlock]['fields']['languages'][this.language][name] = {
                 label: label
             }
-            console.log("Field", field)
-            console.log(this.data['form'][this.indexSection]['blocks'][this.indexBlock])
             this.columns({ index: this.indexBlock, column: "block" })
             this.toggleModal({ column: "", type: "", values: "", hidden: true })
         }).catch(err => {
@@ -640,8 +637,6 @@ export class HookFormPanel extends HTMLElement {
     changeLanguage(lang) {
         this.language = lang
         this.printColumn(this.levels)
-        console.log(this.data.form)
-        console.log(this.language)
     }
 
     render() {
@@ -754,52 +749,8 @@ export class HookFormPanel extends HTMLElement {
                                         "en": "Form",
                                     },
                                     "fields": {
-                                        "constructor": {
-                                            "age": {
-                                                "type": "text",
-                                                "name": "age",
-                                                "pattern": "",
-                                                "position": 4,
-                                                "info": "Info",
-                                                "additionalName": "Additional Name",
-                                                "alternateName": "Alternate Name",
-                                                "pattern": "Pattern",
-                                                "type": "number",
-                                                "required": true,
-                                                "columns": 2
-                                            },
-                                            "names": {
-                                                "type": "text",
-                                                "name": "names",
-                                                "pattern": "",
-                                                "position": 4,
-                                                "info": "Info",
-                                                "additionalName": "Additional Name",
-                                                "alternateName": "Alternate Name",
-                                                "pattern": "Pattern",
-                                                "type": "radio",
-                                                "required": false,
-                                                "columns": 3
-                                            }
-                                        },
-                                        "languages": {
-                                            "es": {
-                                                "age": {
-                                                    "label": "Edad"
-                                                },
-                                                "names": {
-                                                    "label": "Nombres"
-                                                }
-                                            },
-                                            "en": {
-                                                "age": {
-                                                    "label": "Age"
-                                                },
-                                                "names": {
-                                                    "label": "Names"
-                                                }
-                                            }
-                                        }
+                                        "constructor": {},
+                                        "languages": {}
                                     }
                                 }
                             ]

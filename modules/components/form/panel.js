@@ -4,6 +4,7 @@ import { validateForm } from "./validate.js"
 export class HookFormPanel extends HTMLElement {
     constructor() {
         super()
+        this.type = "add"
         this.indexSection = null
         this.indexBlock = null
         this.indexField = null
@@ -136,45 +137,45 @@ export class HookFormPanel extends HTMLElement {
         return html
     }
 
-    constructTypes() {
+    constructTypes(type = "") {
         let html = ""
         HOOKFORMTYPES.forEach(el => {
-            html += `<option value="${el.name}">${el.title}</option>`
+            html += `<option value="${el.name}" ${type === el.name ? "selected" : ""}>${el.title}</option>`
         })
         return html
     }
 
-    printModals({ column, type }) {
+    printModals({ column, type, values }) {
         let html = ""
         let htmlModalSection = `
             <h2 class="font-bold text-xl text-gray-800 mb-3">${type === "edit" ? "Edit" : "Add"} section</h2>
-            <custom-field type="text" onlyfield="true" required="true" name="inputsection"></custom-field>
+            <custom-field type="text" data-value="${values}" onlyfield="true" required="true" name="inputsection"></custom-field>
             <button type="button" data-action="savesection" class="mt-3 bg-blue-600 px-4 py-3 w-full rounded-xl text-white">Save</button>
           `
         let htmlModalBlock = `
             <h2 class="font-bold text-xl text-gray-800 mb-3">${type === "edit" ? "Edit" : "Add"} block</h2>
-            <custom-field type="text" onlyfield="true" required="true" name="inputblock"></custom-field>
+            <custom-field type="text" data-value="${values}" onlyfield="true" required="true" name="inputblock"></custom-field>
             <button type="button" data-action="saveblock" class="mt-3 bg-blue-600 px-4 py-3 w-full rounded-xl text-white">Save</button>
           `
         let htmlModalField = `
             <h2 class="font-bold text-xl text-gray-800 mb-3">${type === "edit" ? "Edit" : "Add"} field</h2>
             <form novalidate class="grid grid-cols-3 gap-3" id="formpanel">
-                <custom-field type="text" required="true" label="Label" name="label"></custom-field>
-                <custom-field type="text" label="Aditional Name" name="additionalName"></custom-field>
-                <custom-field type="text" label="Info" name="info"></custom-field>
-                <custom-field type="text" label="Alternate name" name="alternateName"></custom-field>
+                <custom-field type="text" data-value="${values?.label || ""}" required="true" label="Label" name="label"></custom-field>
+                <custom-field type="text" data-value="${values?.additionalName || ""}" label="Aditional Name" name="additionalName"></custom-field>
+                <custom-field type="text" data-value="${values?.info || ""}" label="Info" name="info"></custom-field>
+                <custom-field type="text" data-value="${values?.alternateName || ""}" label="Alternate name" name="alternateName"></custom-field>
                 <custom-field type="select" label="Columns" name="columns">
-                    <option value="1">1</option>
-                    <option value="2">2</option>
-                    <option value="3">3</option>
+                    <option value="1" ${values?.columns === 1 ? "selected" : ""}>1</option>
+                    <option value="2" ${values?.columns === 2 ? "selected" : ""}>2</option>
+                    <option value="3" ${values?.columns === 3 ? "selected" : ""}>3</option>
                 </custom-field>
-                <custom-field type="text" label="Pattern" name="pattern"></custom-field>
+                <custom-field type="text" data-value="${values?.pattern || ""}" label="Pattern" name="pattern"></custom-field>
                 <custom-field type="select" label="Type" name="type">
-                    ${this.constructTypes()}
+                    ${this.constructTypes(values?.type)}
                 </custom-field>
                 <custom-field type="select" label="Required" name="required">
-                    <option value="true">Yes</option>
-                    <option value="false">No</option>
+                    <option value="true" ${values?.required === true ? "selected" : ""}>Yes</option>
+                    <option value="false" ${values?.required === false ? "selected" : ""}>No</option>
                 </custom-field>
             </form>
             <div class="flex flex-col mt-4 border border-gray-300 rounded-xl p-3 hidden">
@@ -235,9 +236,9 @@ export class HookFormPanel extends HTMLElement {
     `
     }
 
-    toggleModal({ column, type = "add" }) {
+    toggleModal({ column, type = "add", values }) {
         this.querySelector("[data-modal]").classList.toggle("hidden")
-        this.querySelector("[id='contentmodal']").innerHTML = this.printModals({ column, type })
+        this.querySelector("[id='contentmodal']").innerHTML = this.printModals({ column, type, values })
     }
 
     updateData(data = {
@@ -261,13 +262,27 @@ export class HookFormPanel extends HTMLElement {
                                     "type": "text",
                                     "name": "age",
                                     "pattern": "",
-                                    "position": 4
+                                    "position": 4,
+                                    "info": "Info",
+                                    "additionalName": "Additional Name",
+                                    "alternateName": "Alternate Name",
+                                    "pattern": "Pattern",
+                                    "type": "number",
+                                    "required": true,
+                                    "columns": 2
                                 },
                                 "names": {
                                     "type": "text",
                                     "name": "names",
                                     "pattern": "",
-                                    "position": 4
+                                    "position": 4,
+                                    "info": "Info",
+                                    "additionalName": "Additional Name",
+                                    "alternateName": "Alternate Name",
+                                    "pattern": "Pattern",
+                                    "type": "radio",
+                                    "required": false,
+                                    "columns": 3
                                 }
                             },
                             "languages": {
@@ -353,31 +368,37 @@ export class HookFormPanel extends HTMLElement {
         }
     }
 
-    buttonColumn({ column, index, el, title }) {
+    buttonColumn({ column, index, el, title, key = "" }) {
         return `
             <div class="flex">
                 <button 
                     type="button" 
                     data-index="${index}" 
+                    data-key="${key}"
                     data-column="${column}"
                     data-action="column${column}" 
                     class="focus:outline-none focus:ring-4 ring-inset focus:ring-blue-300 bg-gray-50 text-gray-800 font-medium p-3 w-full hover:bg-gray-100">
                     ${title}
                 </button>
-                    <div class="grid grid-cols-2">
-                        <button data-column="${column}" data-action="edit${column}" class="bg-blue-600 px-2 flex items-center justify-center text-white">
-                            <i class="fas fa-edit pointer-events-none text-xs"></i>
-                        </button>
-                        <button class="bg-red-600 px-2 flex items-center justify-center text-white">
-                            <i class="fas fa-edit pointer-events-none text-xs"></i>
-                        </button>
-                        <button class="bg-yellow-600 px-2 flex items-center justify-center text-white">
-                            <i class="fas fa-edit pointer-events-none text-xs"></i>
-                        </button>
-                        <button class="bg-green-600 px-2 flex items-center justify-center text-white">
-                            <i class="fas fa-edit pointer-events-none text-xs"></i>
-                        </button>
-                    </div>
+                <div class="grid grid-cols-2">
+                    <button 
+                        data-index="${index}" 
+                        data-key="${key}"   
+                        data-column="${column}" 
+                        data-action="edit${column}" 
+                        class="bg-blue-600 px-2 flex items-center justify-center text-white">
+                        <i class="fas fa-edit pointer-events-none text-xs"></i>
+                    </button>
+                    <button class="bg-red-600 px-2 flex items-center justify-center text-white">
+                        <i class="fas fa-edit pointer-events-none text-xs"></i>
+                    </button>
+                    <button class="bg-yellow-600 px-2 flex items-center justify-center text-white">
+                        <i class="fas fa-edit pointer-events-none text-xs"></i>
+                    </button>
+                    <button class="bg-green-600 px-2 flex items-center justify-center text-white">
+                        <i class="fas fa-edit pointer-events-none text-xs"></i>
+                    </button>
+                </div>
             </div>
         `
     }
@@ -400,20 +421,49 @@ export class HookFormPanel extends HTMLElement {
             let fields = this.data.form[this.indexSection]['blocks'][this.indexBlock]['fields']
             let indexField = 0
             Object.entries(fields['constructor']).forEach(([k, v]) => {
-                html += this.buttonColumn({ column: "field", index: indexField, el: v, title: fields['languages'][this.language][k]['label'] })
+                html += this.buttonColumn({ 
+                    column: "field", 
+                    index: indexField, 
+                    el: v, 
+                    title: fields['languages'][this.language][k]['label'],
+                    key: k
+                })
                 indexField++
             })
             this.querySelector("[data-column='field']").innerHTML = html
         }
     }
 
-    editColumn({ column }) {
-        console.log("nice")
+    editColumn({ column, index, key }) {
+        this.type = "edit"
         console.log(column)
-        if (column === "field") {
-            console.log("Field")
+        let values = null
+        switch (column) {
+            case "section":
+                this.indexSection = index
+                values = this.data['form'][this.indexSection]['title'][this.language]
+            break;
+                case "block":
+                this.indexBlock = index
+                values = this.data['form'][this.indexSection]['blocks'][this.indexBlock]['title'][this.language]
+            break;
+            case "field":
+                this.indexField = index
+                let field = this.data['form'][this.indexSection]['blocks'][this.indexBlock]['fields']
+                console.log(field)
+                values = {
+                    label: field['languages'][this.language][key]['label'],
+                    additionalName: field['constructor'][key]['additionalName'],
+                    info: field['constructor'][key]['info'],
+                    alternateName: field['constructor'][key]['alternateName'],
+                    columns: field['constructor'][key]['columns'],
+                    pattern: field['constructor'][key]['pattern'],
+                    type: field['constructor'][key]['type'],
+                    required: field['constructor'][key]['required']
+                }
+                break;
         }
-        this.toggleModal({ column: column, type: "edit" })
+        this.toggleModal({ column: column, type: "edit", values: values })
     }
 
     saveSection() {
@@ -476,7 +526,7 @@ export class HookFormPanel extends HTMLElement {
                 case "editsection":
                 case "editblock":
                 case "editfield":
-                    this.editColumn({ column: e.target.dataset.column })
+                    this.editColumn({ column: e.target.dataset.column, index: e.target.dataset.index, key: e.target.dataset.key })
                     break;
             }
         })

@@ -4,7 +4,9 @@ import { validateForm } from "./validate.js"
 export class HookFormPanel extends HTMLElement {
     constructor() {
         super()
-        this.sections = null
+        this.indexSection = null
+        this.indexBlock = null
+        this.indexField = null
         this.currentSection = null
         this.blocks = null
         this.currentBlock = null
@@ -46,6 +48,36 @@ export class HookFormPanel extends HTMLElement {
             </div>
         `
         return html
+    }
+
+    constructBody() {
+        let htmlSection = `
+               <div data-column="section"></div>
+          `
+        let htmlBlock = `
+               <div data-column="block"></div>
+          `
+        let htmlField = `
+               <div data-column="field"></div>
+          `
+        let htmlButtonActions = `
+               <div class="grid grid-cols-${this.levels} text-gray-800 w-full">
+          `
+        switch (this.levels) {
+            case 1:
+                htmlButtonActions += htmlField
+                break;
+            case 2:
+                htmlButtonActions += htmlBlock + htmlField
+                break;
+            case 3:
+                htmlButtonActions += htmlSection + htmlBlock + htmlField
+                break;
+            default:
+                break;
+        }
+        htmlButtonActions += `</div>`
+        return htmlButtonActions
     }
 
     constructTop() {
@@ -112,20 +144,20 @@ export class HookFormPanel extends HTMLElement {
         return html
     }
 
-    printModals(type) {
+    printModals({ column, type }) {
         let html = ""
         let htmlModalSection = `
-            <h2 class="font-bold text-xl text-gray-800 mb-3">Add section</h2>
+            <h2 class="font-bold text-xl text-gray-800 mb-3">${type === "edit" ? "Edit" : "Add"} section</h2>
             <custom-field type="text" onlyfield="true" required="true" name="inputsection"></custom-field>
             <button type="button" data-action="savesection" class="mt-3 bg-blue-600 px-4 py-3 w-full rounded-xl text-white">Save</button>
           `
         let htmlModalBlock = `
-            <h2 class="font-bold text-xl text-gray-800 mb-3">Add block</h2>
+            <h2 class="font-bold text-xl text-gray-800 mb-3">${type === "edit" ? "Edit" : "Add"} block</h2>
             <custom-field type="text" onlyfield="true" required="true" name="inputblock"></custom-field>
             <button type="button" data-action="saveblock" class="mt-3 bg-blue-600 px-4 py-3 w-full rounded-xl text-white">Save</button>
           `
         let htmlModalField = `
-            <h2 class="font-bold text-xl text-gray-800 mb-3">Add field</h2>
+            <h2 class="font-bold text-xl text-gray-800 mb-3">${type === "edit" ? "Edit" : "Add"} field</h2>
             <form novalidate class="grid grid-cols-3 gap-3" id="formpanel">
                 <custom-field type="text" required="true" label="Label" name="label"></custom-field>
                 <custom-field type="text" label="Aditional Name" name="additionalName"></custom-field>
@@ -177,7 +209,7 @@ export class HookFormPanel extends HTMLElement {
             </button>
             </div>
           `
-        switch (type) {
+        switch (column) {
             case "section":
                 html = htmlModalSection
                 break;
@@ -203,59 +235,185 @@ export class HookFormPanel extends HTMLElement {
     `
     }
 
-    toggleModal(name) {
+    toggleModal({ column, type = "add" }) {
         this.querySelector("[data-modal]").classList.toggle("hidden")
-        this.querySelector("[id='contentmodal']").innerHTML = this.printModals(name)
+        this.querySelector("[id='contentmodal']").innerHTML = this.printModals({ column, type })
     }
 
     updateData(data = {
         columns: 2,
         form: [
             {
-                "title_en": "Personal Data",
-                "title_es": "Informacion Personal",
-                "blocks": {
-                    "title_en": "Personal",
-                    "title_es": "Personal",
-                    "fields": {
-                        "constructor": {
-                            "age": {
-                                "type": "text",
-                                "name": "age",
-                                "pattern": "",
-                                "position": 4
-                            },
-                            "names": {
-                                "type": "text",
-                                "name": "names",
-                                "pattern": "",
-                                "position": 4
-                            }
+                "position": 1,
+                "title": {
+                    "en": "Personal Data",
+                    "es": "Informacion Personal"
+                },
+                "blocks": [
+                    {
+                        "title": {
+                            "en": "Personal",
+                            "es": "Personal",
                         },
-                        "languages": {
-                            "es": {
+                        "fields": {
+                            "constructor": {
                                 "age": {
-                                    "label": "Edad"
+                                    "type": "text",
+                                    "name": "age",
+                                    "pattern": "",
+                                    "position": 4
                                 },
                                 "names": {
-                                    "label": "Nombres"
+                                    "type": "text",
+                                    "name": "names",
+                                    "pattern": "",
+                                    "position": 4
                                 }
                             },
-                            "en": {
-                                "age": {
-                                    "label": "Age"
+                            "languages": {
+                                "es": {
+                                    "age": {
+                                        "label": "Edad"
+                                    },
+                                    "names": {
+                                        "label": "Nombres"
+                                    }
                                 },
-                                "names": {
-                                    "label": "Names"
+                                "en": {
+                                    "age": {
+                                        "label": "Age"
+                                    },
+                                    "names": {
+                                        "label": "Names"
+                                    }
                                 }
                             }
                         }
                     }
-                }
+                ]
+            },
+            {
+                "position": 2,
+                "title": {
+                    "en": "Personal Data Dos",
+                    "es": "Informacion Personal Dos"
+                },
+                "blocks": [
+                    {
+                        "title": {
+                            "en": "Personal Dos",
+                            "es": "Personal Dos",
+                        },
+                        "fields": {
+                            "constructor": {
+                                "age": {
+                                    "type": "text",
+                                    "name": "age",
+                                    "pattern": "",
+                                    "position": 4
+                                },
+                                "names": {
+                                    "type": "text",
+                                    "name": "names",
+                                    "pattern": "",
+                                    "position": 4
+                                }
+                            },
+                            "languages": {
+                                "es": {
+                                    "age": {
+                                        "label": "Edad Dos"
+                                    },
+                                    "names": {
+                                        "label": "Nombres Dos"
+                                    }
+                                },
+                                "en": {
+                                    "age": {
+                                        "label": "Age Dos"
+                                    },
+                                    "names": {
+                                        "label": "Names Dos"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                ]
             }
         ]
     }) {
         this.data = data
+        if (this.levels == 3) {
+            let html = ""
+            this.data.form.forEach((el, index) => {
+                html += this.buttonColumn({ column: "section", index: index, el: el, title: el['title'][this.language] })
+            })
+            this.querySelector("[data-column='section']").innerHTML = html
+        }
+    }
+
+    buttonColumn({ column, index, el, title }) {
+        return `
+            <div class="flex">
+                <button 
+                    type="button" 
+                    data-index="${index}" 
+                    data-column="${column}"
+                    data-action="column${column}" 
+                    class="focus:outline-none focus:ring-4 ring-inset focus:ring-blue-300 bg-gray-50 text-gray-800 font-medium p-3 w-full hover:bg-gray-100">
+                    ${title}
+                </button>
+                    <div class="grid grid-cols-2">
+                        <button data-column="${column}" data-action="edit${column}" class="bg-blue-600 px-2 flex items-center justify-center text-white">
+                            <i class="fas fa-edit pointer-events-none text-xs"></i>
+                        </button>
+                        <button class="bg-red-600 px-2 flex items-center justify-center text-white">
+                            <i class="fas fa-edit pointer-events-none text-xs"></i>
+                        </button>
+                        <button class="bg-yellow-600 px-2 flex items-center justify-center text-white">
+                            <i class="fas fa-edit pointer-events-none text-xs"></i>
+                        </button>
+                        <button class="bg-green-600 px-2 flex items-center justify-center text-white">
+                            <i class="fas fa-edit pointer-events-none text-xs"></i>
+                        </button>
+                    </div>
+            </div>
+        `
+    }
+
+    columns({ index, column }) {
+        if (column === "section") {
+            this.indexSection = index
+            let html = ""
+            this.data.form[this.indexSection]['blocks'].forEach((el, index) => {
+                html += this.buttonColumn({ column: "block", index: index, el: el, title: el['title'][this.language] })
+            })
+            this.querySelector("[data-column='block']").innerHTML = html
+            this.querySelector("[data-column='field']").innerHTML = ""
+        }
+
+        if (column === "block") {
+            this.indexBlock = index
+            console.log(this.data.form[this.indexSection]['blocks'][this.indexBlock])
+            let html = ""
+            let fields = this.data.form[this.indexSection]['blocks'][this.indexBlock]['fields']
+            let indexField = 0
+            Object.entries(fields['constructor']).forEach(([k, v]) => {
+                html += this.buttonColumn({ column: "field", index: indexField, el: v, title: fields['languages'][this.language][k]['label'] })
+                indexField++
+            })
+            this.querySelector("[data-column='field']").innerHTML = html
+        }
+    }
+
+    editColumn({ column }) {
+        console.log("nice")
+        console.log(column)
+        if (column === "field") {
+            console.log("Field")
+        }
+        this.toggleModal({ column: column, type: "edit" })
     }
 
     saveSection() {
@@ -286,12 +444,12 @@ export class HookFormPanel extends HTMLElement {
     }
 
     render() {
-        this.constructTop()
         let html = ""
         html += "<div class='relative shadow border border-gray-300'>"
         html += this.constructConfig()
         html += this.constructLines()
         html += this.constructTop()
+        html += this.constructBody()
         html += this.constructModal()
         html += "</div>"
         this.innerHTML = html
@@ -299,7 +457,7 @@ export class HookFormPanel extends HTMLElement {
         this.addEventListener("click", e => {
             switch (e.target.dataset.action) {
                 case "modal":
-                    this.toggleModal(e.target.dataset.name)
+                    this.toggleModal({ column: e.target.dataset.name })
                     break;
                 case "savesection":
                     this.saveSection()
@@ -309,6 +467,16 @@ export class HookFormPanel extends HTMLElement {
                     break;
                 case "savefield":
                     this.saveField()
+                    break;
+                case "columnsection":
+                case "columnblock":
+                case "columnfield":
+                    this.columns({ index: e.target.dataset.index, column: e.target.dataset.column })
+                    break;
+                case "editsection":
+                case "editblock":
+                case "editfield":
+                    this.editColumn({ column: e.target.dataset.column })
                     break;
             }
         })

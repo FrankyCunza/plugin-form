@@ -1,8 +1,12 @@
-import { HOOKFORMINPUTCLASS } from "../../config/index.js"
+import { HOOKFORMINPUTCLASS, HOOKFORMTYPES } from "../../config/index.js"
+import { validateForm } from "./validate.js"
 
 export class HookFormPanel extends HTMLElement {
     constructor() {
         super()
+        this.data = {
+            columns: 2
+        }
         this.levels = 1
     }
 
@@ -19,7 +23,7 @@ export class HookFormPanel extends HTMLElement {
         html += `
             <div class="grid grid-cols-3">
                 <div class="p-4">
-                    <custom-field label="Columnas" type="text"></custom-field>
+                    <custom-field label="Columnas" data-value="${this.data.columns}" type="text"></custom-field>
                 </div>
             </div>
         `
@@ -82,6 +86,36 @@ export class HookFormPanel extends HTMLElement {
         return html
     }
 
+    constructTypes() {
+        let html = ""
+        HOOKFORMTYPES.forEach(el => {
+            html += `<option value="${el.name}">${el.title}</option>`
+        })
+        return html
+    }
+
+    printModalFieldForm() {
+        return `
+            <custom-field type="text" label="Label" name="label"></custom-field>
+            <custom-field type="text" label="Aditional Name" name="additionalName"></custom-field>
+            <custom-field type="text" label="Info" name="info"></custom-field>
+            <custom-field type="text" label="Alternate name" name="alternateName"></custom-field>
+            <custom-field type="select" label="Columns" name="columns">
+                <option value="1">1</option>
+                <option value="2">2</option>
+                <option value="3">3</option>
+            </custom-field>
+            <custom-field type="text" label="Pattern" name="pattern"></custom-field>
+            <custom-field type="select" label="Type" name="type">
+                ${this.constructTypes()}
+            </custom-field>
+            <custom-field type="select" label="Required" name="required">
+                <option value="true">Yes</option>
+                <option value="false">No</option>
+            </custom-field>
+        `
+    }
+
     constructModals() {
         let html = ""
         let htmlModalSection = `
@@ -111,7 +145,7 @@ export class HookFormPanel extends HTMLElement {
                     <div class="bg-black bg-opacity-20 absolute top-0 left-0 w-full h-screen" data-action="modalform"></div>
                     <div class="bg-white p-5 rounded-xl relative max-w-3xl w-full h-max overflow-y-auto" style="max-height: 90vh">
                          <h2 class="font-bold text-xl text-gray-800 mb-3">Add field</h2>
-                         <form novalidate id="hookform"></form>
+                         <form novalidate class="grid grid-cols-3 gap-3" id="formpanel"></form>
                          <div class="flex flex-col mt-4 border border-gray-300 rounded-xl p-3 hidden">
                               <div class="flex items-center gap-2 mb-2">
                                    <label class="text-gray-800 font-medium">Options</label>
@@ -153,6 +187,18 @@ export class HookFormPanel extends HTMLElement {
         if (name) {
             this.querySelector(`[data-modal='${name}']`).classList.toggle("hidden")
         }
+        if (name === "field") {
+            this.querySelector("form").innerHTML = this.printModalFieldForm()
+        }
+    }
+
+    saveField() {
+        validateForm({ selector: "formpanel" })
+        .then(res => {
+            console.log(res[1])
+        }).catch(err => {
+            console.log(err)
+        })
     }
 
     render() {
@@ -170,6 +216,9 @@ export class HookFormPanel extends HTMLElement {
             switch (e.target.dataset.action) {
                 case "modalform":
                     this.toggleModals(e.target.dataset.name)
+                    break;
+                case "savefield":
+                    this.saveField()
                     break;
             }
         })

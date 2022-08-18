@@ -1,3 +1,5 @@
 import { HookFormPanel } from "./panel.js";
 import { CustomField } from "./elements.js";
-export { HookFormPanel, CustomField }
+import { HookFormBuilder } from "./builder.js";
+import { validateForm } from "./validate.js";
+export { HookFormPanel, CustomField, HookFormBuilder, validateForm }

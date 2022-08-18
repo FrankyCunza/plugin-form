@@ -255,14 +255,14 @@ export class HookFormPanel extends HTMLElement {
                 this.querySelector("[id='contentmodal']").innerHTML = this.printModals({ column, type, values })
                 break;
             case "block":
-                if (!this.indexSection) {
+                if (typeof parseFloat(this.indexSection) !== "number") {
                     alert("Select a section")
                 } else {
                     this.querySelector("[id='contentmodal']").innerHTML = this.printModals({ column, type, values })
                 }
                 break;
             case "field":
-                if (!this.indexBlock && this.type === "add") {
+                if ((typeof parseFloat(this.indexBlock) !== "number") && this.type === "add") {
                     alert("Select a block")
                 } else {
                     this.querySelector("[id='contentmodal']").innerHTML = this.printModals({ column, type, values })
@@ -419,6 +419,12 @@ export class HookFormPanel extends HTMLElement {
                 html += this.buttonColumn({ column: "block", index: index, el: el, title: el['title'][this.language] })
             })
             this.querySelector("[data-column='field']").innerHTML = html
+        }
+        if (this.indexSection) {
+            this.querySelector(`[data-action='columnsection'][data-index='${this.indexSection}']`).click()
+        }
+        if (this.indexBlock) {
+            this.querySelector(`[data-action='columnblock'][data-index='${this.indexBlock}']`).click()
         }
     }
 
@@ -708,11 +714,110 @@ export class HookFormPanel extends HTMLElement {
         })
     }
 
+    configColumns() {
+        switch (this.levels) {
+            case 3:
+                this.data = {
+                    columns: 2,
+                    form: []
+                }
+                break;
+            case 2:
+                this.indexSection = 0
+                this.data = {
+                    columns: 2,
+                    form: [
+                        {
+                            "position": 1,
+                            "title": {
+                                "en": "Form",
+                            },
+                            "blocks": []
+                        }
+                    ]
+                }
+                break;
+            case 1:
+                this.indexSection = 0
+                this.indexBlock = 0
+                this.data = {
+                    columns: 2,
+                    form: [
+                        {
+                            "position": 1,
+                            "title": {
+                                "en": "Form",
+                            },
+                            "blocks": [
+                                {
+                                    "title": {
+                                        "en": "Form",
+                                    },
+                                    "fields": {
+                                        "constructor": {
+                                            "age": {
+                                                "type": "text",
+                                                "name": "age",
+                                                "pattern": "",
+                                                "position": 4,
+                                                "info": "Info",
+                                                "additionalName": "Additional Name",
+                                                "alternateName": "Alternate Name",
+                                                "pattern": "Pattern",
+                                                "type": "number",
+                                                "required": true,
+                                                "columns": 2
+                                            },
+                                            "names": {
+                                                "type": "text",
+                                                "name": "names",
+                                                "pattern": "",
+                                                "position": 4,
+                                                "info": "Info",
+                                                "additionalName": "Additional Name",
+                                                "alternateName": "Alternate Name",
+                                                "pattern": "Pattern",
+                                                "type": "radio",
+                                                "required": false,
+                                                "columns": 3
+                                            }
+                                        },
+                                        "languages": {
+                                            "es": {
+                                                "age": {
+                                                    "label": "Edad"
+                                                },
+                                                "names": {
+                                                    "label": "Nombres"
+                                                }
+                                            },
+                                            "en": {
+                                                "age": {
+                                                    "label": "Age"
+                                                },
+                                                "names": {
+                                                    "label": "Names"
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    ]
+                }
+                break;
+        }
+    }
+
     connectedCallback() {
         this.levels = parseFloat(this.getAttribute("levels")) || 1
+        this.configColumns()
         this.render()
+        console.log(this.indexSection)
+        this.printColumn(this.levels)
 
-        this.updateData()
+        // this.updateData()
     }
 }
 

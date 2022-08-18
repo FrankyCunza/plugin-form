@@ -473,10 +473,15 @@ export class HookFormPanel extends HTMLElement {
     }
 
     saveSection() {
-        console.log(this.type)
+        console.log(this.data['form'][this.indexSection])
         validateForm({ selector: "[data-modal]" })
         .then(res => {
-            console.log(res[1])
+            const { inputsection } = res[1]
+            if (this.type === "edit") {
+                this.data['form'][this.indexSection]['title'][this.language] = inputsection
+            }
+            this.printColumn()
+            this.toggleModal({ column: "", type: "", values: "" })
         }).catch(err => {
             console.log(err)
         })
@@ -504,7 +509,6 @@ export class HookFormPanel extends HTMLElement {
         this.language = lang
         this.printColumn()
         console.log(this.language)
-        console.log("Change")
     }
 
     render() {

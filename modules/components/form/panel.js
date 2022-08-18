@@ -150,17 +150,21 @@ export class HookFormPanel extends HTMLElement {
         let html = ""
         let htmlModalSection = `
             <h2 class="font-bold text-xl text-gray-800 mb-3">${type === "edit" ? "Edit" : "Add"} section</h2>
-            <custom-field type="text" data-value="${values || ""}" onlyfield="true" required="true" name="inputsection"></custom-field>
-            <button type="button" data-action="savesection" class="mt-3 bg-blue-600 px-4 py-3 w-full rounded-xl text-white">Save</button>
+            <form novalidate data-form="formsection">
+                <custom-field type="text" data-value="${values || ""}" onlyfield="true" required="true" name="inputsection"></custom-field>
+                <button type="submit" data-action="savesection" class="mt-3 bg-blue-600 px-4 py-3 w-full rounded-xl text-white">Save</button>
+            </form>
           `
         let htmlModalBlock = `
             <h2 class="font-bold text-xl text-gray-800 mb-3">${type === "edit" ? "Edit" : "Add"} block</h2>
-            <custom-field type="text" data-value="${values || ""}" onlyfield="true" required="true" name="inputblock"></custom-field>
-            <button type="button" data-action="saveblock" class="mt-3 bg-blue-600 px-4 py-3 w-full rounded-xl text-white">Save</button>
+            <form novalidate data-form="formblock">
+                <custom-field type="text" data-value="${values || ""}" onlyfield="true" required="true" name="inputblock"></custom-field>
+                <button type="submit" data-action="saveblock" class="mt-3 bg-blue-600 px-4 py-3 w-full rounded-xl text-white">Save</button>
+            </form>
           `
         let htmlModalField = `
             <h2 class="font-bold text-xl text-gray-800 mb-3">${type === "edit" ? "Edit" : "Add"} field</h2>
-            <form novalidate class="grid grid-cols-3 gap-3" id="formpanel">
+            <form novalidate class="grid grid-cols-3 gap-3" id="formfield">
                 <custom-field type="text" data-value="${values?.label || ""}" required="true" label="Label" name="label"></custom-field>
                 <custom-field type="text" data-value="${values?.additionalName || ""}" label="Aditional Name" name="additionalName"></custom-field>
                 <custom-field type="text" data-value="${values?.info || ""}" label="Info" name="info"></custom-field>
@@ -206,7 +210,7 @@ export class HookFormPanel extends HTMLElement {
                 <textarea class="${HOOKFORMINPUTCLASS} pt-4" style="height: 150px;"></textarea>
             </div>
             <div class="w-full flex justify-end">
-            <button type="button" data-action="savefield" class="mt-3 bg-blue-600 px-4 py-3 w-full rounded-xl text-white">
+            <button type="submit" data-action="savefield" class="mt-3 bg-blue-600 px-4 py-3 w-full rounded-xl text-white">
                 Save
             </button>
             </div>
@@ -561,7 +565,7 @@ export class HookFormPanel extends HTMLElement {
     }
 
     saveField() {
-        validateForm({ selector: "[id='formpanel']" })
+        validateForm({ selector: "[id='formfield']" })
         .then(res => {
             const label = res[1]['label']
             let name = label.toLowerCase().replace(/\s{1,}/g, '_').replace(/[^\w\s]/gi, '');
@@ -632,15 +636,15 @@ export class HookFormPanel extends HTMLElement {
                 case "modal":
                     this.toggleModal({ column: e.target.dataset.name, type: "add" })
                     break;
-                case "savesection":
-                    this.saveSection()
-                    break;
-                case "saveblock":
-                    this.saveBlock()
-                    break;
-                case "savefield":
-                    this.saveField()
-                    break;
+                // case "savesection":
+                //     this.saveSection()
+                //     break;
+                // case "saveblock":
+                //     this.saveBlock()
+                //     break;
+                // case "savefield":
+                //     this.saveField()
+                //     break;
                 case "columnsection":
                 case "columnblock":
                 case "columnfield":
@@ -650,6 +654,22 @@ export class HookFormPanel extends HTMLElement {
                 case "editblock":
                 case "editfield":
                     this.editColumn({ column: e.target.dataset.column, index: e.target.dataset.index, key: e.target.dataset.key })
+                    break;
+            }
+        })
+
+        this.addEventListener("submit", e => {
+            e.preventDefault()
+            console.log(e.target.dataset.form)
+            switch (e.target.dataset.form) {
+                case "formsection":
+                    this.saveSection()
+                    break;
+                case "formblock":
+                    this.saveBlock()
+                    break;
+                case "formfield":
+                    this.saveField()
                     break;
             }
         })

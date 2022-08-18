@@ -360,11 +360,11 @@ export class HookFormPanel extends HTMLElement {
         ]
     }) {
         this.data = data
-        this.printColumn()
+        this.printColumn(this.levels)
     }
 
-    printColumn() {
-        if (this.levels == 3) {
+    printColumn(levels) {
+        if (levels == 3) {
             this.querySelector("[data-column='block']").innerHTML = ""
             this.querySelector("[data-column='field']").innerHTML = ""
             let html = ""
@@ -372,6 +372,16 @@ export class HookFormPanel extends HTMLElement {
                 html += this.buttonColumn({ column: "section", index: index, el: el, title: el['title'][this.language] })
             })
             this.querySelector("[data-column='section']").innerHTML = html
+        }
+
+        if (levels == 2) {
+            this.querySelector("[data-column='block']").innerHTML = ""
+            this.querySelector("[data-column='field']").innerHTML = ""
+            let html = ""
+            this.data.form[this.indexSection]['blocks'].forEach((el, index) => {
+                html += this.buttonColumn({ column: "block", index: index, el: el, title: el['title'][this.language] })
+            })
+            this.querySelector("[data-column='block']").innerHTML = html
         }
     }
 
@@ -426,6 +436,7 @@ export class HookFormPanel extends HTMLElement {
             console.log(this.data.form[this.indexSection]['blocks'][this.indexBlock])
             let html = ""
             let fields = this.data.form[this.indexSection]['blocks'][this.indexBlock]['fields']
+            console.log("Fields", fields)
             let indexField = 0
             Object.entries(fields['constructor']).forEach(([k, v]) => {
                 html += this.buttonColumn({ 
@@ -473,15 +484,24 @@ export class HookFormPanel extends HTMLElement {
     }
 
     saveSection() {
-        console.log(this.data['form'][this.indexSection])
+        // console.log(this.data['form'][this.indexSection])
         validateForm({ selector: "[data-modal]" })
         .then(res => {
             const { inputsection } = res[1]
             if (this.type === "edit") {
                 this.data['form'][this.indexSection]['title'][this.language] = inputsection
             }
-            this.printColumn()
+            if (this.type === "add") {
+                this.data['form'].push({
+                    "title": {
+                        [this.language]: inputsection
+                    },
+                    "blocks": []
+                })
+            }
+            this.printColumn(3)
             this.toggleModal({ column: "", type: "", values: "" })
+            console.log(this.data['form'])
         }).catch(err => {
             console.log(err)
         })
@@ -491,6 +511,24 @@ export class HookFormPanel extends HTMLElement {
         validateForm({ selector: "[data-modal]" })
         .then(res => {
             console.log(res[1])
+            console.log(this.type)
+            const { inputblock } = res[1]
+            if (this.type === "edit") {
+                this.data['form'][this.indexSection]['blocks'][this.indexBlock]['title'][this.language] = inputblock
+            }
+            if (this.type === "add") {
+                this.data['form'][this.indexSection]['blocks'].push({
+                    title: {
+                        [this.language]: inputblock
+                    },
+                    fields: {
+                        constructor: {},
+                        language: {}
+                    }
+                })
+            }
+            this.printColumn(2)
+            this.toggleModal({ column: "", type: "", values: "" })
         }).catch(err => {
             console.log(err)
         })
@@ -500,6 +538,13 @@ export class HookFormPanel extends HTMLElement {
         validateForm({ selector: "[id='formpanel']" })
         .then(res => {
             console.log(res[1])
+            console.log(this.data['form'][this.indexSection]['blocks'][this.indexBlock])
+            // this.data['form'][this.indexSection]['blocks'][this.indexBlock]['fields'] = {
+
+            // }
+            console.log(this.data['form'][this.indexSection]['blocks'][this.indexBlock])
+            // this.printColumn(1)
+            // this.toggleModal({ column: "", type: "", values: "" })
         }).catch(err => {
             console.log(err)
         })
@@ -507,7 +552,7 @@ export class HookFormPanel extends HTMLElement {
 
     changeLanguage(lang) {
         this.language = lang
-        this.printColumn()
+        this.printColumn(this.levels)
         console.log(this.language)
     }
 

@@ -51,7 +51,7 @@ export class HookFormPanel extends HTMLElement {
     constructTop() {
         let htmlSection = `
                <div class="w-full">
-                    <button data-action="modalform" data-name="section" 
+                    <button data-action="modal" data-name="section" 
                     class="bg-gray-50 py-3.5 font-medium focus:ring-4 focus:ring-blue-400 w-full hover:bg-blue-50 hover:text-blue-700 ring-inset">
                         Create section
                     </button>
@@ -59,7 +59,7 @@ export class HookFormPanel extends HTMLElement {
           `
         let htmlBlock = `
                <div>
-                    <button data-action="modalform" data-name="block"
+                    <button data-action="modal" data-name="block"
                     class="bg-gray-50 py-3.5 font-medium focus:ring-4 focus:ring-blue-400 w-full hover:bg-blue-50 hover:text-blue-700 ring-inset">
                         Create block
                     </button>
@@ -67,7 +67,7 @@ export class HookFormPanel extends HTMLElement {
           `
         let htmlField = `
                <div>
-                    <button data-action="modalform" data-name="field" 
+                    <button data-action="modal" data-name="field" 
                     class="bg-gray-50 py-3.5 font-medium focus:ring-4 focus:ring-blue-400 w-full hover:bg-blue-50 hover:text-blue-700 ring-inset">
                         Create field
                     </button>
@@ -112,102 +112,100 @@ export class HookFormPanel extends HTMLElement {
         return html
     }
 
-    printModalFieldForm() {
-        return `
-            <custom-field type="text" label="Label" name="label"></custom-field>
-            <custom-field type="text" label="Aditional Name" name="additionalName"></custom-field>
-            <custom-field type="text" label="Info" name="info"></custom-field>
-            <custom-field type="text" label="Alternate name" name="alternateName"></custom-field>
-            <custom-field type="select" label="Columns" name="columns">
-                <option value="1">1</option>
-                <option value="2">2</option>
-                <option value="3">3</option>
-            </custom-field>
-            <custom-field type="text" label="Pattern" name="pattern"></custom-field>
-            <custom-field type="select" label="Type" name="type">
-                ${this.constructTypes()}
-            </custom-field>
-            <custom-field type="select" label="Required" name="required">
-                <option value="true">Yes</option>
-                <option value="false">No</option>
-            </custom-field>
-        `
-    }
-
-    constructModals() {
+    printModals(type) {
         let html = ""
         let htmlModalSection = `
-               <div class="fixed w-screen h-screen top-0 left-0 flex items-center justify-center z-20 hidden" data-modal="section">
-                    <div class="bg-black bg-opacity-20 absolute top-0 left-0 w-full h-full" data-action="modalform"></div>
-                    <div class="bg-white p-5 rounded-xl relative max-w-3xl w-full">
-                         <h2 class="font-bold text-xl text-gray-800 mb-3">Add section</h2>
-                         <custom-field type="text" onlyfield="true" required="true" name="inputsection"></custom-field>
-                         <button type="button" data-action="savesection" class="mt-3 bg-blue-600 px-4 py-3 w-full rounded-xl text-white">Save</button>
-                    </div>
-               </div>
+            <h2 class="font-bold text-xl text-gray-800 mb-3">Add section</h2>
+            <custom-field type="text" onlyfield="true" required="true" name="inputsection"></custom-field>
+            <button type="button" data-action="savesection" class="mt-3 bg-blue-600 px-4 py-3 w-full rounded-xl text-white">Save</button>
           `
         let htmlModalBlock = `
-               <div class="fixed w-screen h-screen top-0 left-0 flex items-center justify-center z-20 hidden" data-modal="block">
-                    <div class="bg-black bg-opacity-20 absolute top-0 left-0 w-full h-full" data-action="modalform"></div>
-                    <div class="bg-white p-5 rounded-xl relative max-w-3xl w-full">
-                         <h2 class="font-bold text-xl text-gray-800 mb-3">Add block</h2>
-                         <custom-field type="text" onlyfield="true" name="inputblock"></custom-field>
-                         <button type="button" data-action="saveblock" class="mt-3 bg-blue-600 px-4 py-3 w-full rounded-xl text-white">Save</button>
-                    </div>
-               </div>
+            <h2 class="font-bold text-xl text-gray-800 mb-3">Add block</h2>
+            <custom-field type="text" onlyfield="true" required="true" name="inputblock"></custom-field>
+            <button type="button" data-action="saveblock" class="mt-3 bg-blue-600 px-4 py-3 w-full rounded-xl text-white">Save</button>
           `
         let htmlModalField = `
-               <div class="fixed w-screen h-screen top-0 left-0 py-10 flex items-center justify-center z-20 hidden" data-modal="field">
-                    <div class="bg-black bg-opacity-20 absolute top-0 left-0 w-full h-screen" data-action="modalform"></div>
-                    <div class="bg-white p-5 rounded-xl relative max-w-3xl w-full h-max overflow-y-auto" style="max-height: 90vh">
-                         <h2 class="font-bold text-xl text-gray-800 mb-3">Add field</h2>
-                         <form novalidate class="grid grid-cols-3 gap-3" id="formpanel"></form>
-                         <div class="flex flex-col mt-4 border border-gray-300 rounded-xl p-3 hidden">
-                              <div class="flex items-center gap-2 mb-2">
-                                   <label class="text-gray-800 font-medium">Options</label>
-                                   <button class="bg-blue-50 tetx-xs text-blue-600 px-2 py-2 rounded-md font-medium" data-action="addOption">Add</button>
-                              </div>
-                              <div class="border border-gray-200 rounded-xl overflow-hidden">
-                                   <table class="w-full">
-                                        <thead class="bg-gray-50 h-12">
-                                             <tr>
-                                                  <th class="font-medium text-left px-3">Name</th>
-                                                  <th class="font-medium text-left px-3">Value</th>
-                                                  <th class="font-medium text-left px-3">Icon</th>
-                                                  <th class="font-medium text-left px-3">Required</th>
-                                                  <th class="font-medium text-left px-3">Textarea</th>
-                                             </tr>
-                                        </thead>
-                                        <tbody></tbody>
-                                   </table>
-                              </div>
-                         </div>
-                         <div class="flex flex-col mt-4 border border-gray-300 rounded-xl p-3 hidden">
-                              <div class="flex items-center gap-2 mb-2">
-                                   <label class="text-gray-800 font-medium">HTML</label>
-                              </div>
-                              <textarea class="${HOOKFORMINPUTCLASS} pt-4" style="height: 150px;"></textarea>
-                         </div>
-                         <div class="w-full flex justify-end">
-                            <button type="button" data-action="savefield" class="mt-3 bg-blue-600 px-4 py-3 w-full rounded-xl text-white">
-                                Save
-                            </button>
-                         </div>
-                    </div>
-               </div>
+            <h2 class="font-bold text-xl text-gray-800 mb-3">Add field</h2>
+            <form novalidate class="grid grid-cols-3 gap-3" id="formpanel">
+                <custom-field type="text" required="true" label="Label" name="label"></custom-field>
+                <custom-field type="text" label="Aditional Name" name="additionalName"></custom-field>
+                <custom-field type="text" label="Info" name="info"></custom-field>
+                <custom-field type="text" label="Alternate name" name="alternateName"></custom-field>
+                <custom-field type="select" label="Columns" name="columns">
+                    <option value="1">1</option>
+                    <option value="2">2</option>
+                    <option value="3">3</option>
+                </custom-field>
+                <custom-field type="text" label="Pattern" name="pattern"></custom-field>
+                <custom-field type="select" label="Type" name="type">
+                    ${this.constructTypes()}
+                </custom-field>
+                <custom-field type="select" label="Required" name="required">
+                    <option value="true">Yes</option>
+                    <option value="false">No</option>
+                </custom-field>
+            </form>
+            <div class="flex flex-col mt-4 border border-gray-300 rounded-xl p-3 hidden">
+                <div class="flex items-center gap-2 mb-2">
+                    <label class="text-gray-800 font-medium">Options</label>
+                    <button class="bg-blue-50 tetx-xs text-blue-600 px-2 py-2 rounded-md font-medium" data-action="addOption">Add</button>
+                </div>
+                <div class="border border-gray-200 rounded-xl overflow-hidden">
+                    <table class="w-full">
+                        <thead class="bg-gray-50 h-12">
+                                <tr>
+                                    <th class="font-medium text-left px-3">Name</th>
+                                    <th class="font-medium text-left px-3">Value</th>
+                                    <th class="font-medium text-left px-3">Icon</th>
+                                    <th class="font-medium text-left px-3">Required</th>
+                                    <th class="font-medium text-left px-3">Textarea</th>
+                                </tr>
+                        </thead>
+                        <tbody></tbody>
+                    </table>
+                </div>
+            </div>
+            <div class="flex flex-col mt-4 border border-gray-300 rounded-xl p-3 hidden">
+                <div class="flex items-center gap-2 mb-2">
+                    <label class="text-gray-800 font-medium">HTML</label>
+                </div>
+                <textarea class="${HOOKFORMINPUTCLASS} pt-4" style="height: 150px;"></textarea>
+            </div>
+            <div class="w-full flex justify-end">
+            <button type="button" data-action="savefield" class="mt-3 bg-blue-600 px-4 py-3 w-full rounded-xl text-white">
+                Save
+            </button>
+            </div>
           `
-        html += htmlModalSection + htmlModalBlock + htmlModalField
+        switch (type) {
+            case "section":
+                html = htmlModalSection
+                break;
+            case "block":
+                html = htmlModalBlock
+                break;
+            case "field":
+                html = htmlModalField
+                break;
+        }
         return html
     }
 
-    toggleModals(name) {
-        this.querySelectorAll("[data-modal]").forEach(el => el.classList.add("hidden"))
-        if (name) {
-            this.querySelector(`[data-modal='${name}']`).classList.toggle("hidden")
-        }
-        if (name === "field") {
-            this.querySelector("form").innerHTML = this.printModalFieldForm()
-        }
+    constructModal() {
+        return `
+            <div class="fixed w-screen h-screen top-0 left-0 py-10 flex items-center justify-center z-20 hidden" data-modal="modal">
+                <div class="bg-black bg-opacity-20 absolute top-0 left-0 w-full h-screen" data-action="modal"></div>
+                <div 
+                    class="bg-white p-5 rounded-xl relative max-w-3xl w-full h-max overflow-y-auto" 
+                    style="max-height: 90vh" id="contentmodal">
+                </div>
+            </div>
+    `
+    }
+
+    toggleModal(name) {
+        this.querySelector("[data-modal]").classList.toggle("hidden")
+        this.querySelector("[id='contentmodal']").innerHTML = this.printModals(name)
     }
 
     updateData(data = {
@@ -261,7 +259,7 @@ export class HookFormPanel extends HTMLElement {
     }
 
     saveSection() {
-        validateForm({ selector: "[data-modal='section']" })
+        validateForm({ selector: "[data-modal]" })
         .then(res => {
             console.log(res[1])
         }).catch(err => {
@@ -270,7 +268,7 @@ export class HookFormPanel extends HTMLElement {
     }
 
     saveBlock() {
-        validateForm({ selector: "s" })
+        validateForm({ selector: "[data-modal]" })
         .then(res => {
             console.log(res[1])
         }).catch(err => {
@@ -279,7 +277,7 @@ export class HookFormPanel extends HTMLElement {
     }
 
     saveField() {
-        validateForm({ selector: "formpanel" })
+        validateForm({ selector: "[id='formpanel']" })
         .then(res => {
             console.log(res[1])
         }).catch(err => {
@@ -294,17 +292,20 @@ export class HookFormPanel extends HTMLElement {
         html += this.constructConfig()
         html += this.constructLines()
         html += this.constructTop()
-        html += this.constructModals()
+        html += this.constructModal()
         html += "</div>"
         this.innerHTML = html
 
         this.addEventListener("click", e => {
             switch (e.target.dataset.action) {
-                case "modalform":
-                    this.toggleModals(e.target.dataset.name)
+                case "modal":
+                    this.toggleModal(e.target.dataset.name)
                     break;
                 case "savesection":
                     this.saveSection()
+                    break;
+                case "saveblock":
+                    this.saveBlock()
                     break;
                 case "savefield":
                     this.saveField()

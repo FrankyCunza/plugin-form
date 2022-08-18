@@ -13,6 +13,7 @@ export class HookFormPanel extends HTMLElement {
         this.currentBlock = null
         this.fields = null
         this.currentField = null
+        this.currentFieldKey = null
         this.language = "es" || HOOKFORMCOUNTRIES[0]['name']
         this.data = {}
         this.levels = 1
@@ -474,7 +475,8 @@ export class HookFormPanel extends HTMLElement {
         }
     }
 
-    editColumn({ column, index, key }) {
+    editColumn({ column, index, key = "" }) {
+        this.currentFieldKey = key
         let values = null
         switch (column) {
             case "section":
@@ -569,19 +571,21 @@ export class HookFormPanel extends HTMLElement {
                     type: res[1]['type']
                 }
             }
-            if (this.type === "add") {
-                HOOKFORMCOUNTRIES.forEach(el => {
-                    this.data['form'][this.indexSection]['blocks'][this.indexBlock]['fields']['languages'][el.name] = {
-                        ...this.data['form'][this.indexSection]['blocks'][this.indexBlock]['fields']['languages'][el.name],
-                        [name]: {
-                            label: label + el.name
-                        }
+            HOOKFORMCOUNTRIES.forEach(el => {
+                this.data['form'][this.indexSection]['blocks'][this.indexBlock]['fields']['languages'][el.name] = {
+                    ...this.data['form'][this.indexSection]['blocks'][this.indexBlock]['fields']['languages'][el.name],
+                    [name]: {
+                        label: label + el.name
                     }
-                })
-                this.data['form'][this.indexSection]['blocks'][this.indexBlock]['fields']['constructor'][name] = field.constructor
-                this.data['form'][this.indexSection]['blocks'][this.indexBlock]['fields']['languages'][this.language][name] = {
-                    label: label
                 }
+            })
+
+            if (this.type === "edit") {
+                name = this.currentFieldKey
+            }
+            this.data['form'][this.indexSection]['blocks'][this.indexBlock]['fields']['constructor'][name] = field.constructor
+            this.data['form'][this.indexSection]['blocks'][this.indexBlock]['fields']['languages'][this.language][name] = {
+                label: label
             }
             console.log("Field", field)
             console.log(this.data['form'][this.indexSection]['blocks'][this.indexBlock])

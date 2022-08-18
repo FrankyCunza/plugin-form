@@ -1,12 +1,17 @@
-import { HOOKFORMINPUTCLASS, HOOKFORMTYPES } from "../../config/index.js"
+import { HOOKFORMINPUTCLASS, HOOKFORMTYPES, HOOKFORMCOUNTRIES } from "../../config/index.js"
 import { validateForm } from "./validate.js"
 
 export class HookFormPanel extends HTMLElement {
     constructor() {
         super()
-        this.data = {
-            columns: 2
-        }
+        this.sections = null
+        this.currentSection = null
+        this.blocks = null
+        this.currentBlock = null
+        this.fields = null
+        this.currentField = null
+        this.language = HOOKFORMCOUNTRIES[0]['name']
+        this.data = {}
         this.levels = 1
     }
 
@@ -18,12 +23,25 @@ export class HookFormPanel extends HTMLElement {
         // console.log("Removed")
     }
 
+    printLanguages() {
+        let html = ""
+        HOOKFORMCOUNTRIES.forEach(el => {
+            html += `<option value="${el.name}">${el.title}</option>`
+        })
+        return html
+    }
+
     constructConfig() {
         let html = ""
         html += `
             <div class="grid grid-cols-3">
                 <div class="p-4">
                     <custom-field label="Columnas" data-value="${this.data.columns}" type="text"></custom-field>
+                </div>
+                <div class="p-4">
+                    <custom-field type="select" label="Language">
+                        ${this.printLanguages()}
+                    </custom-field>
                 </div>
             </div>
         `
@@ -123,9 +141,8 @@ export class HookFormPanel extends HTMLElement {
                     <div class="bg-black bg-opacity-20 absolute top-0 left-0 w-full h-full" data-action="modalform"></div>
                     <div class="bg-white p-5 rounded-xl relative max-w-3xl w-full">
                          <h2 class="font-bold text-xl text-gray-800 mb-3">Add section</h2>
-                         <input type="text"
-                         class="${HOOKFORMINPUTCLASS}" />
-                         <button type="button" data-action="savesection" class="mt-3 bg-blue-600 px-4 py-3 rounded-xl text-white">Save</button>
+                         <custom-field type="text" onlyfield="true" required="true" name="inputsection"></custom-field>
+                         <button type="button" data-action="savesection" class="mt-3 bg-blue-600 px-4 py-3 w-full rounded-xl text-white">Save</button>
                     </div>
                </div>
           `
@@ -134,9 +151,8 @@ export class HookFormPanel extends HTMLElement {
                     <div class="bg-black bg-opacity-20 absolute top-0 left-0 w-full h-full" data-action="modalform"></div>
                     <div class="bg-white p-5 rounded-xl relative max-w-3xl w-full">
                          <h2 class="font-bold text-xl text-gray-800 mb-3">Add block</h2>
-                         <input type="text"
-                         class="${HOOKFORMINPUTCLASS}" />
-                         <button type="button" data-action="saveblock" class="mt-3 bg-blue-600 px-4 py-3 rounded-xl text-white">Save</button>
+                         <custom-field type="text" onlyfield="true" name="inputblock"></custom-field>
+                         <button type="button" data-action="saveblock" class="mt-3 bg-blue-600 px-4 py-3 w-full rounded-xl text-white">Save</button>
                     </div>
                </div>
           `
@@ -173,7 +189,9 @@ export class HookFormPanel extends HTMLElement {
                               <textarea class="${HOOKFORMINPUTCLASS} pt-4" style="height: 150px;"></textarea>
                          </div>
                          <div class="w-full flex justify-end">
-                             <button type="button" data-action="savefield" class="mt-3 bg-blue-600 px-4 py-3 rounded-xl text-white"><i class="fas fa-save mr-2 pointer-events-none"></i>Save</button>
+                            <button type="button" data-action="savefield" class="mt-3 bg-blue-600 px-4 py-3 w-full rounded-xl text-white">
+                                Save
+                            </button>
                          </div>
                     </div>
                </div>
@@ -190,6 +208,74 @@ export class HookFormPanel extends HTMLElement {
         if (name === "field") {
             this.querySelector("form").innerHTML = this.printModalFieldForm()
         }
+    }
+
+    updateData(data = {
+        columns: 2,
+        form: [
+            {
+                "title_en": "Personal Data",
+                "title_es": "Informacion Personal",
+                "blocks": {
+                    "title_en": "Personal",
+                    "title_es": "Personal",
+                    "fields": {
+                        "constructor": {
+                            "age": {
+                                "type": "text",
+                                "name": "age",
+                                "pattern": "",
+                                "position": 4
+                            },
+                            "names": {
+                                "type": "text",
+                                "name": "names",
+                                "pattern": "",
+                                "position": 4
+                            }
+                        },
+                        "languages": {
+                            "es": {
+                                "age": {
+                                    "label": "Edad"
+                                },
+                                "names": {
+                                    "label": "Nombres"
+                                }
+                            },
+                            "en": {
+                                "age": {
+                                    "label": "Age"
+                                },
+                                "names": {
+                                    "label": "Names"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        ]
+    }) {
+        this.data = data
+    }
+
+    saveSection() {
+        validateForm({ selector: "[data-modal='section']" })
+        .then(res => {
+            console.log(res[1])
+        }).catch(err => {
+            console.log(err)
+        })
+    }
+
+    saveBlock() {
+        validateForm({ selector: "s" })
+        .then(res => {
+            console.log(res[1])
+        }).catch(err => {
+            console.log(err)
+        })
     }
 
     saveField() {
@@ -217,6 +303,9 @@ export class HookFormPanel extends HTMLElement {
                 case "modalform":
                     this.toggleModals(e.target.dataset.name)
                     break;
+                case "savesection":
+                    this.saveSection()
+                    break;
                 case "savefield":
                     this.saveField()
                     break;
@@ -227,6 +316,8 @@ export class HookFormPanel extends HTMLElement {
     connectedCallback() {
         this.levels = parseFloat(this.getAttribute("levels")) || 1
         this.render()
+
+        this.updateData()
     }
 }
 

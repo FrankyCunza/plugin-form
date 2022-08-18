@@ -1,7 +1,7 @@
 export async function validateForm({ selector, form_builder = [], name = "", validateIndexes = [] }) {
-    const formInfo = document.querySelector(`[id='${selector}'] [data-info]`)
+    const formInfo = document.querySelector(`${selector.startsWith("[") ? selector : "[id='${selector}']"} [data-info]`)
     // let quantityFields = document.querySelectorAll(`[data-allfields='${formInfo.getAttribute("data-id")}']`)
-    let forms = document.querySelectorAll(`[id='${selector}'] textarea, [id='${selector}'] input, [id='${selector}'] select`);
+    let forms = document.querySelectorAll(`${selector.startsWith("[") ? selector : `[id='${selector}']`} textarea, ${selector.startsWith("[") ? selector : `[id='${selector}']`} input, ${selector.startsWith("[") ? selector : `[id='${selector}']`} select`);
     let fd = new FormData()
     let filenames = []
     let form = {}

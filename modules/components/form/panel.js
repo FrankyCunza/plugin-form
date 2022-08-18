@@ -147,6 +147,7 @@ export class HookFormPanel extends HTMLElement {
     }
 
     printModals({ column, type, values }) {
+        this.querySelector("[data-modal]").classList.toggle("hidden")
         let html = ""
         let htmlModalSection = `
             <h2 class="font-bold text-xl text-gray-800 mb-3">${type === "edit" ? "Edit" : "Add"} section</h2>
@@ -164,7 +165,7 @@ export class HookFormPanel extends HTMLElement {
           `
         let htmlModalField = `
             <h2 class="font-bold text-xl text-gray-800 mb-3">${type === "edit" ? "Edit" : "Add"} field</h2>
-            <form novalidate class="grid grid-cols-3 gap-3" id="formfield">
+            <form novalidate class="grid grid-cols-3 gap-3" data-form="formfield">
                 <custom-field type="text" data-value="${values?.label || ""}" required="true" label="Label" name="label"></custom-field>
                 <custom-field type="text" data-value="${values?.additionalName || ""}" label="Aditional Name" name="additionalName"></custom-field>
                 <custom-field type="text" data-value="${values?.info || ""}" label="Info" name="info"></custom-field>
@@ -182,6 +183,7 @@ export class HookFormPanel extends HTMLElement {
                     <option value="true" ${values?.required === true ? "selected" : ""}>Yes</option>
                     <option value="false" ${values?.required === false ? "selected" : ""}>No</option>
                 </custom-field>
+                <button type="submit" class="" hidden data-skipValidation="true">Enviar</button>
             </form>
             <div class="flex flex-col mt-4 border border-gray-300 rounded-xl p-3 hidden">
                 <div class="flex items-center gap-2 mb-2">
@@ -207,7 +209,7 @@ export class HookFormPanel extends HTMLElement {
                 <div class="flex items-center gap-2 mb-2">
                     <label class="text-gray-800 font-medium">HTML</label>
                 </div>
-                <textarea class="${HOOKFORMINPUTCLASS} pt-4" style="height: 150px;"></textarea>
+                <textarea data-skipValidation="true" class="${HOOKFORMINPUTCLASS} pt-4" style="height: 150px;"></textarea>
             </div>
             <div class="w-full flex justify-end">
             <button type="submit" data-action="savefield" class="mt-3 bg-blue-600 px-4 py-3 w-full rounded-xl text-white">
@@ -232,7 +234,7 @@ export class HookFormPanel extends HTMLElement {
     constructModal() {
         return `
             <div class="fixed w-screen h-screen top-0 left-0 py-10 flex items-center justify-center z-20 hidden" data-modal="modal">
-                <div class="bg-black bg-opacity-20 absolute top-0 left-0 w-full h-screen" data-action="modal"></div>
+                <div class="bg-black bg-opacity-20 absolute top-0 left-0 w-full h-screen" data-action="hidemodal"></div>
                 <div 
                     class="bg-white p-5 rounded-xl relative max-w-3xl w-full h-max overflow-y-auto" 
                     style="max-height: 90vh" id="contentmodal">
@@ -241,10 +243,32 @@ export class HookFormPanel extends HTMLElement {
     `
     }
 
-    toggleModal({ column, type = "add", values }) {
+    toggleModal({ column, type = "add", values, hidden = false }) {
         this.type = type
-        this.querySelector("[data-modal]").classList.toggle("hidden")
-        this.querySelector("[id='contentmodal']").innerHTML = this.printModals({ column, type, values })
+        if (hidden) {
+            this.querySelector("[data-modal]").classList.toggle("hidden")
+            return
+        }
+
+        switch (column) {
+            case "section":
+                this.querySelector("[id='contentmodal']").innerHTML = this.printModals({ column, type, values })
+                break;
+            case "block":
+                if (!this.indexSection) {
+                    alert("Select a section")
+                } else {
+                    this.querySelector("[id='contentmodal']").innerHTML = this.printModals({ column, type, values })
+                }
+                break;
+            case "field":
+                if (!this.indexBlock && this.type === "add") {
+                    alert("Select a block")
+                } else {
+                    this.querySelector("[id='contentmodal']").innerHTML = this.printModals({ column, type, values })
+                }
+                break;
+        }
     }
 
     updateData(data = {
@@ -457,6 +481,8 @@ export class HookFormPanel extends HTMLElement {
     columns({ index, column }) {
         if (column === "section") {
             this.indexSection = index
+            this.indexBlock = null
+            this.indexField = null
             let html = ""
             this.data.form[this.indexSection]['blocks'].forEach((el, index) => {
                 html += this.buttonColumn({ column: "block", index: index, el: el, title: el['title'][this.language] })
@@ -531,7 +557,7 @@ export class HookFormPanel extends HTMLElement {
             }
             this.printColumn(3)
             console.log(this.data['form'])
-            this.toggleModal({ column: "", type: "", values: "" })
+            this.toggleModal({ column: "", type: "", values: "", hidden: true })
         }).catch(err => {
             console.log(err)
         })
@@ -553,19 +579,19 @@ export class HookFormPanel extends HTMLElement {
                     },
                     fields: {
                         constructor: {},
-                        language: {}
+                        languages: {}
                     }
                 })
             }
             this.printColumn(2)
-            this.toggleModal({ column: "", type: "", values: "" })
+            this.toggleModal({ column: "", type: "", values: "", hidden: true })
         }).catch(err => {
             console.log(err)
         })
     }
 
     saveField() {
-        validateForm({ selector: "[id='formfield']" })
+        validateForm({ selector: "[data-modal]" })
         .then(res => {
             const label = res[1]['label']
             let name = label.toLowerCase().replace(/\s{1,}/g, '_').replace(/[^\w\s]/gi, '');
@@ -599,7 +625,7 @@ export class HookFormPanel extends HTMLElement {
             console.log("Field", field)
             console.log(this.data['form'][this.indexSection]['blocks'][this.indexBlock])
             this.columns({ index: this.indexBlock, column: "block" })
-            this.toggleModal({ column: "", type: "", values: "" })
+            this.toggleModal({ column: "", type: "", values: "", hidden: true })
         }).catch(err => {
             console.log(err)
         })
@@ -633,18 +659,15 @@ export class HookFormPanel extends HTMLElement {
 
         this.addEventListener("click", e => {
             switch (e.target.dataset.action) {
+                case "savefield":
+                    this.saveField()
+                    break;
                 case "modal":
                     this.toggleModal({ column: e.target.dataset.name, type: "add" })
                     break;
-                // case "savesection":
-                //     this.saveSection()
-                //     break;
-                // case "saveblock":
-                //     this.saveBlock()
-                //     break;
-                // case "savefield":
-                //     this.saveField()
-                //     break;
+                case "hidemodal":
+                    this.toggleModal({ column: "", type: "", hidden: true })
+                    break;
                 case "columnsection":
                 case "columnblock":
                 case "columnfield":

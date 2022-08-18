@@ -412,15 +412,20 @@ export class HookFormPanel extends HTMLElement {
             title = this.data['form'][this.indexSection]['blocks'][this.indexBlock]['fields']['languages'][this.language][key]['label']
         }
         return `
-            <div class="flex">
+            <div class="flex relative">
                 <button 
                     type="button" 
-                    data-index="${index}" 
-                    data-key="${key}"
-                    data-column="${column}"
-                    data-action="column${column}" 
-                    class="focus:outline-none focus:ring-4 ring-inset focus:ring-blue-300 bg-gray-50 text-gray-800 font-medium p-3 w-full hover:bg-gray-100">
-                    ${title || "No encontrado"}
+                    class="relative hover:bg-gray-200 focus:outline-none focus:ring-4 ring-inset focus:ring-blue-300 bg-gray-50 text-gray-800 font-medium w-full hover:bg-gray-100">
+                    <input
+                        data-index="${index}" 
+                        data-key="${key}"
+                        data-column="${column}"
+                        data-action="column${column}" 
+                        type="radio" name="${column}" class="hookformpanel__inputradio cursor-pointer opacity-0 absolute w-full h-full top-0 left-0" 
+                    />
+                    <span class="flex w-full h-full p-3">
+                        ${title || "No encontrado"}
+                    </span>
                 </button>
                 <div class="grid grid-cols-2">
                     <button 
@@ -605,6 +610,14 @@ export class HookFormPanel extends HTMLElement {
 
     render() {
         let html = ""
+        html += `
+            <style>
+                .hookformpanel__inputradio:checked + span {
+                    background: blue;
+                    color: white
+                }
+            </style>
+        `
         html += "<div class='relative shadow border border-gray-300'>"
         html += this.constructConfig()
         html += this.constructLines()

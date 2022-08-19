@@ -89,23 +89,31 @@ export class HookFormPanel extends HTMLElement {
             let data = []
             let pass = 0
             const length = [...this.querySelectorAll("[data-optionrowindex]")].length
+            console.log(length)
+            console.log(this.fieldType)
             if (length >= 1) {
-                for (let i = 0; i < length; i++ ) {
-                    validateForm({ selector: `[data-optionrowindex='${i}']` }).then(res => {
-                        let titles = {}
-                        // HOOKFORMCOUNTRIES.forEach(el => {
-                        //     titles[el.name] = res[1]['title']
-                        // })
-                        titles[this.language] = res[1]['title']
-                        data.push({ 
-                            ...res[1],
-                            title: titles
+                console.log(this.fieldType)
+                if (this.fieldType === "select" || this.fieldType === "checkbox" || this.fieldType === "radio-multiple") {
+                    console.log(this.fieldType)
+                    for (let i = 0; i < length; i++ ) {
+                        validateForm({ selector: `[data-optionrowindex='${i}']` }).then(res => {
+                            let titles = {}
+                            // HOOKFORMCOUNTRIES.forEach(el => {
+                            //     titles[el.name] = res[1]['title']
+                            // })
+                            titles[this.language] = res[1]['title']
+                            data.push({ 
+                                ...res[1],
+                                title: titles
+                            })
+                            pass++
+                            if (pass === length) {
+                                resolve(data)
+                            }
                         })
-                        pass++
-                        if (pass === length) {
-                            resolve(data)
-                        }
-                    })
+                    }
+                } else {
+                    resolve(null)
                 }
             } else {
                 resolve(null)
@@ -142,8 +150,9 @@ export class HookFormPanel extends HTMLElement {
     }
 
     printOptions(options) {
+        console.log(options)
         let html = ""
-        options?.forEach((el, index) => {
+        options && options?.forEach((el, index) => {
             const { value, icon, required, textarea } = el
             let { title } = el
             if (JSON.stringify(title).startsWith("{") && !title[this.language]) {
@@ -337,10 +346,9 @@ export class HookFormPanel extends HTMLElement {
         return html
     }
 
-    toggleCustomFields(type) {
-        this.fieldType = type
+    toggleCustomFields() {
         document.querySelectorAll("[customfields]").forEach(el => el.classList.add("hidden"))
-        switch (type) {
+        switch (this.fieldType) {
             case "checkbox":
             case "radio-multiple":
             case "select":
@@ -387,6 +395,7 @@ export class HookFormPanel extends HTMLElement {
                 if ((typeof this.indexBlock !== "number") && this.type === "add") {
                     alert("Select a block")
                 } else {
+                    this.fieldType = HOOKFORMTYPES[0]['name']
                     this.querySelector("[id='contentmodal']").innerHTML = this.printModals({ column, type, values })
                     document.querySelector("textarea[name='html']").style.height = "150px"
                 }
@@ -698,8 +707,11 @@ export class HookFormPanel extends HTMLElement {
         this.toggleModal({ column: column, type: "edit", values: values })
 
         if (column === "field") {
-            this.toggleCustomFields(this.querySelector("[data-field][name='type']").value)
-            this.printOptions(values?.options)
+            this.fieldType = this.querySelector("[data-field][name='type']").value
+            this.toggleCustomFields()
+            if (this.fieldType === "select" || this.fieldType === "checkbox" || this.fieldType === "radio-multiple") {
+                this.printOptions(values?.options)
+            }
         }
     }
 
@@ -752,6 +764,11 @@ export class HookFormPanel extends HTMLElement {
     }
 
     saveField() {
+        if (this.fieldType === "select" || this.fieldType === "radio-multiple" || this.fieldType === "checkbox") {
+            document.querySelectorAll("[id='tbodyoptions'] input").forEach(el => el.setAttribute("data-skipvalidation", false))
+        } else {
+            document.querySelectorAll("[id='tbodyoptions'] input").forEach(el => el.setAttribute("data-skipvalidation", true))
+        }
         validateForm({ selector: "[data-modal]" })
         .then(res => {
             const label = res[1]['label']
@@ -902,7 +919,8 @@ export class HookFormPanel extends HTMLElement {
                     this.changeLanguage(e.target.value)
                     break;
                 case "typefield":
-                    this.toggleCustomFields(e.target.value)
+                    this.fieldType = e.target.value
+                    this.toggleCustomFields()
                     break;
                 default:
                     break;

@@ -1,9 +1,10 @@
 import { HOOKFORMINPUTCLASS, HOOKFORMTYPES, HOOKFORMCOUNTRIES } from "../../config/index.js"
 import { validateForm } from "./validate.js"
-
+import { formatOldFormToNewFormat } from "./formatOldToNew.js"
 export class HookFormPanel extends HTMLElement {
     constructor() {
         super()
+        this.saveFunction = () => {}
         this.config = {
             levels: 1, // 1 to 3
             columns: {
@@ -23,7 +24,9 @@ export class HookFormPanel extends HTMLElement {
         this.currentField = null
         this.currentFieldKey = null
         this.language = "es" || HOOKFORMCOUNTRIES[0]['name']
-        this.data = {}
+        this.data = {
+            config: {}
+        }
     }
 
     static get observedAttributes() {
@@ -45,14 +48,19 @@ export class HookFormPanel extends HTMLElement {
     constructConfig() {
         let html = ""
         html += `
-            <div class="grid grid-cols-3">
-                <div class="p-4">
-                    <custom-field-hook label="Columnas" data-value="${this.data?.columns || ""}" type="text"></custom-field-hook>
+            <div class="flex p-4 items-end justify-between">
+                <div class="flex gap-3">
+                    <div>
+                        <custom-field-hook label="Columnas" data-value="${this.data?.columns || ""}" type="text"></custom-field-hook>
+                    </div>
+                    <div>
+                        <custom-field-hook type="select" data-action="language" label="Language">
+                            ${this.printLanguages()}
+                        </custom-field-hook>
+                    </div>
                 </div>
-                <div class="p-4">
-                    <custom-field-hook type="select" data-action="language" label="Language">
-                        ${this.printLanguages()}
-                    </custom-field-hook>
+                <div>
+                    <button data-action="saveform" class="bg-purple-700 text-white rounded-lg py-4 px-6">SAVE</button>
                 </div>
             </div>
         `
@@ -279,48 +287,26 @@ export class HookFormPanel extends HTMLElement {
         }
     }
 
-    formatOldFormToNewFormat(data) {
-        console.log(data)
-        const format = data.reduce((acc, cur) => {
-            acc['constructor'] = { ...acc['constructor'] }
-            const { alternateName, columns, hidden, info, label, name, options, pattern, position, required, type, value } = cur
-            acc['constructor'][cur.name] = {
-                alternateName, columns, hidden, info, label, name, options, pattern, position, required, type, value
-            }
-
-            acc['languages']['en'][cur.name] = {
-                label
-            }
-            acc['languages']['es'][cur.name] = {
-                label
-            }
-            return acc
-        }, {
-            constructor: {},
-            languages: {
-                en: {},
-                es: {}
-            }
-        })
-        return {
-            columns: 2,
-            form: [
-                {
-                    "position": 1,
-                    "title": {
-                        "en": "Form",
-                    },
-                    "blocks": [
-                        {
-                            "title": {
-                                "en": "Form",
-                            },
-                            "fields": { ...format }
-                        }
-                    ]
+    getValues(column) {
+        let d = null
+        switch (column) {
+            case "section":
+                d = this.data
+                break;
+            case "block":
+                d = {
+                    config: this.data.config,
+                    form: this.data.form[0]['blocks']
                 }
-            ]
+                break;
+            case "field":
+                d = {
+                    config: this.data.config,
+                    form: this.data.form[0]['blocks'][0]['fields']
+                }
+                break;
         }
+        return d
     }
 
     updateData(data = {
@@ -442,11 +428,30 @@ export class HookFormPanel extends HTMLElement {
     }) {
         // data.length = 4
         if (JSON.stringify(data).startsWith("[")) {
-           this.data = this.formatOldFormToNewFormat(data) 
+           this.data = formatOldFormToNewFormat(data) 
+        } else if("constructor" in data) {
+            this.data = {
+                columns: 2,
+                form: [
+                    {
+                        "position": 1,
+                        "title": {
+                            "en": "Form",
+                        },
+                        "blocks": [
+                            {
+                                "title": {
+                                    "en": "Form",
+                                },
+                                "fields": data
+                            }
+                        ]
+                    }
+                ]
+            }
         } else {
             this.data = data
         }
-        console.log(this.formatOldFormToNewFormat(data))
         // this.data = data
         this.printColumn({ column: this.config.columns[this.config.levels], index: null })
     }
@@ -690,6 +695,10 @@ export class HookFormPanel extends HTMLElement {
         this.printColumn({ column: column })
     }
 
+    saveForm() {
+        this.saveFunction()
+    }
+
     render() {
         let html = ""
         html += `
@@ -711,6 +720,9 @@ export class HookFormPanel extends HTMLElement {
 
         this.addEventListener("click", e => {
             switch (e.target.dataset.action) {
+                case "saveform":
+                    this.saveForm()
+                    break;
                 case "savefield":
                     this.saveField()
                     break;

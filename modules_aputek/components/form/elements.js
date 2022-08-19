@@ -204,7 +204,7 @@ export class CustomFieldHook extends HTMLElement {
         }
         // CHECKBOX
         if (this.type === "checkbox") {
-            if (this.multiple) {
+            if (this.multiple || this.innerHTML) {
                 htmlField = this.innerHTML
             } else {
                 htmlField = `

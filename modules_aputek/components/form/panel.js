@@ -89,23 +89,29 @@ export class HookFormPanel extends HTMLElement {
             let data = []
             let pass = 0
             const length = [...this.querySelectorAll("[data-optionrowindex]")].length
-            for (let i = 0; i < length; i++ ) {
-                validateForm({ selector: `[data-optionrowindex='${i}']` }).then(res => {
-                    let titles = {}
-                    // HOOKFORMCOUNTRIES.forEach(el => {
-                    //     titles[el.name] = res[1]['title']
-                    // })
-                    titles[this.language] = res[1]['title']
-                    data.push({ 
-                        ...res[1],
-                        title: titles
+            if (length >= 1) {
+                for (let i = 0; i < length; i++ ) {
+                    validateForm({ selector: `[data-optionrowindex='${i}']` }).then(res => {
+                        let titles = {}
+                        // HOOKFORMCOUNTRIES.forEach(el => {
+                        //     titles[el.name] = res[1]['title']
+                        // })
+                        titles[this.language] = res[1]['title']
+                        data.push({ 
+                            ...res[1],
+                            title: titles
+                        })
+                        pass++
+                        if (pass === length) {
+                            resolve(data)
+                        }
                     })
-                    pass++
-                    if (pass === length) {
-                        resolve(data)
-                    }
-                })
+                }
+            } else {
+                resolve(null)
             }
+        }).catch(err => {
+            console.log(err)
         })
     }
 
@@ -281,7 +287,7 @@ export class HookFormPanel extends HTMLElement {
                 </custom-field-hook>
                 <button type="submit" class="" hidden data-skipValidation="true">Enviar</button>
             </form>
-            <div class="flex flex-col mt-4 border border-gray-300 rounded-xl p-3 hiddenn" customfield="options" customfields>
+            <div class="flex flex-col mt-4 border border-gray-300 rounded-xl p-3 hidden" customfield="options" customfields>
                 <div class="flex items-center gap-2 mb-2">
                     <label class="text-gray-800 font-medium">Options</label>
                     <button 
@@ -692,6 +698,7 @@ export class HookFormPanel extends HTMLElement {
         this.toggleModal({ column: column, type: "edit", values: values })
 
         if (column === "field") {
+            this.toggleCustomFields(this.querySelector("[data-field][name='type']").value)
             this.printOptions(values?.options)
         }
     }
@@ -786,6 +793,8 @@ export class HookFormPanel extends HTMLElement {
                 this.toggleModal({ column: "", type: "", values: "", hidden: true })
 
                 // console.log(this.data['form'][this.indexSection]['blocks'][this.indexBlock]['fields'])
+            }).catch(err => {
+                console.log(err)
             })
 
         }).catch(err => {

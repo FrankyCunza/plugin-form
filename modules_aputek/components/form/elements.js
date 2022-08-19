@@ -28,6 +28,7 @@ function uniqueIdForm() {
 export class CustomFieldHook extends HTMLElement {
     constructor() {
         super()
+        this.multiple = null
         this.id = uniqueIdForm()()
         this.innerHtml = null
         this.required = null
@@ -128,6 +129,7 @@ export class CustomFieldHook extends HTMLElement {
                             data-value="true" 
                             class="cursor-pointer" 
                             value="true" 
+                            ${htmlDataAttributes}
                         />
                     </label>
                 </div>
@@ -144,6 +146,7 @@ export class CustomFieldHook extends HTMLElement {
                             data-value="false" 
                             class="cursor-pointer" 
                             value="false" 
+                            ${htmlDataAttributes}
                         />
                     </label>
                 </div>
@@ -180,6 +183,7 @@ export class CustomFieldHook extends HTMLElement {
                             name="${this.name}" 
                             data-value="${this.optionValue}" 
                             class="cursor-pointer" 
+                            ${htmlDataAttributes}
                         />
                     </label>
                 </div>
@@ -193,13 +197,31 @@ export class CustomFieldHook extends HTMLElement {
                     class="${this.classNameInput}" 
                     data-required="${this.required ? "true" : "false"}" 
                     data-field 
-                    name="${this.name}">${this.value}</textarea>
+                    ${htmlDataAttributes}
+                    name="${this.name}">${this.value || ""}</textarea>
                 ${this.checkedHtml}
             `
         }
         // CHECKBOX
         if (this.type === "checkbox") {
-            htmlField = this.innerHTML
+            if (this.multiple) {
+                htmlField = this.innerHTML
+            } else {
+                htmlField = `
+                    ${this.warningHtml}
+                    <input type="checkbox" 
+                        data-required="${this.required ? "true" : "false"}" 
+                        data-field 
+                        name="${this.name}" 
+                        data-value="true" 
+                        class="cursor-pointer" 
+                        value="true" 
+                        ${htmlDataAttributes}
+                        ${this.value == "true" ? "checked" : ""} 
+                    />
+                    ${this.checkedHtml}
+                `
+            }
         }
         if (this.getAttribute("onlyfield") == "true") {
             label = ""
@@ -237,6 +259,7 @@ export class CustomFieldHook extends HTMLElement {
 
     connectedCallback() {
         this.value = this.getAttribute("data-value")
+        this.multiple = this.getAttribute("data-multiple") == "true" ? true : false
         this.innerHtml = this.innerHTML
         this.type = this.getAttribute("type")
         this.required = this.getAttribute("required") == "true" ? true : false

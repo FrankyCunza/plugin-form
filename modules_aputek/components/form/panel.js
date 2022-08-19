@@ -14,6 +14,7 @@ export class HookFormPanel extends HTMLElement {
             }
         }
         this.type = "add"
+        this.fieldType = "text"
         this.indexSection = null
         this.indexBlock = null
         this.indexField = null
@@ -27,6 +28,22 @@ export class HookFormPanel extends HTMLElement {
         this.data = {
             config: {}
         }
+        this.options = [
+            {
+                title: "Peru",
+                value: "peru",
+                icon: "https://icons.com/peru.png",
+                required: false,
+                textarea: true
+            },
+            {
+                title: "Argentina",
+                value: "argentina",
+                icon: "https://icons.com/argentina.png",
+                required: true,
+                textarea: false
+            }
+        ]
     }
 
     static get observedAttributes() {
@@ -65,6 +82,66 @@ export class HookFormPanel extends HTMLElement {
             </div>
         `
         return html
+    }
+    
+    async optionsValues() {
+        return await new Promise((resolve, reject) => {
+            let data = []
+            let pass = 0
+            const length = [...this.querySelectorAll("[data-optionrowindex]")].length
+            for (let i = 0; i < length; i++ ) {
+                validateForm({ selector: `[data-optionrowindex='${i}']` }).then(res => {
+                    let titles = {}
+                    HOOKFORMCOUNTRIES.forEach(el => {
+                        titles[el.name] = res[1]['title']
+                    })
+                    data.push({ 
+                        ...res[1],
+                        title: titles
+                    })
+                    pass++
+                    if (pass === length) {
+                        resolve(data)
+                    }
+                })
+            }
+        })
+    }
+
+    optionRow({ title, value, icon, required, textarea, index }) {
+        return `
+            <tr data-optionrowindex="${index}">
+                <td class="p-2">
+                    <custom-field-hook type="text" name="title" required="true" data-value="${title}" onlyfield="true"></custom-field-hook>
+                </td>
+                <td class="p-2">
+                    <custom-field-hook type="text" name="value" required="true" data-value="${value}" onlyfield="true"></custom-field-hook>
+                </td>
+                <td class="p-2">
+                    <custom-field-hook type="text" name="icon" data-value="${icon}" onlyfield="true"></custom-field-hook>
+                </td>
+                <td class="p-2">
+                    <custom-field-hook type="checkbox" name="required" data-value="${required}" onlyfield="true"></custom-field-hook>
+                </td>
+                <td class="p-2">
+                    <custom-field-hook type="checkbox" name="textarea" data-value="${textarea}" onlyfield="true"></custom-field-hook>
+                </td>
+            </tr>
+        `
+    }
+
+    addOption() {
+        console.log("Nice")
+        this.querySelector("[id='tbodyoptions']").insertAdjacentHTML("beforeend", this.optionRow({ title: "", value: "", icon: "", required: false, textarea: false, index: this.querySelector("[id='tbodyoptions']").childNodes.length - 1 }))
+    }
+
+    printOptions() {
+        let html = ""
+        this.options.forEach((el, index) => {
+            const { title, value, icon, required, textarea } = el
+            html += this.optionRow({ title, value, icon, required, textarea, index })
+        })
+        this.querySelector("[id='tbodyoptions']").innerHTML = html
     }
 
     constructBody() {
@@ -191,7 +268,7 @@ export class HookFormPanel extends HTMLElement {
                     <option value="3" ${values?.columns === 3 ? "selected" : ""}>3</option>
                 </custom-field-hook>
                 <custom-field-hook type="text" data-value="${values?.pattern || ""}" label="Pattern" name="pattern"></custom-field-hook>
-                <custom-field-hook type="select" label="Type" name="type">
+                <custom-field-hook type="select" data-action="typefield" label="Type" name="type">
                     ${this.constructTypes(values?.type)}
                 </custom-field-hook>
                 <custom-field-hook type="select" label="Required" name="required">
@@ -200,31 +277,35 @@ export class HookFormPanel extends HTMLElement {
                 </custom-field-hook>
                 <button type="submit" class="" hidden data-skipValidation="true">Enviar</button>
             </form>
-            <div class="flex flex-col mt-4 border border-gray-300 rounded-xl p-3 hidden">
+            <div class="flex flex-col mt-4 border border-gray-300 rounded-xl p-3 hiddenn" customfield="options" customfields>
                 <div class="flex items-center gap-2 mb-2">
                     <label class="text-gray-800 font-medium">Options</label>
-                    <button class="bg-blue-50 tetx-xs text-blue-600 px-2 py-2 rounded-md font-medium" data-action="addOption">Add</button>
+                    <button 
+                        class="focus:outline-none text-sm border border-2 border-blue-600 focus:ring-4 focus:ring-blue-300 bg-blue-50 tetx-xs text-blue-600 px-4 py-2 rounded-md font-medium" 
+                        data-action="addoption">
+                        Add
+                    </button>
                 </div>
                 <div class="border border-gray-200 rounded-xl overflow-hidden">
                     <table class="w-full">
                         <thead class="bg-gray-50 h-12">
                                 <tr>
-                                    <th class="font-medium text-left px-3">Name</th>
+                                    <th class="font-medium text-left px-3">Title</th>
                                     <th class="font-medium text-left px-3">Value</th>
                                     <th class="font-medium text-left px-3">Icon</th>
                                     <th class="font-medium text-left px-3">Required</th>
                                     <th class="font-medium text-left px-3">Textarea</th>
                                 </tr>
                         </thead>
-                        <tbody></tbody>
+                        <tbody id="tbodyoptions"></tbody>
                     </table>
                 </div>
             </div>
-            <div class="flex flex-col mt-4 border border-gray-300 rounded-xl p-3 hidden">
+            <div class="flex flex-col mt-4 border border-gray-300 rounded-xl p-3 hidden" customfield="html" customfields>
                 <div class="flex items-center gap-2 mb-2">
                     <label class="text-gray-800 font-medium">HTML</label>
                 </div>
-                <textarea data-skipValidation="true" class="${HOOKFORMINPUTCLASS} pt-4" style="height: 150px;"></textarea>
+                <custom-field-hook type="textarea" data-skipvalidation="true" label="HTML" name="html"></custom-field-hook>
             </div>
             <div class="w-full flex justify-end">
             <button type="submit" data-action="savefield" class="mt-3 bg-blue-600 px-4 py-3 w-full rounded-xl text-white">
@@ -246,6 +327,23 @@ export class HookFormPanel extends HTMLElement {
         return html
     }
 
+    toggleCustomFields(type) {
+        this.fieldType = type
+        document.querySelectorAll("[customfields]").forEach(el => el.classList.add("hidden"))
+        switch (type) {
+            case "checkbox":
+            case "radio-multiple":
+            case "select":
+                document.querySelector("[customfield='options']").classList.remove("hidden")
+                break;
+            case "html":
+                document.querySelector("[customfield='html']").classList.remove("hidden")
+                break;
+            default:
+                break;
+        }
+    }
+
     constructModal() {
         return `
             <div class="fixed w-screen h-screen top-0 left-0 py-10 flex items-center justify-center z-20 hidden" data-modal="modal">
@@ -264,8 +362,6 @@ export class HookFormPanel extends HTMLElement {
             this.querySelector("[data-modal]").classList.toggle("hidden")
             return
         }
-        console.log(column)
-        console.log(this.indexSection)
         switch (column) {
             case "section":
                 this.querySelector("[id='contentmodal']").innerHTML = this.printModals({ column, type, values })
@@ -282,6 +378,7 @@ export class HookFormPanel extends HTMLElement {
                     alert("Select a block")
                 } else {
                     this.querySelector("[id='contentmodal']").innerHTML = this.printModals({ column, type, values })
+                    document.querySelector("textarea[name='html']").style.height = "150px"
                 }
                 break;
         }
@@ -588,6 +685,10 @@ export class HookFormPanel extends HTMLElement {
                 break;
         }
         this.toggleModal({ column: column, type: "edit", values: values })
+
+        if (column === "field") {
+            this.printOptions()
+        }
     }
 
     saveSection() {
@@ -666,12 +767,22 @@ export class HookFormPanel extends HTMLElement {
             if (this.type === "edit") {
                 name = this.currentFieldKey
             }
-            this.data['form'][this.indexSection]['blocks'][this.indexBlock]['fields']['constructor'][name] = field.constructor
-            this.data['form'][this.indexSection]['blocks'][this.indexBlock]['fields']['languages'][this.language][name] = {
-                label: label
-            }
-            this.printColumn({ column: "field" })
-            this.toggleModal({ column: "", type: "", values: "", hidden: true })
+
+            this.optionsValues().then(response => {
+                console.log(response)
+                this.data['form'][this.indexSection]['blocks'][this.indexBlock]['fields']['constructor'][name] = {
+                    ...field.constructor,
+                    options: response
+                }
+                this.data['form'][this.indexSection]['blocks'][this.indexBlock]['fields']['languages'][this.language][name] = {
+                    label: label
+                }
+                this.printColumn({ column: "field" })
+                this.toggleModal({ column: "", type: "", values: "", hidden: true })
+
+                // console.log(this.data['form'][this.indexSection]['blocks'][this.indexBlock]['fields'])
+            })
+
         }).catch(err => {
             console.log(err)
         })
@@ -720,6 +831,9 @@ export class HookFormPanel extends HTMLElement {
 
         this.addEventListener("click", e => {
             switch (e.target.dataset.action) {
+                case "addoption":
+                    this.addOption()
+                    break;
                 case "saveform":
                     this.saveForm()
                     break;
@@ -772,6 +886,9 @@ export class HookFormPanel extends HTMLElement {
             switch (e.target.dataset.action) {
                 case "language":
                     this.changeLanguage(e.target.value)
+                    break;
+                case "typefield":
+                    this.toggleCustomFields(e.target.value)
                     break;
                 default:
                     break;

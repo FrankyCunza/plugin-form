@@ -353,6 +353,7 @@ export class HookFormPanel extends HTMLElement {
             case "radio-multiple":
             case "select":
                 document.querySelector("[customfield='options']").classList.remove("hidden")
+                this.printOptions(this.currentField?.options)
                 break;
             case "html":
                 document.querySelector("[customfield='html']").classList.remove("hidden")
@@ -700,8 +701,11 @@ export class HookFormPanel extends HTMLElement {
                     pattern: field['constructor'][key]['pattern'],
                     type: field['constructor'][key]['type'],
                     required: field['constructor'][key]['required'],
-                    options: field['constructor'][key]['options']
+                    options: field['constructor'][key]['options'],
+                    html: field['constructor'][key]['html']
                 }
+                this.currentField = values
+                console.log(this.currentField)
                 break;
         }
         this.toggleModal({ column: column, type: "edit", values: values })
@@ -764,11 +768,14 @@ export class HookFormPanel extends HTMLElement {
     }
 
     saveField() {
+        let isBackupOptions = false
         if (this.fieldType === "select" || this.fieldType === "radio-multiple" || this.fieldType === "checkbox") {
             document.querySelectorAll("[id='tbodyoptions'] input").forEach(el => el.setAttribute("data-skipvalidation", false))
         } else {
+            isBackupOptions = true
             document.querySelectorAll("[id='tbodyoptions'] input").forEach(el => el.setAttribute("data-skipvalidation", true))
         }
+        console.log(isBackupOptions, "backup")
         validateForm({ selector: "[data-modal]" })
         .then(res => {
             const label = res[1]['label']
@@ -798,16 +805,17 @@ export class HookFormPanel extends HTMLElement {
             }
 
             this.optionsValues().then(response => {
-                console.log(response)
                 this.data['form'][this.indexSection]['blocks'][this.indexBlock]['fields']['constructor'][name] = {
                     ...field.constructor,
-                    options: response
+                    options: isBackupOptions ? this.currentField?.options || {} : response
                 }
+                console.log(this.currentField)
                 this.data['form'][this.indexSection]['blocks'][this.indexBlock]['fields']['languages'][this.language][name] = {
                     label: label
                 }
                 this.printColumn({ column: "field" })
                 this.toggleModal({ column: "", type: "", values: "", hidden: true })
+                console.log(this.data['form'][this.indexSection]['blocks'][this.indexBlock]['fields']['constructor'][name])
 
                 // console.log(this.data['form'][this.indexSection]['blocks'][this.indexBlock]['fields'])
             }).catch(err => {

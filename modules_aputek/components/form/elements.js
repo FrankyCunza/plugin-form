@@ -93,6 +93,16 @@ export class CustomFieldHook extends HTMLElement {
                 ${this.checkedHtml}
             `
         }
+        if (
+            this.type === "h6" ||  
+            this.type === "h5" || 
+            this.type === "h4" || 
+            this.type === "h3" ||
+            this.type === "h2" ||
+            this.type === "h1"
+        ) {
+            htmlField = `<${this.type} class="text-3xl font-bold">${this.label}</${this.type}>`
+        }
         // FIELD RADIO
         if (this.type === "radio") {
             let htmlTrue = `

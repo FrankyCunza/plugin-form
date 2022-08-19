@@ -93,7 +93,17 @@ export class CustomFieldHook extends HTMLElement {
                 ${this.checkedHtml}
             `
         }
+        const CLASSTEXT = {
+            p: "text-base",
+            h6: "text-xl font-bold",
+            h5: "text-2xl font-bold",
+            h4: "text-3xl font-bold",
+            h3: "text-4xl font-bold",
+            h2: "text-5xl font-bold",
+            h1: "text-6xl font-bold"
+        }
         if (
+            this.type === "p" ||  
             this.type === "h6" ||  
             this.type === "h5" || 
             this.type === "h4" || 
@@ -101,7 +111,8 @@ export class CustomFieldHook extends HTMLElement {
             this.type === "h2" ||
             this.type === "h1"
         ) {
-            htmlField = `<${this.type} class="text-3xl font-bold">${this.label}</${this.type}>`
+            label = ""
+            htmlField = `<${this.type} class="${CLASSTEXT[this.type]}">${this.label}</${this.type}>`
         }
         // FIELD RADIO
         if (this.type === "radio") {
@@ -182,7 +193,7 @@ export class CustomFieldHook extends HTMLElement {
                     class="${this.classNameInput}" 
                     data-required="${this.required ? "true" : "false"}" 
                     data-field 
-                    name="${this.name}"></textarea>
+                    name="${this.name}">${this.value}</textarea>
                 ${this.checkedHtml}
             `
         }

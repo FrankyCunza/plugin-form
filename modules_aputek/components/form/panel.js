@@ -29,20 +29,20 @@ export class HookFormPanel extends HTMLElement {
             config: {}
         }
         this.options = [
-            {
-                title: "Peru",
-                value: "peru",
-                icon: "https://icons.com/peru.png",
-                required: false,
-                textarea: true
-            },
-            {
-                title: "Argentina",
-                value: "argentina",
-                icon: "https://icons.com/argentina.png",
-                required: true,
-                textarea: false
-            }
+            // {
+            //     title: "Peru",
+            //     value: "peru",
+            //     icon: "https://icons.com/peru.png",
+            //     required: false,
+            //     textarea: true
+            // },
+            // {
+            //     title: "Argentina",
+            //     value: "argentina",
+            //     icon: "https://icons.com/argentina.png",
+            //     required: true,
+            //     textarea: false
+            // }
         ]
     }
 
@@ -92,9 +92,10 @@ export class HookFormPanel extends HTMLElement {
             for (let i = 0; i < length; i++ ) {
                 validateForm({ selector: `[data-optionrowindex='${i}']` }).then(res => {
                     let titles = {}
-                    HOOKFORMCOUNTRIES.forEach(el => {
-                        titles[el.name] = res[1]['title']
-                    })
+                    // HOOKFORMCOUNTRIES.forEach(el => {
+                    //     titles[el.name] = res[1]['title']
+                    // })
+                    titles[this.language] = res[1]['title']
                     data.push({ 
                         ...res[1],
                         title: titles
@@ -131,15 +132,18 @@ export class HookFormPanel extends HTMLElement {
     }
 
     addOption() {
-        console.log("Nice")
-        this.querySelector("[id='tbodyoptions']").insertAdjacentHTML("beforeend", this.optionRow({ title: "", value: "", icon: "", required: false, textarea: false, index: this.querySelector("[id='tbodyoptions']").childNodes.length - 1 }))
+        this.querySelector("[id='tbodyoptions']").insertAdjacentHTML("beforeend", this.optionRow({ title: "", value: "", icon: "", required: false, textarea: false, index: this.querySelectorAll("[id='tbodyoptions'] tr").length }))
     }
 
-    printOptions() {
+    printOptions(options) {
         let html = ""
-        this.options.forEach((el, index) => {
-            const { title, value, icon, required, textarea } = el
-            html += this.optionRow({ title, value, icon, required, textarea, index })
+        options?.forEach((el, index) => {
+            const { value, icon, required, textarea } = el
+            let { title } = el
+            if (JSON.stringify(title).startsWith("{") && !title[this.language]) {
+                title[this.language] = "Not found"
+            }
+            html += this.optionRow({ title: title[this.language] ? title[this.language] : title, value, icon, required, textarea, index })
         })
         this.querySelector("[id='tbodyoptions']").innerHTML = html
     }
@@ -680,14 +684,15 @@ export class HookFormPanel extends HTMLElement {
                     columns: field['constructor'][key]['columns'],
                     pattern: field['constructor'][key]['pattern'],
                     type: field['constructor'][key]['type'],
-                    required: field['constructor'][key]['required']
+                    required: field['constructor'][key]['required'],
+                    options: field['constructor'][key]['options']
                 }
                 break;
         }
         this.toggleModal({ column: column, type: "edit", values: values })
 
         if (column === "field") {
-            this.printOptions()
+            this.printOptions(values?.options)
         }
     }
 

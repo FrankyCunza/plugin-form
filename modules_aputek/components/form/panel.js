@@ -692,7 +692,7 @@ export class HookFormPanel extends HTMLElement {
                 this.indexField = parseFloat(index)
                 let field = this.data['form'][this.indexSection]['blocks'][this.indexBlock]['fields']
                 values = {
-                    label: field['languages'][this.language][key]['label'],
+                    label: field['languages'][this.language][key] ? field['languages'][this.language][key]['label'] : "Not found",
                     additionalName: field['constructor'][key]['additionalName'],
                     info: field['constructor'][key]['info'],
                     alternateName: field['constructor'][key]['alternateName'],

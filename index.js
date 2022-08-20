@@ -333,7 +333,8 @@ const form = {
       }
  }
 //  console.log(form)
-document.querySelector("custom-hook-form-panel").updateData(form)
+// document.querySelector("custom-hook-form-panel").updateData(form)
+document.querySelector("custom-hook-form-panel").updateData(JSON.parse(localStorage.getItem("data")))
 document.querySelector("custom-hook-form-panel").saveFunction = () => {
     console.log("Sending")
 }

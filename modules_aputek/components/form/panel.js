@@ -68,10 +68,20 @@ export class HookFormPanel extends HTMLElement {
             <div class="flex p-4 items-end justify-between">
                 <div class="flex gap-3">
                     <div>
-                        <custom-field-hook label="Columnas" data-value="${this.data?.columns || ""}" type="text"></custom-field-hook>
+                        <custom-field-hook data='${JSON.stringify({
+                            label: "Columnas", 
+                            value: `${this.data?.columns || ""}`, 
+                            type: "text"
+                        })}'></custom-field-hook>
                     </div>
                     <div>
-                        <custom-field-hook type="select" data-action="language" label="Language">
+                        <custom-field-hook data='${JSON.stringify({
+                            type: "select", 
+                            dataAttributes: {
+                                action: "language"
+                            }, 
+                            label: "Language"
+                        })}'>
                             ${this.printLanguages()}
                         </custom-field-hook>
                     </div>
@@ -129,19 +139,29 @@ export class HookFormPanel extends HTMLElement {
         return `
             <tr data-optionrowindex="${index}">
                 <td class="p-2">
-                    <custom-field-hook type="text" name="title" required="true" data-value="${title}" onlyfield="true"></custom-field-hook>
+                    <custom-field-hook data='${JSON.stringify({
+                        type: "text", name: "title", required: true, value: value, title: title, onlyfield: true
+                    })}'></custom-field-hook>
                 </td>
                 <td class="p-2">
-                    <custom-field-hook type="text" name="value" required="true" data-value="${value}" onlyfield="true"></custom-field-hook>
+                    <custom-field-hook data='${JSON.stringify({
+                        type: "text", name: "value", required: true, value: value, onlyfield: true
+                    })}'></custom-field-hook>
                 </td>
                 <td class="p-2">
-                    <custom-field-hook type="text" name="icon" data-value="${icon}" onlyfield="true"></custom-field-hook>
+                    <custom-field-hook data='${JSON.stringify({
+                        type: "text", name: "icon", value: icon, onlyfield: true
+                    })}'></custom-field-hook>
                 </td>
                 <td class="p-2">
-                    <custom-field-hook type="checkbox" name="required" data-value="${required}" onlyfield="true"></custom-field-hook>
+                    <custom-field-hook data='${JSON.stringify({
+                        type: "checkbox", name: required, value: required, onlyfield: true
+                    })}'></custom-field-hook>
                 </td>
                 <td class="p-2">
-                    <custom-field-hook type="checkbox" name="textarea" data-value="${textarea}" onlyfield="true"></custom-field-hook>
+                    <custom-field-hook data='${JSON.stringify({
+                        type: 'checkbox', name: "textarea", value: textarea, onlyfield: true
+                    })}'></custom-field-hook>
                 </td>
             </tr>
         `
@@ -153,14 +173,16 @@ export class HookFormPanel extends HTMLElement {
 
     printOptions(options) {
         let html = ""
-        JSON.stringify(options).startsWith("[") && options?.forEach((el, index) => {
-            const { value, icon, required, textarea } = el
-            let { title } = el
-            if (JSON.stringify(title).startsWith("{") && !title[this.language]) {
-                title[this.language] = "Not found"
-            }
-            html += this.optionRow({ title: title[this.language] ? title[this.language] : title, value, icon, required, textarea, index })
-        })
+        if (options) {
+            JSON.stringify(options).startsWith("[") && options?.forEach((el, index) => {
+                const { value, icon, required, textarea } = el
+                let { title } = el
+                if (JSON.stringify(title).startsWith("{") && !title[this.language]) {
+                    title[this.language] = "Not found"
+                }
+                html += this.optionRow({ title: title[this.language] ? title[this.language] : title, value, icon, required, textarea, index })
+            })
+        }
         this.querySelector("[id='tbodyoptions']").innerHTML = html
     }
 
@@ -259,42 +281,86 @@ export class HookFormPanel extends HTMLElement {
     }
 
     printModals({ column, type, values }) {
+        console.log("Values", values)
         this.querySelector("[data-modal]").classList.toggle("hidden")
         let html = ""
         let htmlModalSection = `
             <h2 class="font-bold text-xl text-gray-800 mb-3">${type === "edit" ? "Edit" : "Add"} section</h2>
             <form novalidate data-form="formsection">
-                <custom-field-hook type="text" data-value="${values || ""}" onlyfield="true" required="true" name="inputsection"></custom-field-hook>
+                <custom-field-hook data='${JSON.stringify({
+                    type: "text", value: values, onlyfield: true, required: true, name: "inputsection"
+                })}'></custom-field-hook>
                 <button type="submit" data-action="savesection" class="mt-3 bg-blue-600 px-4 py-3 w-full rounded-xl text-white">Save</button>
             </form>
           `
         let htmlModalBlock = `
             <h2 class="font-bold text-xl text-gray-800 mb-3">${type === "edit" ? "Edit" : "Add"} block</h2>
             <form novalidate data-form="formblock">
-                <custom-field-hook type="text" data-value="${values || ""}" onlyfield="true" required="true" name="inputblock"></custom-field-hook>
+                <custom-field-hook data='${JSON.stringify({
+                    type: "text", value: values, onlyfield: true, required: true, name: "inputblock"
+                })}'></custom-field-hook>
                 <button type="submit" data-action="saveblock" class="mt-3 bg-blue-600 px-4 py-3 w-full rounded-xl text-white">Save</button>
             </form>
           `
         let htmlModalField = `
             <h2 class="font-bold text-xl text-gray-800 mb-3">${type === "edit" ? "Edit" : "Add"} field</h2>
             <form novalidate class="grid grid-cols-3 gap-3" data-form="formfield">
-                <custom-field-hook type="text" data-value="${values?.label || ""}" required="true" label="Label" name="label"></custom-field-hook>
-                <custom-field-hook type="text" data-value="${values?.additionalName || ""}" label="Aditional Name" name="additionalName"></custom-field-hook>
-                <custom-field-hook type="text" data-value="${values?.info || ""}" label="Info" name="info"></custom-field-hook>
-                <custom-field-hook type="text" data-value="${values?.alternateName || ""}" label="Alternate name" name="alternateName"></custom-field-hook>
-                <custom-field-hook type="select" label="Columns" name="columns">
-                    <option value="1" ${values?.columns === 1 ? "selected" : ""}>1</option>
-                    <option value="2" ${values?.columns === 2 ? "selected" : ""}>2</option>
-                    <option value="3" ${values?.columns === 3 ? "selected" : ""}>3</option>
-                </custom-field-hook>
-                <custom-field-hook type="text" data-value="${values?.pattern || ""}" label="Pattern" name="pattern"></custom-field-hook>
-                <custom-field-hook type="select" data-action="typefield" label="Type" name="type">
-                    ${this.constructTypes(values?.type)}
-                </custom-field-hook>
-                <custom-field-hook type="select" label="Required" name="required">
-                    <option value="true" ${values?.required === true ? "selected" : ""}>Yes</option>
-                    <option value="false" ${values?.required === false ? "selected" : ""}>No</option>
-                </custom-field-hook>
+                <custom-field-hook data='${JSON.stringify({
+                    type: "text", value: values?.label || "", required: true, label: "Label", name: "label"
+                })}'></custom-field-hook>
+                <custom-field-hook data='${JSON.stringify({
+                    type: "text", value: values?.additionalName || "", label: "Aditional Name", name: "additionalName"
+                })}'></custom-field-hook>
+                <custom-field-hook data='${JSON.stringify({
+                    type: "text", value: values?.info || "", label: "Info", name: "info"
+                })}'></custom-field-hook>
+                <custom-field-hook data='${JSON.stringify({
+                    type: "text", value: values?.alternateName || "", label: "Alternate name", name: "alternateName"
+                })}'></custom-field-hook>
+                <custom-field-hook data='${JSON.stringify({
+                    type: "select", label: "Columns", name: "columns",
+                    value: values?.columns,
+                    options: [
+                        {
+                            title: 1,
+                            value: 1
+                        },
+                        {
+                            title: 2,
+                            value: 2
+                        }
+                    ]
+                })}'></custom-field-hook>
+                <custom-field-hook data='${JSON.stringify({
+                    type: "text", value: values?.pattern || "", label: "Pattern", name: "pattern"
+                })}'></custom-field-hook>
+                <custom-field-hook data='${JSON.stringify({
+                    type: "select", label: "Type", name: "type",
+                    dataAttributes: {
+                        action: "typefield"
+                    },
+                    value: values?.type,
+                    options: HOOKFORMTYPES.map(el => {
+                        return {
+                            title: el.title,
+                            value: el.name
+                        }
+                    })
+                })}'></custom-field-hook>
+                <custom-field-hook data='${JSON.stringify({
+                    type: "select", label: "Required", name: "required",
+                    value: values?.required,
+                    options: [
+                        {
+                            title: "Yes",
+                            value: true
+                        },
+                        {
+                            title: "No",
+                            value: false
+                        }
+                    ]
+                })}'></custom-field-hook>
                 <button type="submit" class="" hidden data-skipValidation="true">Enviar</button>
             </form>
             <div class="flex flex-col mt-4 border border-gray-300 rounded-xl p-3 hidden" customfield="options" customfields>
@@ -325,7 +391,14 @@ export class HookFormPanel extends HTMLElement {
                 <div class="flex items-center gap-2 mb-2">
                     <label class="text-gray-800 font-medium">HTML</label>
                 </div>
-                <custom-field-hook type="textarea" data-skipvalidation="true" label="HTML" name="html"></custom-field-hook>
+                <custom-field-hook data='${JSON.stringify({
+                    type: "textarea", 
+                    dataAttributes: {
+                        skipvalidation: "true"
+                    }, 
+                    label: "HTML", 
+                    name:"html"
+                })}'></custom-field-hook>
             </div>
             <div class="w-full flex justify-end">
             <button type="submit" data-action="savefield" class="mt-3 bg-blue-600 px-4 py-3 w-full rounded-xl text-white">

@@ -47,6 +47,7 @@ export async function validateForm({ selector, form_builder = [], name = "", val
                 case "range":
                 case "reset":
                 case "search":
+                case "week":
                 case "tel":
                 case "text":
                 case "time":

@@ -7,13 +7,15 @@
     <title>Hook Form</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/tailwindcss/2.2.19/tailwind.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="modules_aputek/components/form/form.css">
     <style>
         
     </style>
 </head>
 <body class="flex items-center jusify-center p-10 min-h-screen">
-    <div class="max-w-6xl mx-auto w-full">
-        <custom-hook-form-panel levels="1"></custom-hook-form-panel>
+    <div class="max-w-6xl mx-auto w-full grid grid-cols-2">
+        <custom-hook-form-builder data-lang="es"></custom-hook-form-builder>
+        <custom-hook-form-panel hiddenn levels="1"></custom-hook-form-panel>
     </div>
     <script src="index.js" type="module"></script>
 </body>

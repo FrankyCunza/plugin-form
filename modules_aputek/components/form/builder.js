@@ -1,29 +1,41 @@
+import { validateForm } from "./validate.js"
+
 export class HookFormBuilder extends HTMLElement {
     constructor() {
         super()
-        this.builder = {
+        this.formId = "form"
+        this.lang = "en"
+        this.handle = () => {
+            console.log("Sending")
+        }
+        this.builder = JSON.parse(localStorage.getItem("data"))
+        this.builderr = {
             "constructor": {
                 "age": {
                     "type": "text",
                     "name": "age",
                     "pattern": "",
-                    "position": 4
+                    "position": 4,
+                    "required": true
                 },
                 "names": {
                     "type": "number",
                     "name": "names",
                     "pattern": "",
-                    "position": 4
+                    "position": 4,
+                    "required": true
                 },
                 "countries": {
                     "type": "checkbox",
                     "name": "countries",
-                    "position": 5
+                    "position": 5,
+                    "required": true
                 },
                 "areyoumarried": {
                     "type": "radio",
                     "name": "areyoumarried",
-                    "position": 7
+                    "position": 7,
+                    "required": true
                 }
             },
             "languages": {
@@ -76,32 +88,47 @@ export class HookFormBuilder extends HTMLElement {
     builderHTML() {
         let html = ""
         Object.entries(this.builder['constructor']).forEach(([k, v]) => {
-            const LABEL = this.builder['languages']['es'][k]['label']
-            switch (v['type']) {
-                case "text":
-                case "number":
-                case "date":
-                case "radio":
-                case "datetime":
-                case "month":
-                    html += `<custom-field-hook name="${k}" type="${v['type']}" label="${LABEL}"></custom-field-hook>`
-                    break;
+            const LABEL = this.builder['languages'][this.lang] && this.builder['languages'][this.lang][k] ? this.builder['languages'][this.lang][k]['label'] : `Campo ${k}`
+            let data = {
+                ...v,
+                label: LABEL,
+                name: k
             }
+            console.log(data)
+            if (data) {
+                html += `<custom-field-hook data='${JSON.stringify(data)}'></custom-field-hook>`
+            }
+            // html += `<custom-field-hook name="${k}" required="${v['required']}" type="${v['type']}" label="${LABEL}"></custom-field-hook>`
         })
+        html += `
+            <div class="relative">
+                <button class="bg-purple-700 text-white rounded-lg py-4 w-full">Enviar</button>
+            </div>
+        `
         this.querySelector("form").innerHTML = html
     }
 
     render() {
         let html = ""
         html += `
-            <form novalidate class="grid grid-cols-1 gap-4">
+            <form novalidate class="grid grid-cols-1 gap-4" id="${this.formId}">
             </form>
         `
         this.innerHTML = html
+        this.querySelector("form").addEventListener("submit", e => {
+            e.preventDefault()
+            validateForm({ selector: `[id='${this.formId}']` }).then(res => {
+                console.log(res[1])
+                this.handle()
+            }).catch(err => {
+                console.log(err)
+            })
+        })
     }
 
     connectedCallback() {
         this.render()
+        this.lang = this.getAttribute("data-lang") || "en"
         this.builderHTML()
     }
 }

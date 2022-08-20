@@ -617,19 +617,45 @@ export class HookFormPanel extends HTMLElement {
             let html = ""
             let fields = this.data.form[this.indexSection]['blocks'][this.indexBlock]['fields']
             let indexField = 0
-            Object.entries(fields['constructor']).forEach(([k, v]) => {
+            this.orderFieldsConstructor(fields['constructor']).forEach((el) => {
                 html += this.buttonColumn({ 
                     column: "field", 
                     index: indexField, 
-                    el: v, 
-                    title: fields['languages'][this.language] ? fields['languages'][this.language][k] ? fields['languages'][this.language][k]['label'] : null : null,
-                    key: k,
-                    position: v['position']
+                    el: el, 
+                    title: fields['languages'][this.language] ? fields['languages'][this.language][el.name] ? fields['languages'][this.language][el.name]['label'] : null : null,
+                    key: el.name,
+                    position: el.position
                 })
                 indexField++
             })
+            // Object.entries(fields['constructor']).forEach(([k, v]) => {
+            //     html += this.buttonColumn({ 
+            //         column: "field", 
+            //         index: indexField, 
+            //         el: v, 
+            //         title: fields['languages'][this.language] ? fields['languages'][this.language][k] ? fields['languages'][this.language][k]['label'] : null : null,
+            //         key: k,
+            //         position: v['position']
+            //     })
+            //     indexField++
+            // })
             this.querySelector("[data-column='field']").innerHTML = html
         }
+    }
+
+    orderFieldsConstructor(constructor) {
+        console.log(constructor)
+        if (JSON.stringify(constructor).startsWith("{")) {
+            constructor = Object.entries(constructor).map(([k, v]) => {
+                return {
+                    ...v,
+                    name: k
+                }
+            }).sort(function(a, b) {
+                return a['position'] - b['position'];
+            });
+        }
+        return constructor
     }
 
     buttonColumn({ column, index, el, title, key = "", position }) { // key is for field
@@ -970,14 +996,6 @@ export class HookFormPanel extends HTMLElement {
                     break;
             }
         })
-    }
-
-    orderFieldsConstructor(constructor) {
-        // console.log(constructor)
-        console.log(Object.entries(constructor).map(([k, v]) => v.position).sort(function(a, b) {
-            return a - b;
-          }))
-          console.log(Object.entries(constructor).map(([k, v]) => k))
     }
 
     moveField({ type, position, key }) { // type is upfield or downfield

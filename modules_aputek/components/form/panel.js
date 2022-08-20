@@ -662,6 +662,7 @@ export class HookFormPanel extends HTMLElement {
                 }
             });
         }
+        console.log("Constructr", constructor)
         return constructor
     }
 
@@ -971,6 +972,11 @@ export class HookFormPanel extends HTMLElement {
                     this.moveField({ type: action, position: position, key: key })
                     break;
                 }
+                case "removefield": {
+                    const { key } = e.target.dataset
+                    this.removeField({ key: key })
+                    break;
+                }
             }
         })
 
@@ -1005,9 +1011,30 @@ export class HookFormPanel extends HTMLElement {
         })
     }
 
+    fieldsResetPositions() {
+        let position = 0
+        this.data.form[this.indexSection]['blocks'][this.indexBlock]['fields']['constructor'] = Object.entries(this.data.form[this.indexSection]['blocks'][this.indexBlock]['fields']['constructor'])
+        .reduce((acc, cur) => {
+            position++
+            acc[cur[0]] = {
+                ...cur[1],
+                position: position
+            }
+            return acc
+        }, {})
+    }
+
+    removeField({ key }) {
+        this.currentFieldKey = key
+        delete this.data.form[this.indexSection]['blocks'][this.indexBlock]['fields']['constructor'][key]
+        this.fieldsResetPositions()
+        this.printColumn({ column: "field" })
+    }
+
     moveField({ type, position, key }) { // type is upfield or downfield
         position = parseFloat(position)
         let fields = this.data.form[this.indexSection]['blocks'][this.indexBlock]['fields']
+        console.log("Fields", fields)
         let { constructor } = fields
         const fieldsLength = Object.keys(constructor).length
 
@@ -1044,7 +1071,6 @@ export class HookFormPanel extends HTMLElement {
         console.log(constructor)
         this.orderFieldsConstructor(constructor)
         this.printColumn({ column: "field" })
-
     }
 
     configColumns() {

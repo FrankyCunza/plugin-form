@@ -644,15 +644,22 @@ export class HookFormPanel extends HTMLElement {
     }
 
     orderFieldsConstructor(constructor) {
-        console.log(constructor)
+        let newPosition = 0
         if (JSON.stringify(constructor).startsWith("{")) {
             constructor = Object.entries(constructor).map(([k, v]) => {
                 return {
                     ...v,
+                    position: v.position || 999999,
                     name: k
                 }
             }).sort(function(a, b) {
                 return a['position'] - b['position'];
+            }).map(el => {
+                newPosition++
+                return {
+                    ...el,
+                    position: newPosition
+                }
             });
         }
         return constructor

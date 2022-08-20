@@ -682,7 +682,7 @@ export class HookFormPanel extends HTMLElement {
                         data-column="${column}" 
                         data-action="remove${column}" 
                         class="bg-red-600 px-2 flex items-center justify-center text-white">
-                        <i class="fas fa-edit pointer-events-none text-xs"></i>
+                        <i class="fas fa-trash pointer-events-none text-xs"></i>
                     </button>
                     <button 
                         data-index="${index}" 

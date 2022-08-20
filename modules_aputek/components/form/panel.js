@@ -566,6 +566,7 @@ export class HookFormPanel extends HTMLElement {
                     }
                 ]
             }
+            this.fieldsResetPositions()
         } else {
             this.data = data
         }
@@ -644,6 +645,7 @@ export class HookFormPanel extends HTMLElement {
     }
 
     orderFieldsConstructor(constructor) {
+        console.log("Prev", constructor)
         let newPosition = 0
         if (JSON.stringify(constructor).startsWith("{")) {
             constructor = Object.entries(constructor).map(([k, v]) => {
@@ -1014,14 +1016,25 @@ export class HookFormPanel extends HTMLElement {
     fieldsResetPositions() {
         let position = 0
         this.data.form[this.indexSection]['blocks'][this.indexBlock]['fields']['constructor'] = Object.entries(this.data.form[this.indexSection]['blocks'][this.indexBlock]['fields']['constructor'])
-        .reduce((acc, cur) => {
-            position++
+        .sort(function(a, b) {
+            return a[1]['position'] - b[1]['position'];
+        }).reduce((acc, cur) => {
+            position ++
             acc[cur[0]] = {
                 ...cur[1],
                 position: position
             }
             return acc
         }, {})
+        // .reduce((acc, cur) => {
+        //     acc[cur[0]] = {
+        //         ...cur[1],
+        //         position: cur[1]['position'] || 99999
+        //     }
+        //     return acc
+        // }, {})
+        console.log("Test", this.data.form[this.indexSection]['blocks'][this.indexBlock]['fields']['constructor'])
+        
     }
 
     removeField({ key }) {
@@ -1061,6 +1074,7 @@ export class HookFormPanel extends HTMLElement {
                 constructor[fieldsPositions[1]]['position'] = fieldsLength
                 position = 1
             } else {
+                console.log({ type, position, key })
                 constructor[fieldsPositions[position + 1]]['position'] = position
                 position = position + 1
             }

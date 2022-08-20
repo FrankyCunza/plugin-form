@@ -35,6 +35,7 @@ export async function validateForm({ selector, form_builder = [], name = "", val
             if (field?.skipValidation == true || forms[i].getAttribute("data-skipValidation") == "true") {
                 break;
             }
+            let required = forms[i].dataset.required == 'true' ? true : false
             switch (forms[i].type) {
                 case "date":
                 case "datetime-local":
@@ -68,7 +69,7 @@ export async function validateForm({ selector, form_builder = [], name = "", val
                         form[forms[i].getAttribute(name || "name")] = forms[i].value
                         fd.append(forms[i].getAttribute(name || "name"), forms[i].value)
                     }
-                    if (forms[i].dataset.required == 'true' && forms[i].getAttribute("pattern")) {
+                    if (required && forms[i].getAttribute("pattern")) {
                         let patt = forms[i].getAttribute("pattern") || field.pattern
                         const [, pattern, flags] = patt.match(/\/(.*)\/([a-z]*)/);
                         const regex = new RegExp(pattern, flags);
@@ -78,7 +79,7 @@ export async function validateForm({ selector, form_builder = [], name = "", val
                         } else {
                             success(forms[i])
                         }
-                    } else if (forms[i].dataset.required == 'true' && !forms[i].value) {
+                    } else if (required && !forms[i].value) {
                         error(forms[i])
                         checked.push(false)
                     } else {
@@ -86,8 +87,11 @@ export async function validateForm({ selector, form_builder = [], name = "", val
                     }
                     break;
                 case "radio":
-                    if (!forms[i].dataset.multiple) {
+                    let multiple = forms[i].dataset.multiple == "true" ? true : false
+                    console.log("multiple", multiple)
+                    if (!multiple) {
                         const radioButtons = document.querySelectorAll(`input[name="${forms[i].name}"]`);
+                        console.log(radioButtons)
                         let selected;
                         for (const radioButton of radioButtons) {
                             if (radioButton.checked) {
@@ -95,7 +99,7 @@ export async function validateForm({ selector, form_builder = [], name = "", val
                                 break;
                             }
                         }
-                        if (forms[i].dataset.required == 'true' && !selected) {
+                        if (required && !selected) {
                             checked.push(false)
                             forms[i].parentElement.classList.add("border-red-300")
                         } else {
@@ -115,7 +119,7 @@ export async function validateForm({ selector, form_builder = [], name = "", val
                         form[forms[i].getAttribute("name")] = selected
                         fd.append(forms[i].getAttribute("name"), selected)
 
-                        if (forms[i].dataset.required == 'true' && !form[forms[i].getAttribute("name")]) {
+                        if (required && !form[forms[i].getAttribute("name")]) {
                             forms[i].parentElement.classList.add("border-red-300")
                             checked.push(false)
                         } else {
@@ -132,7 +136,7 @@ export async function validateForm({ selector, form_builder = [], name = "", val
                     } else {
                         form[forms[i].getAttribute("name")] = forms[i].checked
                         fd.append(forms[i].getAttribute("name"), forms[i].checked)
-                        if (!forms[i].checked && forms[i].dataset.required == 'true') {
+                        if (!forms[i].checked && required) {
                             error(forms[i])
                             checked.push(false)
                         } else {
@@ -142,7 +146,7 @@ export async function validateForm({ selector, form_builder = [], name = "", val
                     break;
                 case "file":
                     form[forms[i].getAttribute("name")] = ''
-                    if (forms[i].dataset.required == 'true' && forms[i].files.length <= 0) {
+                    if (required && forms[i].files.length <= 0) {
                         error(forms[i])
                         checked.push(false)
                     } else {

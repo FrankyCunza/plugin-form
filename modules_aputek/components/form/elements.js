@@ -82,6 +82,7 @@ export class CustomFieldHook extends HTMLElement {
                     ${this.warningHtml}
                     <input 
                         type="${this.data['type']}" 
+                        data-alternatename="${this.data['alternateName'] || ""}"
                         data-required="${this.data['required'] ? "true" : "false"}"
                         placeholder="${this.data['placeholder'] || ""}" 
                         value="${this.data['value'] || ''}"
@@ -202,7 +203,7 @@ export class CustomFieldHook extends HTMLElement {
                 htmlField += `
                     <div>
                         <label class="flex rounded-lg gap-1 cursor-pointer w-full flex-wrap border p-2 ${this.getAttribute("cleanstyles") == "true" ? "" : "border-solid border-gray-200"}">
-                            <span>${el.title[this.lang]}</span>
+                            <span>${el.title[this.lang] || el.title}</span>
                             <input 
                                 type="radio" 
                                 data-required="${this.data['required'] ? "true" : "false"}" 
@@ -210,7 +211,7 @@ export class CustomFieldHook extends HTMLElement {
                                 data-radiomultiple="true" 
                                 data-field 
                                 name="${this.data['name']}" 
-                                data-value="${this.optionValue}" 
+                                data-value="${el.value}" 
                                 class="cursor-pointer" 
                                 ${htmlDataAttributes}
                             />
@@ -276,9 +277,11 @@ export class CustomFieldHook extends HTMLElement {
                 `
             }
         }
-        if (this.getAttribute("onlyfield") == "true") {
+        if (this.data['onlyfield']) {
             label = ""
         }
+        // this.classList.add(`grid`)
+        this.classList.add(`col-span-${this.data['columns'] || 1}`)
         this.innerHTML = `
             <div class="w-full text-xs">
                 ${label}

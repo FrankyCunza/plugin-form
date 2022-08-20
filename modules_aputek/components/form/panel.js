@@ -579,7 +579,12 @@ export class HookFormPanel extends HTMLElement {
             this.querySelector("[data-column='field']").innerHTML = ""
             let html = ""
             this.data.form.forEach((el, index) => {
-                html += this.buttonColumn({ column: "section", index: index, el: el, title: el['title'][this.language] })
+                html += this.buttonColumn({ 
+                    column: "section", 
+                    index: index, 
+                    el: el, 
+                    title: el['title'][this.language] 
+                })
             })
             this.querySelector("[data-column='section']").innerHTML = html
 
@@ -594,7 +599,12 @@ export class HookFormPanel extends HTMLElement {
             this.querySelector("[data-column='field']").innerHTML = ""
             let html = ""
             this.data.form[this.indexSection]['blocks'].forEach((el, index) => {
-                html += this.buttonColumn({ column: "block", index: index, el: el, title: el['title'][this.language] })
+                html += this.buttonColumn({ 
+                    column: "block", 
+                    index: index, 
+                    el: el, 
+                    title: el['title'][this.language] 
+                })
             })
             this.querySelector("[data-column='block']").innerHTML = html
 
@@ -613,7 +623,8 @@ export class HookFormPanel extends HTMLElement {
                     index: indexField, 
                     el: v, 
                     title: fields['languages'][this.language] ? fields['languages'][this.language][k] ? fields['languages'][this.language][k]['label'] : null : null,
-                    key: k
+                    key: k,
+                    position: v['position']
                 })
                 indexField++
             })
@@ -621,7 +632,7 @@ export class HookFormPanel extends HTMLElement {
         }
     }
 
-    buttonColumn({ column, index, el, title, key = "" }) { // key is for field
+    buttonColumn({ column, index, el, title, key = "", position }) { // key is for field
         if (column === "section" && !title) {
             this.data['form'][index]['title'][this.language] = "Not found"
             title = this.data['form'][index]['title'][this.language]
@@ -651,26 +662,45 @@ export class HookFormPanel extends HTMLElement {
                         type="radio" name="${column}" class="hookformpanel__inputradio cursor-pointer opacity-0 absolute w-full h-full top-0 left-0" 
                     />
                     <span class="flex w-full h-full p-3">
-                        ${title || "No encontrado"}
+                        [${position}] ${title || "No encontrado"}
                     </span>
                 </button>
                 <div class="grid grid-cols-2">
                     <button 
                         data-index="${index}" 
+                        data-position="${position}"
                         data-key="${key}"   
                         data-column="${column}" 
                         data-action="edit${column}" 
                         class="bg-blue-600 px-2 flex items-center justify-center text-white">
                         <i class="fas fa-edit pointer-events-none text-xs"></i>
                     </button>
-                    <button class="bg-red-600 px-2 flex items-center justify-center text-white">
+                    <button 
+                        data-index="${index}" 
+                        data-position="${position}"
+                        data-key="${key}"   
+                        data-column="${column}" 
+                        data-action="remove${column}" 
+                        class="bg-red-600 px-2 flex items-center justify-center text-white">
                         <i class="fas fa-edit pointer-events-none text-xs"></i>
                     </button>
-                    <button class="bg-yellow-600 px-2 flex items-center justify-center text-white">
-                        <i class="fas fa-edit pointer-events-none text-xs"></i>
+                    <button 
+                        data-index="${index}" 
+                        data-position="${position}"
+                        data-key="${key}"   
+                        data-column="${column}" 
+                        data-action="down${column}" 
+                        class="bg-yellow-600 px-2 flex items-center justify-center text-white">
+                        <i class="fas fa-angle-down pointer-events-none text-xs"></i>
                     </button>
-                    <button class="bg-green-600 px-2 flex items-center justify-center text-white">
-                        <i class="fas fa-edit pointer-events-none text-xs"></i>
+                    <button
+                        data-index="${index}" 
+                        data-position="${position}"
+                        data-key="${key}"   
+                        data-column="${column}" 
+                        data-action="up${column}"  
+                        class="bg-green-600 px-2 flex items-center justify-center text-white">
+                        <i class="fas fa-angle-up pointer-events-none text-xs"></i>
                     </button>
                 </div>
             </div>
@@ -902,6 +932,12 @@ export class HookFormPanel extends HTMLElement {
                 case "editfield":
                     this.editColumn({ column: e.target.dataset.column, index: e.target.dataset.index, key: e.target.dataset.key })
                     break;
+                case "downfield":
+                case "upfield": {
+                    const { position, key, action } = e.target.dataset
+                    this.moveField({ type: action, position: position, key: key })
+                    break;
+                }
             }
         })
 
@@ -934,6 +970,56 @@ export class HookFormPanel extends HTMLElement {
                     break;
             }
         })
+    }
+
+    orderFieldsConstructor(constructor) {
+        // console.log(constructor)
+        console.log(Object.entries(constructor).map(([k, v]) => v.position).sort(function(a, b) {
+            return a - b;
+          }))
+          console.log(Object.entries(constructor).map(([k, v]) => k))
+    }
+
+    moveField({ type, position, key }) { // type is upfield or downfield
+        position = parseFloat(position)
+        let fields = this.data.form[this.indexSection]['blocks'][this.indexBlock]['fields']
+        let { constructor } = fields
+        const fieldsLength = Object.keys(constructor).length
+
+        const fieldsPositions = Object.entries(constructor).reduce((acc, cur) => {
+            acc[cur[1]['position']] = cur[0]
+            return acc
+        }, {})
+
+        if (type === "upfield") {
+            if (position === 1) {
+                constructor[fieldsPositions[fieldsLength]]['position'] = 1
+                position = fieldsLength
+            } else {
+                constructor[fieldsPositions[position - 1]]['position'] = position
+                position = position - 1
+            }
+        }
+        if (type === "downfield") {
+            if (position === 1) {
+                constructor[fieldsPositions[position + 1]]['position'] = position
+                position = position + 1
+            } else if (position === fieldsLength) {
+                console.log("ti")
+                constructor[fieldsPositions[1]]['position'] = fieldsLength
+                position = 1
+            } else {
+                constructor[fieldsPositions[position + 1]]['position'] = position
+                position = position + 1
+            }
+        }
+        constructor[key]['position'] = position
+        fields['constructor'] = constructor
+        // CURRENT
+        console.log(constructor)
+        this.orderFieldsConstructor(constructor)
+        this.printColumn({ column: "field" })
+
     }
 
     configColumns() {

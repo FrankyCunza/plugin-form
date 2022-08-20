@@ -1,5 +1,4 @@
 export const formatOldFormToNewFormat = (data)=> {
-    console.log(data, "data")
     const format = data.reduce((acc, cur) => {
         acc['constructor'] = { ...acc['constructor'] }
         const { alternateName, columns, hidden, info, label, name, options, pattern, position, required, type, value } = cur

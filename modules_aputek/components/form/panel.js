@@ -89,18 +89,20 @@ export class HookFormPanel extends HTMLElement {
             let data = []
             let pass = 0
             const length = [...this.querySelectorAll("[data-optionrowindex]")].length
-            console.log(length)
-            console.log(this.fieldType)
             if (length >= 1) {
-                console.log(this.fieldType)
                 if (this.fieldType === "select" || this.fieldType === "checkbox" || this.fieldType === "radio-multiple") {
-                    console.log(this.fieldType)
                     for (let i = 0; i < length; i++ ) {
                         validateForm({ selector: `[data-optionrowindex='${i}']` }).then(res => {
                             let titles = {}
-                            // HOOKFORMCOUNTRIES.forEach(el => {
-                            //     titles[el.name] = res[1]['title']
-                            // })
+                            HOOKFORMCOUNTRIES.forEach(el => {
+                                titles[el.name] = res[1]['title']
+                            })
+                            if (this.currentField?.options) {
+                                titles = {
+                                    ...titles,
+                                    ...this.currentField.options[i]['title']
+                                }
+                            }
                             titles[this.language] = res[1]['title']
                             data.push({ 
                                 ...res[1],
@@ -150,9 +152,8 @@ export class HookFormPanel extends HTMLElement {
     }
 
     printOptions(options) {
-        console.log(options)
         let html = ""
-        options && options?.forEach((el, index) => {
+        JSON.stringify(options).startsWith("[") && options?.forEach((el, index) => {
             const { value, icon, required, textarea } = el
             let { title } = el
             if (JSON.stringify(title).startsWith("{") && !title[this.language]) {
@@ -570,6 +571,7 @@ export class HookFormPanel extends HTMLElement {
         } else {
             this.data = data
         }
+        console.log(this.data['form'][0]['blocks'][0]['fields'])
         // this.data = data
         this.printColumn({ column: this.config.columns[this.config.levels], index: null })
     }
@@ -590,7 +592,6 @@ export class HookFormPanel extends HTMLElement {
             this.querySelector("[data-column='section']").innerHTML = html
 
             if (typeof this.indexSection === "number") {
-                console.log(this.indexSection)
                 this.querySelector(`[data-action='columnsection'][data-index='${this.indexSection}']`).click()
             }
         }
@@ -645,10 +646,13 @@ export class HookFormPanel extends HTMLElement {
     }
 
     orderFieldsConstructor(constructor) {
-        console.log("Prev", constructor)
+        console.log(constructor)
+        // this.fieldsResetPositions()
         let newPosition = 0
         if (JSON.stringify(constructor).startsWith("{")) {
-            constructor = Object.entries(constructor).map(([k, v]) => {
+            constructor = Object.entries(constructor).sort(function(a, b) {
+                return a[1]['position'] - b[1]['position'];
+            }).map(([k, v]) => {
                 return {
                     ...v,
                     position: v.position || 999999,
@@ -664,7 +668,6 @@ export class HookFormPanel extends HTMLElement {
                 }
             });
         }
-        console.log("Constructr", constructor)
         return constructor
     }
 
@@ -766,12 +769,12 @@ export class HookFormPanel extends HTMLElement {
                     columns: field['constructor'][key]['columns'],
                     pattern: field['constructor'][key]['pattern'],
                     type: field['constructor'][key]['type'],
+                    position: field['constructor'][key]['position'],
                     required: field['constructor'][key]['required'],
                     options: field['constructor'][key]['options'],
                     html: field['constructor'][key]['html']
                 }
                 this.currentField = values
-                console.log(this.currentField)
                 break;
         }
         this.toggleModal({ column: column, type: "edit", values: values })
@@ -801,7 +804,6 @@ export class HookFormPanel extends HTMLElement {
                 })
             }
             this.printColumn({ column: "section" })
-            console.log(this.data['form'])
             this.toggleModal({ column: "", type: "", values: "", hidden: true })
         }).catch(err => {
             console.log(err)
@@ -841,14 +843,15 @@ export class HookFormPanel extends HTMLElement {
             isBackupOptions = true
             document.querySelectorAll("[id='tbodyoptions'] input").forEach(el => el.setAttribute("data-skipvalidation", true))
         }
-        console.log(isBackupOptions, "backup")
         validateForm({ selector: "[data-modal]" })
         .then(res => {
+            console.log(this.currentField)
             const label = res[1]['label']
             let name = label.toLowerCase().replace(/\s{1,}/g, '_').replace(/[^\w\s]/gi, '');
             let field = {
                 constructor: {
                     additionalName: res[1]['additionalName'],
+                    position: this.currentField?.position,
                     alternateName: res[1]['alternateName'],
                     columns: parseFloat(res[1]['columns']),
                     info: res[1]['info'],
@@ -875,15 +878,11 @@ export class HookFormPanel extends HTMLElement {
                     ...field.constructor,
                     options: isBackupOptions ? this.currentField?.options || {} : response
                 }
-                console.log(this.currentField)
                 this.data['form'][this.indexSection]['blocks'][this.indexBlock]['fields']['languages'][this.language][name] = {
                     label: label
                 }
                 this.printColumn({ column: "field" })
                 this.toggleModal({ column: "", type: "", values: "", hidden: true })
-                console.log(this.data['form'][this.indexSection]['blocks'][this.indexBlock]['fields']['constructor'][name])
-
-                // console.log(this.data['form'][this.indexSection]['blocks'][this.indexBlock]['fields'])
             }).catch(err => {
                 console.log(err)
             })
@@ -984,7 +983,6 @@ export class HookFormPanel extends HTMLElement {
 
         this.addEventListener("submit", e => {
             e.preventDefault()
-            console.log(e.target.dataset.form)
             switch (e.target.dataset.form) {
                 case "formsection":
                     this.saveSection()
@@ -1026,14 +1024,6 @@ export class HookFormPanel extends HTMLElement {
             }
             return acc
         }, {})
-        // .reduce((acc, cur) => {
-        //     acc[cur[0]] = {
-        //         ...cur[1],
-        //         position: cur[1]['position'] || 99999
-        //     }
-        //     return acc
-        // }, {})
-        console.log("Test", this.data.form[this.indexSection]['blocks'][this.indexBlock]['fields']['constructor'])
         
     }
 
@@ -1047,7 +1037,6 @@ export class HookFormPanel extends HTMLElement {
     moveField({ type, position, key }) { // type is upfield or downfield
         position = parseFloat(position)
         let fields = this.data.form[this.indexSection]['blocks'][this.indexBlock]['fields']
-        console.log("Fields", fields)
         let { constructor } = fields
         const fieldsLength = Object.keys(constructor).length
 
@@ -1070,11 +1059,9 @@ export class HookFormPanel extends HTMLElement {
                 constructor[fieldsPositions[position + 1]]['position'] = position
                 position = position + 1
             } else if (position === fieldsLength) {
-                console.log("ti")
                 constructor[fieldsPositions[1]]['position'] = fieldsLength
                 position = 1
             } else {
-                console.log({ type, position, key })
                 constructor[fieldsPositions[position + 1]]['position'] = position
                 position = position + 1
             }
@@ -1082,8 +1069,7 @@ export class HookFormPanel extends HTMLElement {
         constructor[key]['position'] = position
         fields['constructor'] = constructor
         // CURRENT
-        console.log(constructor)
-        this.orderFieldsConstructor(constructor)
+        // this.orderFieldsConstructor(constructor)
         this.printColumn({ column: "field" })
     }
 

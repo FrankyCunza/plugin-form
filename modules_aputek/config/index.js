@@ -37,6 +37,10 @@ export const HOOKFORMTYPES = [
         name: "checkbox"
     },
     {
+        title: "Checkboxes",
+        name: "checkboxes"
+    },
+    {
         title: "Color",
         name: "color"
     },

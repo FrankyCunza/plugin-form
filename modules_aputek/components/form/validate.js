@@ -1,4 +1,4 @@
-export async function validateForm({ selector, form_builder = [], name = "", validateIndexes = [] }) {
+export async function validateForm({ selector, name = "", validateIndexes = [] }) {
     const formInfo = document.querySelector(`${selector.startsWith("[") ? selector : "[id='${selector}']"} [data-info]`)
     // let quantityFields = document.querySelectorAll(`[data-allfields='${formInfo.getAttribute("data-id")}']`)
     let forms = document.querySelectorAll(`${selector.startsWith("[") ? selector : `[id='${selector}']`} textarea, ${selector.startsWith("[") ? selector : `[id='${selector}']`} input, ${selector.startsWith("[") ? selector : `[id='${selector}']`} select`);
@@ -31,8 +31,7 @@ export async function validateForm({ selector, form_builder = [], name = "", val
     let promise = new Promise((resolve, reject) => {
         let checked = []
         for (let i = 0; i < forms.length; i++) {
-            let field = form_builder.find(el => el.name == forms[i].getAttribute("name"))
-            if (field?.skipValidation == true || forms[i].getAttribute("data-skipValidation") == "true") {
+            if (forms[i].getAttribute("data-skipValidation") == "true") {
                 break;
             }
             let required = forms[i].dataset.required == 'true' ? true : false
@@ -70,7 +69,7 @@ export async function validateForm({ selector, form_builder = [], name = "", val
                         fd.append(forms[i].getAttribute(name || "name"), forms[i].value)
                     }
                     if (required && forms[i].getAttribute("pattern")) {
-                        let patt = forms[i].getAttribute("pattern") || field.pattern
+                        let patt = forms[i].getAttribute("pattern")
                         const [, pattern, flags] = patt.match(/\/(.*)\/([a-z]*)/);
                         const regex = new RegExp(pattern, flags);
                         if (!regex.test(forms[i].value)) {
@@ -127,8 +126,6 @@ export async function validateForm({ selector, form_builder = [], name = "", val
                         }
                     }
                     break;
-                case "field_checkboxes":
-                case "field_checkbox":
                 case "checkbox":
                     if (forms[i].getAttribute("data-multiple") == "true") {
                         form[forms[i].getAttribute("data-keyparent")] = { ...form[forms[i].getAttribute("data-keyparent")] }

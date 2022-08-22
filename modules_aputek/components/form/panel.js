@@ -80,9 +80,15 @@ export class HookFormPanel extends HTMLElement {
                             dataAttributes: {
                                 action: "language"
                             }, 
-                            label: "Language"
+                            name: "language",
+                            label: "Language",
+                            options: HOOKFORMCOUNTRIES.map(el => {
+                                return {
+                                    title: el.title,
+                                    value: el.name
+                                }
+                            })
                         })}'>
-                            ${this.printLanguages()}
                         </custom-field-hook>
                     </div>
                 </div>
@@ -100,7 +106,7 @@ export class HookFormPanel extends HTMLElement {
             let pass = 0
             const length = [...this.querySelectorAll("[data-optionrowindex]")].length
             if (length >= 1) {
-                if (this.fieldType === "select" || this.fieldType === "checkbox" || this.fieldType === "radio-multiple") {
+                if (this.fieldType === "select" || this.fieldType === "checkboxes" || this.fieldType === "radio-multiple") {
                     for (let i = 0; i < length; i++ ) {
                         validateForm({ selector: `[data-optionrowindex='${i}']` }).then(res => {
                             let titles = {}
@@ -423,7 +429,7 @@ export class HookFormPanel extends HTMLElement {
     toggleCustomFields() {
         document.querySelectorAll("[customfields]").forEach(el => el.classList.add("hidden"))
         switch (this.fieldType) {
-            case "checkbox":
+            case "checkboxes":
             case "radio-multiple":
             case "select":
                 document.querySelector("[customfield='options']").classList.remove("hidden")
@@ -855,7 +861,7 @@ export class HookFormPanel extends HTMLElement {
         if (column === "field") {
             this.fieldType = this.querySelector("[data-field][name='type']").value
             this.toggleCustomFields()
-            if (this.fieldType === "select" || this.fieldType === "checkbox" || this.fieldType === "radio-multiple") {
+            if (this.fieldType === "select" || this.fieldType === "checkboxes" || this.fieldType === "radio-multiple") {
                 this.printOptions(values?.options)
             }
         }
@@ -910,7 +916,7 @@ export class HookFormPanel extends HTMLElement {
 
     saveField() {
         let isBackupOptions = false
-        if (this.fieldType === "select" || this.fieldType === "radio-multiple" || this.fieldType === "checkbox") {
+        if (this.fieldType === "select" || this.fieldType === "radio-multiple" || this.fieldType === "checkboxes") {
             document.querySelectorAll("[id='tbodyoptions'] input").forEach(el => el.setAttribute("data-skipvalidation", false))
         } else {
             isBackupOptions = true

@@ -142,11 +142,12 @@ export class HookFormPanel extends HTMLElement {
     }
 
     optionRow({ title, value, icon, required, textarea, index }) {
+        console.log("Title", title)
         return `
             <tr data-optionrowindex="${index}">
                 <td class="p-2">
                     <custom-field-hook data='${JSON.stringify({
-                        type: "text", name: "title", required: true, value: value, title: title, onlyfield: true
+                        type: "text", name: "title", required: true, value: title, onlyfield: true
                     })}'></custom-field-hook>
                 </td>
                 <td class="p-2">
@@ -180,12 +181,15 @@ export class HookFormPanel extends HTMLElement {
     printOptions(options) {
         let html = ""
         if (options) {
+            console.log(options)
             JSON.stringify(options).startsWith("[") && options?.forEach((el, index) => {
                 const { value, icon, required, textarea } = el
                 let { title } = el
                 if (JSON.stringify(title).startsWith("{") && !title[this.language]) {
                     title[this.language] = "Not found"
                 }
+                console.log(this.language)
+                console.log(title[this.language])
                 html += this.optionRow({ title: title[this.language] ? title[this.language] : title, value, icon, required, textarea, index })
             })
         }
@@ -780,7 +784,7 @@ export class HookFormPanel extends HTMLElement {
                         type="radio" name="${column}" class="hookformpanel__inputradio cursor-pointer opacity-0 absolute w-full h-full top-0 left-0" 
                     />
                     <span class="flex w-full h-full p-3">
-                        [${position}] ${title || "No encontrado"}
+                        [[${position}] ${title || "No encontrado"} ${column === "field" ? `[${el.type}]` : ""}
                     </span>
                 </button>
                 <div class="grid grid-cols-2">

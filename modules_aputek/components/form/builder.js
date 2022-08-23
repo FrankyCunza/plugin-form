@@ -87,7 +87,7 @@ export class HookFormBuilder extends HTMLElement {
 
     builderHTML() {
         let html = ""
-        Object.entries(this.builder['constructor']).forEach(([k, v]) => {
+        this.builder && Object.entries(this.builder['constructor']).forEach(([k, v]) => {
             const LABEL = this.builder['languages'][this.lang] && this.builder['languages'][this.lang][k] ? this.builder['languages'][this.lang][k]['label'] : `Campo ${k}`
             let data = {
                 ...v,
